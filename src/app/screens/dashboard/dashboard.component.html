@@ -1,0 +1,115 @@
+
+<div class="p-8 space-y-8 bg-gray-50 min-h-screen">
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    @for (stat of stats; track stat.label) {
+      <div class="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center" [class]="stat.bg">
+            <lucide-icon [img]="stat.icon" class="w-6 h-6" [class]="stat.iconColor"></lucide-icon>
+          </div>
+          <span class="text-green-600 text-sm font-medium">{{ stat.change }}</span>
+        </div>
+        <div class="text-3xl font-bold text-gray-900 mb-1">{{ stat.value }}</div>
+        <div class="text-gray-600 text-sm">{{ stat.label }}</div>
+      </div>
+    }
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <div class="lg:col-span-2 bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-bold text-gray-900">Recent Activity</h2>
+          <button class="text-yellow-600 hover:text-yellow-700 text-sm font-medium flex items-center gap-1 cursor-pointer">
+            View All
+            <lucide-icon [img]="icons.ArrowRight" class="w-4 h-4"></lucide-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="divide-y divide-gray-200">
+        @for (activity of recentActivity; track activity.student) {
+          <div class="p-6 hover:bg-gray-50 transition-colors">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+
+              <div class="flex-1">
+                <div class="font-semibold text-gray-900">{{ activity.student }}</div>
+                <div class="text-sm text-gray-600 mt-1">{{ activity.exam }}</div>
+              </div>
+
+              <div class="flex items-center gap-6 justify-between sm:justify-end w-full sm:w-auto">
+                <div class="text-right">
+                  <div class="text-2xl font-bold text-gray-900">{{ activity.score }}</div>
+                  <div class="text-xs text-gray-500">Score</div>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-gray-500">
+                  <lucide-icon [img]="icons.Clock" class="w-4 h-4"></lucide-icon>
+                  {{ activity.time }}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden h-fit">
+      <div class="p-6 border-b border-gray-200">
+        <h2 class="text-lg font-bold text-gray-900">Upcoming Exams</h2>
+      </div>
+
+      <div class="divide-y divide-gray-200">
+        @for (exam of upcomingExams; track exam.title) {
+          <div class="p-6 hover:bg-gray-50 transition-colors">
+            <div class="space-y-3">
+              <div class="font-semibold text-gray-900">{{ exam.title }}</div>
+
+              <div class="flex items-center gap-2 text-sm text-gray-600">
+                <lucide-icon [img]="icons.Calendar" class="w-4 h-4"></lucide-icon>
+                {{ exam.date }}
+              </div>
+
+              <div class="flex items-center gap-2 text-sm text-gray-600">
+                <lucide-icon [img]="icons.Clock" class="w-4 h-4"></lucide-icon>
+                {{ exam.time }}
+              </div>
+
+              <div class="flex items-center gap-2 text-sm text-gray-600">
+                <lucide-icon [img]="icons.Users" class="w-4 h-4"></lucide-icon>
+                {{ exam.students }} students
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="p-6 border-t border-gray-200">
+        <button class="w-full py-2.5 text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors font-medium text-sm cursor-pointer">
+          View All Exams
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bg-gradient-to-r from-yellow-600 to-orange-600 rounded-xl p-8 text-white shadow-lg">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="text-center md:text-left">
+        <h2 class="text-2xl font-bold mb-2">Quick Actions</h2>
+        <p class="text-yellow-100">Create a new exam or manage your existing ones</p>
+      </div>
+      <div class="flex gap-3">
+        <button class="px-6 py-3 bg-white text-yellow-600 rounded-lg hover:bg-gray-100 transition-colors font-semibold shadow-sm cursor-pointer">
+          Create Exam
+        </button>
+        <button class="px-6 py-3 border-2 border-white text-white rounded-lg hover:bg-white/10 transition-colors font-semibold cursor-pointer">
+          View Reports
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,47 @@
+ <form (ngSubmit)="onSubmit()">
+  <div class="space-y-2">
+    <label class="text-sm font-medium text-gray-700">
+      Correo Electrónico
+    </label>
+    <div class="relative">
+      <lucide-icon [img]="icons.Mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
+      <input
+        type="email"
+        placeholder="estudiante@alumno.buap.mx"
+        class="w-full pl-11 pr-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+        required
+
+      />
+    </div>
+  </div>
+
+  <div class="space-y-2 mt-4">
+    <label class="text-sm font-medium text-gray-700">Contraseña</label>
+    <div class="relative">
+      <lucide-icon [img]="icons.Lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
+      <input type="password"
+        placeholder="••••••••"
+        class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+        required
+      />
+    </div>
+  </div>
+
+  <div class="flex items-center justify-between text-sm animate-in fade-in duration-300 mt-5">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" class="w-4 h-4 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500" />
+      <span class="text-gray-600">Recordarme</span>
+    </label>
+    <a href="#" class="text-yellow-600 hover:text-yellow-700 font-medium">¿Olvidaste tu contraseña?</a>
+  </div>
+
+  <button type="submit" class="w-full py-3.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors flex items-center justify-center gap-2 font-semibold mt-6 cursor-pointer">
+    Iniciar Sesión
+    <lucide-icon [img]="icons.ArrowRight" class="w-5 h-5"></lucide-icon>
+  </button>
+
+   <div class="text-center text-sm text-gray-600 pt-2 mt-5">
+    ¿No tienes una cuenta?
+    <a routerLink="/auth/register" class="text-yellow-600 hover:text-yellow-700 font-medium">Regístrate</a>
+   </div>
+</form>

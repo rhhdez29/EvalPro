@@ -1,0 +1,33 @@
+<nav class="border-b border-gray-200 bg-white sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-8 py-4">
+    <div class="flex items-center justify-between">
+
+      <div class="flex items-center gap-4">
+
+        <button
+          routerLink="/auth/login"
+          class="px-5 py-2 text-yellow-600 hover:text-yellow-700 transition-colors font-medium">
+          Iniciar Sesión
+        </button>
+
+        <button
+          routerLink="/auth/register"
+          class="px-5 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium">
+          Registrarse
+        </button>
+      </div>
+
+      <a routerLink="/" class="flex items-center gap-2 cursor-pointer no-underline">
+        <lucide-icon
+          [img]="GraduationCap"
+          class="w-8 h-8 text-yellow-600">
+        </lucide-icon>
+
+        <span class="text-xl font-semibold text-gray-900">
+          EvalPro
+        </span>
+      </a>
+
+    </div>
+  </div>
+</nav>
