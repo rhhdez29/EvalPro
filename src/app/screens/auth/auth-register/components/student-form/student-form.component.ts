@@ -5,7 +5,7 @@
   import {
     LucideAngularModule,
     GraduationCap, Mail, Lock, User, ArrowRight,
-    Upload, CheckCircle, BookOpen, Briefcase, Hash, CircleX
+    Upload, CheckCircle, BookOpen, Briefcase, Hash, CircleX, Eye, EyeOff
   } from 'lucide-angular';
   import { OnlyNumbersDirective } from '../../../../../shared/directives/only-numbers.directive';
   import { OnlyLettersDirective } from '../../../../../shared/directives/only-letters.directive';
@@ -27,6 +27,7 @@
     uploadedFile = signal<File | null>(null);
     isDragging = signal(false);
     rolActivo = signal<'alumno' | 'maestro'>('alumno');
+    showPassword = signal(false);
 
     touchedFields =signal<Set<string>>(new Set());
 
@@ -64,12 +65,17 @@
     // --- ICONS ---
     readonly icons = {
       GraduationCap, Mail, Lock, User, ArrowRight,
-      Upload, CheckCircle, BookOpen, Briefcase, Hash, CircleX
+      Upload, CheckCircle, BookOpen, Briefcase, Hash, CircleX, Eye, EyeOff
     };
 
     constructor() {}
 
     // --- METHODS ---
+
+
+    togglePassword() {
+      this.showPassword.update(v => !v);
+    }
 
     markAsTouched(field: string) { // Marcar campo como "tocado" para mostrar errores solo después de la interacción
       this.touchedFields.update(set =>

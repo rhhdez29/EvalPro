@@ -25,7 +25,7 @@ export class SidebarComponent implements OnInit {
 
   // 1. Definimos los items del menú
   readonly menuItems = [
-    { path: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/app/dashboard ', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/app/exams', label: 'Exams', icon: FileText },
     { path: '/app/results', label: 'Results', icon: BarChart3 },
     { path: '/app/settings', label: 'Settings', icon: Settings },
