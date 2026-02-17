@@ -147,7 +147,7 @@
     onSubmit() {
       console.log('Formulario válido:', this.isFormValid());
       if (this.isFormValid()) {
-        this.route.navigate(['/home/dashboard'])
+        this.route.navigate(['/home/'])
       }
 
     }

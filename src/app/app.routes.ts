@@ -16,11 +16,13 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    loadComponent: () => import('./partials/layout/sidebar/sidebar.component').then(m => m.SidebarComponent),
+    loadComponent: () => import('./screens/dashboard/layout/dashboard-layout/dashboard-layout.component').then(m => m.DashboardLayoutComponent),
     children: [
 
-      { path: 'dashboard', loadComponent: () => import('./screens/dashboard/dashboard.component').then(m => m.DashboardComponent) },
-
+      { path: 'admin/validation', loadComponent: () => import('./screens/dashboard//admin/teacher-validation/teacher-validation.component').then(m => m.TeacherValidationComponent) },
+      { path: 'admin/subjects', loadComponent: () => import('./screens/dashboard//admin/subject-management/subject-management.component').then(m => m.SubjectManagementComponent) },
+      { path: 'admin/users-list', loadComponent: () => import('./screens/dashboard//admin/users-list/users-list.component').then(m => m.UsersListComponent) },
+      { path: 'admin/settings', loadComponent: () => import('./screens/dashboard/shared/settings/settings.component').then(m => m.SettingsComponent) },
     ]
   },
   {

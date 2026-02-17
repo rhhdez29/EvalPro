@@ -1,64 +1,79 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, NavigationEnd, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import {
   LucideAngularModule,
-  LayoutDashboard, FileText, BarChart3, Settings,
-  GraduationCap, Bell, User, LogOut
+  GraduationCap,
+  User,
+  LogOut,
+  BookOpen,
+  Settings,
+  Users,
+  UserCheck
 } from 'lucide-angular';
 
+// Interfaz para el menú
+export interface MenuItem {
+  path: string;
+  label: string;
+  icon: any;
+  badge?: number;
+}
+
+// Simulamos el AuthContext (En el futuro inyectarás tu AuthService)
+export interface MockUser {
+  name: string;
+  role: 'administrator' | 'teacher' | 'student';
+}
+
 @Component({
-  selector: 'app-layout',
+  selector: 'side-bar',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterOutlet,     // Reemplaza a <Outlet />
-    RouterLink,       // Reemplaza a <Link>
-    RouterLinkActive, // Maneja la clase 'active' automáticamente
-    LucideAngularModule
-  ],
-  templateUrl: './sidebar.component.html',
-  styles: ``
+  imports: [CommonModule, RouterLink, LucideAngularModule, RouterLinkActive],
+  templateUrl: './sidebar.component.html'
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
+  private router = inject(Router);
 
-  // 1. Definimos los items del menú
-  readonly menuItems = [
-    { path: '/app/dashboard ', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/app/exams', label: 'Exams', icon: FileText },
-    { path: '/app/results', label: 'Results', icon: BarChart3 },
-    { path: '/app/settings', label: 'Settings', icon: Settings },
-  ];
+  // Iconos
+  readonly icons = { GraduationCap, User, LogOut, BookOpen, Settings, Users, UserCheck };
 
-  // 2. Exponemos los iconos estáticos para el HTML
-  readonly icons = {
-    GraduationCap, Bell, User, LogOut
-  };
+  // Simulamos el usuario logueado (Equivalente al useAuth de React)
+  user = signal<MockUser | null>({ name: 'Rafael Hdez', role: 'administrator' });
 
-  // 3. Signal para el título dinámico (Reemplaza la lógica de useLocation)
-  pageTitle = signal('Dashboard');
-  sideBarTitle = signal('EvalPro');
+  // Equivalente al useMemo de React
+  menuItems = computed<MenuItem[]>(() => {
+    const currentUser = this.user();
+    if (!currentUser) return [];
 
-  constructor(private router: Router) {}
+    switch (currentUser.role) {
+      case 'administrator':
+        return [
+          { path: 'admin/validation', label: 'Teacher Validation', icon: this.icons.UserCheck, badge: 3 },
+          { path: 'admin/subjects', label: 'Subject Management', icon: this.icons.BookOpen },
+          { path: 'admin/users-list', label: 'Users', icon: this.icons.Users },
+          { path: 'admin/settings', label: 'Settings', icon: this.icons.Settings },
+        ];
+      case 'teacher':
+        return [
+          { path: '/app/my-subjects', label: 'My Subjects', icon: this.icons.BookOpen },
+          { path: '/app/settings', label: 'Settings', icon: this.icons.Settings },
+        ];
+      case 'student':
+        return [
+          { path: '/app/my-classes', label: 'My Classes', icon: this.icons.BookOpen },
+          { path: '/app/settings', label: 'Settings', icon: this.icons.Settings },
+        ];
+      default:
+        return [];
+    }
+  });
 
-  ngOnInit() {
-    // Escuchamos cambios en la ruta para actualizar el título del Header
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      this.updateTitle();
-    });
-
-    // Establecer título inicial al cargar
-    this.updateTitle();
+  handleLogout() {
+    // Aquí llamarás a tu logout real
+    this.router.navigate(['/auth/login']);
   }
 
-  private updateTitle() {
-    const currentUrl = this.router.url;
-    // Buscamos si la URL actual coincide con algún item del menú
-    const activeItem = this.menuItems.find(item => currentUrl.includes(item.path));
-    // Si encontramos coincidencia usamos el label, si no, 'Dashboard' por defecto
-    this.pageTitle.set(activeItem ? activeItem.label : 'Dashboard');
-  }
+
+
 }
