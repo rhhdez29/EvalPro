@@ -12,6 +12,8 @@
   import { RouterLink, Router } from '@angular/router';
   import { FormsModule } from '@angular/forms';
   import { CommonModule } from '@angular/common';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { of } from 'rxjs';
 
   @Component({
     selector: 'app-student-form',
@@ -31,30 +33,31 @@
 
     touchedFields =signal<Set<string>>(new Set());
 
+    // Cuando tenga datos, lanzará la petición.
+    registerPayload = signal<FormData | null>(null);
 
-
-    alumno =signal<StudentData>({
+    student =signal<StudentData>({
       rol: 'alumno',
-      nombre: '',
-      apellido: '',
-      correo: '',
+      first_name: '',
+      last_name: '',
+      email: '',
       password: '',
-      matricula: '',
-      carrera: '',
-      semestre: '',
-      kardex: null
+      id_student: '',
+      career: '',
+      semester: '',
+      kardex: ''
     })
 
     // --- DATA ---
     readonly semesters = Array.from({length: 10}, (_, i) => i + 1); // [1, 2, ... 12]
-    carreras = [
+    careers = [
       'Ingeniería en Sistemas Computacionales',
       'Ingeniería Industrial',
       'Ingeniería Mecánica',
       'Ingeniería Eléctrica',
       'Ingeniería Civil'];
 
-    facultades = [
+    facultyes = [
       'Ciencias de la Computación',
       'Ingeniería Industrial',
       'Ingeniería Mecánica',
@@ -95,7 +98,7 @@
     }
 
     setData(field: string, value: string) { // Actualizar datos
-      this.alumno.update(a => ({ ...a, [field]: value }));
+      this.student.update(a => ({ ...a, [field]: value }));
 
     }
 
@@ -104,7 +107,10 @@
       const input = event.target as HTMLInputElement;
       const file = input.files?.[0] ?? null
 
-      this.alumno.update(a => ({...a, kardex: file}));
+      if (file){
+        this.student.update(a => ({...a, kardex: file!.name}));
+        this.uploadedFile.set(file);
+      }
 
     }
 
@@ -136,19 +142,41 @@
     }
 
     StudentErrors = computed(() => {
-      const data = this.alumno();
-      return this.studentService.validateStudent(data);
+      const data = this.student();
+      return this.studentService.validateStudent(data, this.uploadedFile()!);
     })
 
     isFormValid = computed(() => {
         return this.studentService.isValidForm(this.StudentErrors());
     });
 
-    onSubmit() {
-      console.log('Formulario válido:', this.isFormValid());
-      if (this.isFormValid()) {
-        this.route.navigate(['/home/'])
-      }
+    registerResource = rxResource({
+    params: () => this.registerPayload(),
+    stream: ({ params }) => {
+      // Si el payload es null (estado inicial), no disparamos la petición
+      if (!params) return of(null);
+
+      // Si hay datos, hacemos el POST al backend de Django
+      return this.studentService.registerStudent(params);
+    }
+  });
+
+    register() {
+
+      const formData = new FormData();
+
+      formData.append('rol', this.student().rol);
+      formData.append('first_name', this.student().first_name);
+      formData.append('last_name', this.student().last_name);
+      formData.append('email', this.student().email);
+      formData.append('password', this.student().password);
+      formData.append('id_student', this.student().id_student);
+      formData.append('career', this.student().career);
+      formData.append('semester', this.student().semester);
+
+      formData.append('kardex', this.uploadedFile()!, this.uploadedFile()!.name);
+
+      this.registerPayload.set(formData);
 
     }
   }

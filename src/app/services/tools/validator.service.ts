@@ -14,7 +14,7 @@ export class ValidatorService {
 
   email(email: string): string | null {
     if (!email) return null; // Dejamos que 'required' maneje el vacío
-    return this.EMAIL_REGEX.test(email) ? null : 'Debe ser correo @alumno.buap.mx';
+    return this.EMAIL_REGEX.test(email) ? null : 'Debe ser email @alumno.buap.mx';
   }
 
   minLength(value: string, min: number): string | null {

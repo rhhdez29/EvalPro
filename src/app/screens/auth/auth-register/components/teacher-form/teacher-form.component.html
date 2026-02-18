@@ -1,4 +1,4 @@
-<form (ngSubmit)="onSubmit()">
+<form (ngSubmit)="register()">
 
   <div class="grid sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2 duration-300 delay-75">
     <div class="space-y-2">
@@ -10,22 +10,22 @@
           placeholder="John"
           class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
           required
-          [value]="maestro().nombre"
-          (input)="setData('nombre', $event.target.value)"
-          (blur)="markAsTouched('nombre')"
-          [class.border-red-500]="shouldShowError('nombre')"
+          [value]="teacher().first_name"
+          (input)="setData('first_name', $event.target.value)"
+          (blur)="markAsTouched('first_name')"
+          [class.border-red-500]="shouldShowError('first_name')"
           appOnlyLetters
         />
 
       </div>
-      @if (shouldShowError('nombre')) {
+      @if (shouldShowError('first_name')) {
         <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-          {{ TeacherErrors().nombre }}
+          {{ TeacherErrors().first_name }}
         </p>
       }
     </div>
     <div class="space-y-2">
-      <label class="text-sm font-medium text-gray-700">Apellido</label>
+      <label class="text-sm font-medium text-gray-700">Apellidos</label>
       <div class="relative">
         <lucide-icon [img]="icons.User" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
         <input
@@ -33,17 +33,17 @@
           placeholder="Doe"
           class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
           required
-          [value]="maestro().apellido"
-          (input)="setData('apellido', $event.target.value)"
-          (blur)="markAsTouched('apellido')"
-          [class.border-red-500]="shouldShowError('apellido')"
+          [value]="teacher().last_name"
+          (input)="setData('last_name', $event.target.value)"
+          (blur)="markAsTouched('last_name')"
+          [class.border-red-500]="shouldShowError('last_name')"
           appOnlyLetters
         />
 
       </div>
-      @if (shouldShowError('apellido')) {
+      @if (shouldShowError('last_name')) {
         <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-          {{ TeacherErrors().apellido }}
+          {{ TeacherErrors().last_name }}
         </p>
       }
     </div>
@@ -60,22 +60,22 @@
         placeholder="estudiante@alumno.buap.mx"
         class="w-full pl-12 pr-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
         required
-        [value]="maestro().correo"
-        (input)="setData('correo', $event.target.value)"
-        (blur)="markAsTouched('correo')"
-        [class.border-red-500]="shouldShowError('correo')"
+        [value]="teacher().email"
+        (input)="setData('email', $event.target.value)"
+        (blur)="markAsTouched('email')"
+        [class.border-red-500]="shouldShowError('email')"
       />
       <lucide-icon
-        [hidden]="!touchedFields().has('correo')"
-        [img]="shouldShowError('correo') ? icons.CircleX :icons.CheckCircle"
+        [hidden]="!touchedFields().has('email')"
+        [img]="shouldShowError('email') ? icons.CircleX :icons.CheckCircle"
         class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5"
-        [ngClass]="shouldShowError('correo') ? 'text-red-500': 'text-green-500'"
+        [ngClass]="shouldShowError('email') ? 'text-red-500': 'text-green-500'"
       >
       </lucide-icon>
     </div>
-    @if (shouldShowError('correo')) {
+    @if (shouldShowError('email')) {
       <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-        {{ TeacherErrors().correo }}
+        {{ TeacherErrors().email }}
       </p>
     }
   </div>
@@ -88,7 +88,7 @@
         placeholder="••••••••"
         class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
         required
-        [value]="maestro().password"
+        [value]="teacher().password"
         (input)="setData('password', $event.target.value)"
         (blur)="markAsTouched('password')"
         [class.border-red-500]="shouldShowError('password')"
@@ -121,17 +121,17 @@
           type="text" placeholder="123456"
           class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
           required
-          [value]="maestro().numeroEmpleado"
-          (input)="setData('numeroEmpleado', $event.target.value)"
-          (blur)="markAsTouched('numeroEmpleado')"
-          [class.border-red-500]="shouldShowError('numeroEmpleado')"
+          [value]="teacher().id_teacher"
+          (input)="setData('id_teacher', $event.target.value)"
+          (blur)="markAsTouched('id_teacher')"
+          [class.border-red-500]="shouldShowError('id_teacher')"
           appOnlyNumbers
           maxlength="9"
         />
       </div>
-      @if (shouldShowError('numeroEmpleado')) {
+      @if (shouldShowError('id_teacher')) {
         <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-          {{ TeacherErrors().numeroEmpleado }}
+          {{ TeacherErrors().id_teacher }}
         </p>
       }
     </div>
@@ -142,19 +142,19 @@
         <select
         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none bg-white" r
         equired
-        #txtFacultad
-        (change)="setData('Facultad', txtFacultad.value)"
-        (blur)="markAsTouched('facultad')"
-        [class.border-red-500]="shouldShowError('facultad')"
+        #txtfaculty
+        (change)="setData('faculty', txtfaculty.value)"
+        (blur)="markAsTouched('faculty')"
+        [class.border-red-500]="shouldShowError('faculty')"
         >
-        <option value="">Seleccionar facultad</option>
-        @for(facultad of facultades; track facultad) {
-          <option [value]="facultad">{{ facultad }}</option>
+        <option value="">Seleccionar faculty</option>
+        @for(faculty of facultyes; track faculty) {
+          <option [value]="faculty">{{ faculty }}</option>
         }
       </select>
-      @if (shouldShowError('facultad')) {
+      @if (shouldShowError('faculty')) {
         <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-          {{ TeacherErrors().facultad }}
+          {{ TeacherErrors().faculty }}
         </p>
       }
     </div>

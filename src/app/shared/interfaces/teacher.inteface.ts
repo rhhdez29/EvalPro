@@ -1,18 +1,18 @@
 export interface TeacherData {
   rol: string;
-  nombre: string;
-  apellido: string;
-  correo: string;
+  first_name: string;
+  last_name: string;
+  email: string;
   password: string;
-  numeroEmpleado: string;
-  Facultad: string;
+  id_teacher: string;
+  faculty: string;
 }
 
 export interface TeacherErrors {
-  nombre: string | null;
-  apellido: string | null;
-  correo: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  email: string | null;
   password: string | null;
-  numeroEmpleado: string | null;
-  facultad: string | null;
+  id_teacher: string | null;
+  faculty: string | null;
 }

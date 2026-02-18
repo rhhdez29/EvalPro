@@ -11,6 +11,9 @@ import { OnlyLettersDirective } from '../../../../../shared/directives/only-lett
 import { OnlyNumbersDirective } from '../../../../../shared/directives/only-numbers.directive';
 import { TeacherData } from '../../../../../shared/interfaces/teacher.inteface';
 import { MaestroService } from '../../../../../services/teacher.service';
+import { of } from 'rxjs';
+import { rxResource } from '@angular/core/rxjs-interop';
+
 
 @Component({
   selector: 'app-teacher-form',
@@ -28,22 +31,23 @@ export class TeacherFormComponent {
   rolActivo = signal<'alumno' | 'maestro'>('alumno');
   showPassword = signal(false);
 
+  // Cuando tenga datos, lanzará la petición.
+  registerPayload = signal<TeacherData | null>(null);
+
   touchedFields =signal<Set<string>>(new Set());
 
-
-
-  maestro = signal<TeacherData>({
+  teacher = signal<TeacherData>({
     rol: 'maestro',
-    nombre: '',
-    apellido: '',
-    correo: '',
+    first_name: '',
+    last_name: '',
+    email: '',
     password: '',
-    numeroEmpleado: '',
-    Facultad: ''
+    id_teacher: '',
+    faculty: ''
   })
 
 
-  facultades = [
+  facultyes = [
     'Ciencias de la Computación',
     'Ingeniería Industrial',
     'Ingeniería Mecánica',
@@ -84,14 +88,14 @@ export class TeacherFormComponent {
 
   setData(field: string, value: string) { // Actualizar datos
 
-    this.maestro.update(m => ({ ...m, [field]: value }));
+    this.teacher.update(m => ({ ...m, [field]: value }));
 
   }
 
 
 
   TeacherErrors = computed(() => {
-    const data = this.maestro();
+    const data = this.teacher();
     return this.teacherService.validateTeacher(data);
   })
 
@@ -99,12 +103,20 @@ export class TeacherFormComponent {
     return this.teacherService.isValidForm(this.TeacherErrors());
   });
 
-  onSubmit() {
-    console.log('Formulario enviado con datos:', this.maestro());
-    console.log('Formulario válido:', this.isFormValid());
-    if (this.isFormValid()) {
-      this.route.navigate(['/home/dashboard']);
+  registerResource = rxResource({
+    params: () => this.registerPayload(),
+    stream: ({ params }) => {
+      // Si el payload es null (estado inicial), no disparamos la petición
+      if (!params) return of(null);
+
+      // Si hay datos, hacemos el POST al backend de Django
+      return this.teacherService.registerTeacher(params);
     }
+  });
+
+  register() {
+
+    this.registerPayload.set(this.teacher());
 
   }
 
