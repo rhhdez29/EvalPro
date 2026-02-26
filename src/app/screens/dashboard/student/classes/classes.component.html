@@ -1,0 +1,99 @@
+<div class="p-8">
+
+  <div class="mb-8">
+    <p class="text-gray-600 mt-1">Your enrolled classes and schedules</p>
+  </div>
+
+  <div class="grid grid-cols-3 gap-6 mb-8">
+
+    <div class="bg-white rounded-xl p-6 border border-gray-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Enrolled Classes</p>
+          <p class="text-3xl font-bold text-gray-900">{{ enrolledClassesCount() }}</p>
+        </div>
+        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+          <lucide-icon [img]="icons.BookOpen" class="w-6 h-6 text-yellow-600"></lucide-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 border border-gray-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Upcoming Exams</p>
+          <p class="text-3xl font-bold text-gray-900">{{ upcomingExamsCount() }}</p>
+        </div>
+        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+          <lucide-icon [img]="icons.Calendar" class="w-6 h-6 text-red-600"></lucide-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 border border-gray-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Active Semester</p>
+          <p class="text-3xl font-bold text-gray-900">6</p>
+        </div>
+        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+          <lucide-icon [img]="icons.Clock" class="w-6 h-6 text-blue-600"></lucide-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="space-y-4">
+
+    @for (classItem of classes(); track classItem.id) {
+      <div
+        (click)="handleClassClick(classItem.id)"
+        class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer group"
+      >
+        <div class="flex">
+
+          <div class="w-2 {{ classItem.color }}"></div>
+
+          <div class="flex-1 p-6">
+            <div class="flex items-start justify-between">
+
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-12 h-12 {{ classItem.color }} rounded-lg flex items-center justify-center">
+                    <lucide-icon [img]="icons.BookOpen" class="w-6 h-6 text-white"></lucide-icon>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-gray-900 text-lg group-hover:text-yellow-600 transition-colors">
+                      {{ classItem.name }}
+                    </h3>
+                    <p class="text-sm text-gray-500">{{ classItem.code }}</p>
+                  </div>
+                </div>
+              </div>
+
+              @if (classItem.nextExam) {
+                <div class="bg-red-50 px-3 py-1.5 rounded-lg border border-red-200">
+                  <p class="text-xs text-red-600 font-medium">Next Exam</p>
+                  <p class="text-sm text-red-700 font-semibold">{{ classItem.nextExam }}</p>
+                </div>
+              }
+            </div>
+
+            <div class="flex items-center gap-6 mt-4 text-sm text-gray-600">
+              <div class="flex items-center gap-2">
+                <lucide-icon [img]="icons.Users" class="w-4 h-4"></lucide-icon>
+                <span>{{ classItem.teacher }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <lucide-icon [img]="icons.Clock" class="w-4 h-4"></lucide-icon>
+                <span>{{ classItem.schedule }}</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

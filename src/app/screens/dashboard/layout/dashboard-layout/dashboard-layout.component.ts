@@ -28,12 +28,9 @@ export class DashboardLayoutComponent {
   pageTitle = computed(() => {
     const url = this.currentUrl();
 
-    if (url.startsWith('/app/subjects/')) return 'Subject Details';
     if (url.includes('validation')) return 'Teacher Validation';
     if (url.includes('subjects')) return 'Subject Management';
-    if (url.includes('users')) return 'Users';
-    if (url.includes('my-subjects')) return 'My Subjects';
-    if (url.includes('my-classes')) return 'My Classes';
+    if (url.includes('classes')) return 'My Classes';
     if (url.includes('settings')) return 'Settings';
 
     return 'Dashboard';

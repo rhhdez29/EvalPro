@@ -11,6 +11,7 @@ import {
   Users,
   UserCheck
 } from 'lucide-angular';
+import { FacadeService } from '../../../services/facade.service';
 
 // Interfaz para el menú
 export interface MenuItem {
@@ -34,44 +35,65 @@ export interface MockUser {
 })
 export class SidebarComponent {
   private router = inject(Router);
+  private facadeService = inject(FacadeService);
 
   // Iconos
   readonly icons = { GraduationCap, User, LogOut, BookOpen, Settings, Users, UserCheck };
 
-  // Simulamos el usuario logueado (Equivalente al useAuth de React)
-  user = signal<MockUser | null>({ name: 'Rafael Hdez', role: 'administrator' });
+  userData = this.facadeService.currentUser;
+
+  isLoading = false;
+  errorMessage = '';
+
 
   // Equivalente al useMemo de React
   menuItems = computed<MenuItem[]>(() => {
-    const currentUser = this.user();
-    if (!currentUser) return [];
+    const currentUserData = this.userData()
 
-    switch (currentUser.role) {
-      case 'administrator':
+    console.log('cookies: ',this.userData());
+    switch (this.userData().group) {
+      case 'administrador':
         return [
           { path: 'admin/validation', label: 'Teacher Validation', icon: this.icons.UserCheck, badge: 3 },
           { path: 'admin/subjects', label: 'Subject Management', icon: this.icons.BookOpen },
           { path: 'admin/users-list', label: 'Users', icon: this.icons.Users },
-          { path: 'admin/settings', label: 'Settings', icon: this.icons.Settings },
+          { path: 'user/settings', label: 'Settings', icon: this.icons.Settings },
         ];
-      case 'teacher':
+      case 'maestro':
         return [
-          { path: '/app/my-subjects', label: 'My Subjects', icon: this.icons.BookOpen },
-          { path: '/app/settings', label: 'Settings', icon: this.icons.Settings },
+          { path: 'teacher/subjects', label: 'My Subjects', icon: this.icons.BookOpen },
+          { path: 'user/settings', label: 'Settings', icon: this.icons.Settings },
         ];
-      case 'student':
+      case 'alumno':
         return [
-          { path: '/app/my-classes', label: 'My Classes', icon: this.icons.BookOpen },
-          { path: '/app/settings', label: 'Settings', icon: this.icons.Settings },
+          { path: 'student/classes', label: 'My Classes', icon: this.icons.BookOpen },
+          { path: 'user/settings', label: 'Settings', icon: this.icons.Settings },
         ];
       default:
         return [];
     }
   });
 
-  handleLogout() {
+  Logout() {
     // Aquí llamarás a tu logout real
-    this.router.navigate(['/auth/login']);
+    this.facadeService.logout().subscribe({
+      next: (response) => {
+        this.facadeService.destroyUser();
+        this.router.navigate(['auth/login']);
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.facadeService.destroyUser();
+        // Manejo de errores (credenciales incorrectas)
+        this.isLoading = false;
+        if (err.status === 400 || err.status === 403 || err.status === 404) {
+          this.errorMessage = 'Correo o contraseña incorrectos.';
+        } else {
+          this.errorMessage = 'Error de conexión con el servidor.';
+        }
+        console.error('Error de login:', err);
+      }
+    })
   }
 
 

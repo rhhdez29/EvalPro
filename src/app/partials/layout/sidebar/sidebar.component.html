@@ -38,11 +38,11 @@
         <lucide-icon [img]="icons.User" class="w-5 h-5 text-yellow-600"></lucide-icon>
       </div>
       <div class="flex-1 min-w-0">
-        <div class="font-medium text-gray-900 text-sm">{{ user()?.name }}</div>
-        <div class="text-xs text-gray-500 capitalize">{{ user()?.role }}</div>
+        <div class="font-medium text-gray-900 text-sm">{{ userData().name}}</div>
+        <div class="text-xs text-gray-500 capitalize">{{ userData().group }}</div>
       </div>
       <button
-        (click)="handleLogout()"
+        (click)="Logout()"
         class="p-1 hover:bg-gray-100 rounded transition-colors cursor-pointer"
         title="Logout">
         <lucide-icon [img]="icons.LogOut" class="w-4 h-4 text-gray-400"></lucide-icon>

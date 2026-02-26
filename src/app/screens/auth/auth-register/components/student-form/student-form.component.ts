@@ -178,6 +178,8 @@ import { of } from 'rxjs';
 
       this.registerPayload.set(formData);
 
+      this.route.navigate(['/landing']);
+
     }
   }
 

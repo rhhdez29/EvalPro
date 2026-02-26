@@ -1,1 +1,48 @@
-<p>settings works!</p>
+<div class="p-8 space-y-6">
+
+  <div class="bg-white rounded-xl border border-gray-200 p-2 inline-flex gap-2">
+    <button
+      (click)="setTab('profile')"
+      [class.bg-yellow-600]="activeTab() === 'profile'"
+      [class.text-white]="activeTab() === 'profile'"
+      [class.text-gray-700]="activeTab() !== 'profile'"
+      class="px-6 py-2.5 rounded-lg font-medium transition-colors hover:bg-gray-100 cursor-pointer"
+    >
+      Profile
+    </button>
+    <button
+      (click)="setTab('stats')"
+      [class.bg-yellow-600]="activeTab() === 'stats'"
+      [class.text-white]="activeTab() === 'stats'"
+      [class.text-gray-700]="activeTab() !== 'stats'"
+      class="px-6 py-2.5 rounded-lg font-medium transition-colors hover:bg-gray-100 cursor-pointer"
+    >
+      Statistics
+    </button>
+    <button
+      (click)="setTab('preferences')"
+      [class.bg-yellow-600]="activeTab() === 'preferences'"
+      [class.text-white]="activeTab() === 'preferences'"
+      [class.text-gray-700]="activeTab() !== 'preferences'"
+      class="px-6 py-2.5 rounded-lg font-medium transition-colors hover:bg-gray-100 cursor-pointer"
+    >
+      Preferences
+    </button>
+  </div>
+
+  @if (userData().group === 'maestro') {
+    <settings-teacher
+      [activeTab]="activeTab()"
+    >
+    </settings-teacher>
+
+  }
+  @if (userData().group === 'alumno') {
+
+    <settings-student
+      [activeTab]="activeTab()"
+    >
+    </settings-student>
+
+  }
+</div>

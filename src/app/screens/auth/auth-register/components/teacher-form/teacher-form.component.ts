@@ -13,6 +13,7 @@ import { TeacherData } from '../../../../../shared/interfaces/teacher.inteface';
 import { MaestroService } from '../../../../../services/teacher.service';
 import { of } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { error } from 'console';
 
 
 @Component({
@@ -117,6 +118,15 @@ export class TeacherFormComponent {
   register() {
 
     this.registerPayload.set(this.teacher());
+
+    if(!this.registerResource.isLoading()){
+      if(this.registerResource.error()){
+        console.log(this.registerResource.error())
+      }
+      else{
+        this.route.navigate(['/landing']);
+      }
+    }
 
   }
 

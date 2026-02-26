@@ -1,0 +1,257 @@
+@if (activeTab() === 'profile') {
+    <form (ngSubmit)="onSubmit()">
+
+      <div class="grid grid-cols-3 gap-6">
+        <div class="col-span-2 bg-white rounded-xl border border-gray-200 p-8">
+          <h2 class="text-xl font-bold text-gray-900 mb-6">Profile Information</h2>
+
+          <div class="space-y-6">
+          <div class="flex items-center gap-6">
+            <div class="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center">
+              <lucide-icon [img]="icons.User" class="w-12 h-12 text-yellow-600"></lucide-icon>
+            </div>
+            <div>
+              <button class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm font-medium mb-2 cursor-pointer">
+                Upload Photo
+              </button>
+              <p class="text-xs text-gray-500">JPG, PNG or GIF. Max size 2MB</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-gray-700">First Name</label>
+              <div class="relative">
+                <lucide-icon [img]="icons.User" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
+                <input
+                  type="text"
+                  value="Maestro"
+                  class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+                />
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-gray-700">Last Name</label>
+              <div class="relative">
+                <lucide-icon [img]="icons.User" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
+                <input
+                  type="text"
+                  value="Doe"
+                  class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+                />
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-gray-700">Employee Number</label>
+              <div class="relative">
+                <lucide-icon [img]="icons.Phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
+                <input
+                  type="tel"
+                  value="+1 (555) 123-4567"
+                  class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+                />
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-gray-700">Department</label>
+              <div class="relative">
+                <lucide-icon [img]="icons.Building" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
+                <input
+                  type="text"
+                  value="Computer Science"
+                  class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+                />
+              </div>
+            </div>
+
+            <div class="space-y-2 col-span-2">
+              <label class="text-sm font-medium text-gray-700">Bio</label>
+              <textarea
+                rows="4"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all resize-none outline-none"
+              >Professor of Computer Science with 15 years of teaching experience.</textarea>
+            </div>
+          </div>
+
+          <div class="flex justify-end pt-4">
+            <button
+              type="submit"
+              class="flex items-center gap-2 px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-semibold cursor-pointer"
+            >
+              <lucide-icon [img]="icons.Save" class="w-5 h-5"></lucide-icon>
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="bg-white rounded-xl border border-gray-200 p-6">
+          <h3 class="font-bold text-gray-900 mb-4">Account Stats</h3>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600 text-sm">Member since</span>
+              <span class="font-semibold text-gray-900">Jan 2024</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600 text-sm">Total Exams</span>
+              <span class="font-semibold text-gray-900">156</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600 text-sm">Total Students</span>
+              <span class="font-semibold text-gray-900">1,234</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600 text-sm">Avg. Score</span>
+              <span class="font-semibold text-gray-900">87%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-yellow-600 to-orange-600 rounded-xl p-6 text-white shadow-md">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+              <lucide-icon [img]="icons.Eye" class="w-6 h-6"></lucide-icon>
+            </div>
+            <div>
+              <div class="text-2xl font-bold">2,847</div>
+              <div class="text-yellow-100 text-sm">Profile Views</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  }
+
+  @if (activeTab() === 'stats') {
+    <div class="space-y-6">
+      <div class="grid grid-cols-4 gap-6">
+        <div class="bg-white rounded-xl p-6 border border-gray-200">
+          <div class="text-3xl font-bold text-gray-900 mb-1">156</div>
+          <div class="text-sm text-gray-600">Total Exams Created</div>
+        </div>
+        <div class="bg-white rounded-xl p-6 border border-gray-200">
+          <div class="text-3xl font-bold text-gray-900 mb-1">1,234</div>
+          <div class="text-sm text-gray-600">Students Enrolled</div>
+        </div>
+        <div class="bg-white rounded-xl p-6 border border-gray-200">
+          <div class="text-3xl font-bold text-gray-900 mb-1">87%</div>
+          <div class="text-sm text-gray-600">Average Score</div>
+        </div>
+        <div class="bg-white rounded-xl p-6 border border-gray-200">
+          <div class="text-3xl font-bold text-gray-900 mb-1">4.8</div>
+          <div class="text-sm text-gray-600">Rating</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-6">
+
+        <div class="bg-white rounded-xl border border-gray-200 p-6 flex flex-col">
+          <h3 class="font-bold text-gray-900 mb-6">Exams & Students Trend</h3>
+          <div class="w-full h-[300px] bg-gray-50 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
+            <div class="text-center">
+              <lucide-icon [img]="icons.Eye" class="w-8 h-8 mx-auto mb-2 opacity-50"></lucide-icon>
+              <p class="text-sm">Gráfica de Líneas (Instala ng2-charts aquí)</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-6 flex flex-col">
+          <h3 class="font-bold text-gray-900 mb-6">Average Score by Subject</h3>
+          <div class="w-full h-[300px] bg-gray-50 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
+            <div class="text-center">
+              <lucide-icon [img]="icons.Building" class="w-8 h-8 mx-auto mb-2 opacity-50"></lucide-icon>
+              <p class="text-sm">Gráfica de Barras (Instala ng2-charts aquí)</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  @if (activeTab() === 'preferences') {
+    <div class="grid grid-cols-2 gap-6">
+
+      <div class="bg-white rounded-xl border border-gray-200 p-8">
+        <div class="flex items-center gap-3 mb-6">
+          <lucide-icon [img]="icons.Bell" class="w-6 h-6 text-yellow-600"></lucide-icon>
+          <h2 class="text-xl font-bold text-gray-900">Notifications</h2>
+        </div>
+
+        <div class="space-y-4">
+          @for (item of notificationsList; track item.label) {
+            <div class="flex items-center justify-between py-3">
+              <div>
+                <div class="font-medium text-gray-900">{{ item.label }}</div>
+                <div class="text-sm text-gray-600">{{ item.desc }}</div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer" [checked]="item.checked" />
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600"></div>
+              </label>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="space-y-6">
+
+        <div class="bg-white rounded-xl border border-gray-200 p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <lucide-icon [img]="icons.Lock" class="w-6 h-6 text-yellow-600"></lucide-icon>
+            <h2 class="text-xl font-bold text-gray-900">Security</h2>
+          </div>
+
+          <div class="space-y-4">
+            <button class="w-full text-left px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+              <div class="font-medium text-gray-900">Change Password</div>
+              <div class="text-sm text-gray-600 mt-1">Update your password</div>
+            </button>
+            <button class="w-full text-left px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+              <div class="font-medium text-gray-900">Two-Factor Authentication</div>
+              <div class="text-sm text-gray-600 mt-1">Add extra security</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <lucide-icon [img]="icons.Moon" class="w-6 h-6 text-yellow-600"></lucide-icon>
+            <h2 class="text-xl font-bold text-gray-900">Display</h2>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-center justify-between py-3">
+              <div>
+                <div class="font-medium text-gray-900">Dark Mode</div>
+                <div class="text-sm text-gray-600">Toggle dark theme</div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer" />
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600"></div>
+              </label>
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-gray-700">Language</label>
+              <div class="relative">
+                <lucide-icon [img]="icons.Globe" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
+                <select class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none bg-white">
+                  <option>English</option>
+                  <option>Spanish</option>
+                  <option>French</option>
+                  <option>German</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
