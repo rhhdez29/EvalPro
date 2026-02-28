@@ -11,6 +11,7 @@ import {
 import { FacadeService } from '../../../services/facade.service';
 import { HttpClient } from '@angular/common/http';
 import { error } from 'console';
+import { UserSesion } from '../../../shared/interfaces/user.inteface';
 
 @Component({
   selector: 'app-auth-login',
@@ -25,7 +26,6 @@ export class AuthLoginComponent {
 
   isLoading = false;
   errorMessage = '';
-
 
   // --- ICONS ---
   readonly icons = {
@@ -89,21 +89,49 @@ export class AuthLoginComponent {
 
     this.facadeService.login(this.user().username, this.user().password).subscribe({
       next: (response) => {
-        this.facadeService.saveUserData(response);
 
-        const userRoles: string[] = response.roles;
+        let userData: UserSesion;
 
-        if (userRoles.includes('administrador')) {
-          this.router.navigate(['home/admin/validation']);
-        } else if (userRoles.includes('maestro')) {
-          this.router.navigate(['home/teacher/subjects']);
-        } else if (userRoles.includes('alumno')) {
-          this.router.navigate(['home/student/classes']);
-        } else {
-          // Por si acaso
-          this.router.navigate(['/home']);
+        console.log(response);
+
+        if(response.roles[0]==='maestro'){
+          console.log('soy maestro')
+          userData = {
+            id: response.id,
+            email: response.email,
+            firtsName: response.first_name,
+            lastName: response.last_name,
+            role: response.roles[0],
+            id_teacher: response.id_teacher,
+            faculty: response.faculty
+          }
+
+        }else{
+          userData = {
+            id: response.id,
+            email: response.email,
+            firtsName: response.first_name,
+            lastName: response.last_name,
+            role: response.roles[0],
+            id_student: response.id_student,
+            career: response.career,
+            semester: response.semester,
+            kardex: response.kardex
+          }
         }
-        this.isLoading = false;
+
+        console.log(userData);
+
+        this.facadeService.saveUserData(userData, response.token);
+
+        if(response.roles[0]==='administrador'){
+          this.router.navigate(['home/admin/validation']);
+        }else if(response.roles[0]==='maestro'){
+          this.router.navigate(['home/teacher/subjects']);
+        }else{
+          this.router.navigate(['home/student/classes']);
+        }
+
       },
       error: (err) => {
         // Manejo de errores (credenciales incorrectas)

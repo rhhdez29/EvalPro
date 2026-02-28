@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, linkedSignal, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import {
@@ -40,7 +40,8 @@ export class SidebarComponent {
   // Iconos
   readonly icons = { GraduationCap, User, LogOut, BookOpen, Settings, Users, UserCheck };
 
-  userData = this.facadeService.currentUser;
+  userRole = this.facadeService.userRole;
+  userName = this.facadeService.userName;
 
   isLoading = false;
   errorMessage = '';
@@ -48,10 +49,7 @@ export class SidebarComponent {
 
   // Equivalente al useMemo de React
   menuItems = computed<MenuItem[]>(() => {
-    const currentUserData = this.userData()
-
-    console.log('cookies: ',this.userData());
-    switch (this.userData().group) {
+    switch (this.userRole()) {
       case 'administrador':
         return [
           { path: 'admin/validation', label: 'Teacher Validation', icon: this.icons.UserCheck, badge: 3 },

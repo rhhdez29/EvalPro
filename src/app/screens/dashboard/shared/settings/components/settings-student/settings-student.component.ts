@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, effect, inject, input } from '@angular/core';
 import {
   LucideAngularModule,
   User,
@@ -12,19 +12,34 @@ import {
   Moon,
   Eye
 } from 'lucide-angular';
+import { Student, Teacher, UserSesion } from '../../../../../../shared/interfaces/user.inteface';
+import { CAREERS, SEMESTERS } from '../../../../../../shared/constants/academic-data';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
 
 @Component({
   selector: 'settings-student',
-  imports: [ LucideAngularModule ],
+  imports: [LucideAngularModule, ReactiveFormsModule],
   templateUrl: './settings-student.component.html',
 })
 export class SettingsStudentComponent {
 
 
   activeTab = input.required()
+  user = input.required<UserSesion | null>()
+  private fb = inject(FormBuilder);
+
+  listCareers = CAREERS;
+  listSemesters = SEMESTERS
 
   // Iconos
   readonly icons = { User, Mail, Phone, Building, Save, Bell, Lock, Globe, Moon, Eye };
+
+  myForm: FormGroup = this.fb.group({
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    career: ['', Validators.required],
+    semester: ['', Validators.required]
+  })
 
   // DATOS ESTÁTICOS
   readonly notificationsList = [
@@ -52,6 +67,21 @@ export class SettingsStudentComponent {
     { subject: 'Biology', avgScore: 88 },
     { subject: 'CS', avgScore: 95 },
   ];
+
+  constructor(){
+
+
+    effect(() =>{
+      const studentData = this.user() as Student;
+
+      this.myForm.patchValue({
+        firstName: studentData.firtsName,
+        lastName: studentData.lastName,
+        career: studentData.career,
+        semester: studentData.semester
+      })
+    })
+  }
 
   onSubmit() {
     throw new Error('Method not implemented.');

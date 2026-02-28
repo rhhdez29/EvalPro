@@ -5,7 +5,7 @@ import { inject } from '@angular/core';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const facadeService = inject(FacadeService);
-  const token = facadeService.getSessionToken();
+  const token = facadeService.userToken();
   console.log('🚀 Interceptor disparado. Token encontrado:', token);
   // Si hay un token, clonamos la petición y le pegamos la cabecera
   if (token) {

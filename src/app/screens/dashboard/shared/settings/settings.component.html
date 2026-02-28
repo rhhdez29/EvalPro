@@ -30,17 +30,19 @@
     </button>
   </div>
 
-  @if (userData().group === 'maestro') {
+  @if (userRole() === 'maestro') {
     <settings-teacher
       [activeTab]="activeTab()"
+      [user]="userData()"
     >
     </settings-teacher>
 
   }
-  @if (userData().group === 'alumno') {
+  @if (userRole() === 'alumno') {
 
     <settings-student
       [activeTab]="activeTab()"
+      [user]="userData()"
     >
     </settings-student>
 

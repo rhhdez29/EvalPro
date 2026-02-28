@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { ValidatorService } from './tools/validator.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -6,6 +6,8 @@ import { environment } from '../../environments/environments';
 import{ CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 import { group } from 'console';
+import { UserSesion } from '../shared/interfaces/user.inteface';
+import { isPlatformBrowser } from '@angular/common';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -28,9 +30,23 @@ export class FacadeService {
   public router = inject(Router);
   private cookieService = inject(CookieService);
   private validatorService = inject(ValidatorService);
+  private platformId = inject(PLATFORM_ID);
 
+  //nombres de las cookies
+  private readonly TOKEN_COOKIE_NAME = 'evalpro-token';
+  private readonly USER_DATA_COOKIE_NAME = 'evalpro-user_data';
 
-  currentUser = signal<any>(this.getUserDataFromCookie());
+  //Inicializamos la senal leyendo las cookies
+  currentUser = signal<UserSesion | null>(this.loadUserFromCookies());
+
+  // Señales Computadas (Toda tu app consumirá estas variables reactivas)
+  isAuthenticated = computed(() => this.currentUser() !== null);
+  userName = computed(() => this.currentUser()?.firtsName + ' ' + this.currentUser()?.lastName || 'Invitado');
+  userRole = computed(() => this.currentUser()?.role || null);
+
+  // Ejemplos de validaciones de rol rápidas:
+  isTeacher = computed(() => this.currentUser()?.role === 'Teacher');
+  isStudent = computed(() => this.currentUser()?.role === 'Student');
 
   //Funcion para validar login
   public validarLogin(username: string, password: string){
@@ -45,6 +61,10 @@ export class FacadeService {
     }
 
 
+  }
+
+  isValidForm(errors: any): boolean { // Verifica si el formulario es válido
+      return Object.values(errors).every(error => !error);
   }
 
   //Iniciar sesión
@@ -62,100 +82,44 @@ export class FacadeService {
     return this.http.get<any>(`${environment.url_api}/logout/`);
   }
 
-  // Funciones para utilizar las cookies en web
-  retrieveSignedUser(){
-    var headers: any;
-    var token = this.getSessionToken();
-    headers = new HttpHeaders({'Authorization': 'Bearer '+token});
-    return this.http.get<any>(`${environment.url_api}/me/`,{headers:headers});
+
+  saveUserData(userData: UserSesion, token: string){
+    if(isPlatformBrowser(this.platformId)){
+      this.cookieService.set(this.TOKEN_COOKIE_NAME, token, 1, '/');
+
+      this.cookieService.set(this.USER_DATA_COOKIE_NAME, JSON.stringify(userData), 1, '/');
+
+    }
+
+    this.currentUser.set(userData);
   }
-
-  getCookieValue(key:string){
-    return this.cookieService.get(key);
-  }
-
-  saveCookieValue(key:string, value:string){
-    var secure = environment.url_api.indexOf("https")!=-1;
-    this.cookieService.set(key, value, undefined, undefined, undefined, secure, secure?"None":"Lax");
-  }
-
-  saveUserData(user_data: any) {
-    console.log('cokies al iniciar sesion: ', user_data);
-    var secure = environment.url_api.indexOf("https") !== -1;
-
-    // 1. Extraemos los datos de forma segura
-    let id = user_data.id || user_data.user?.id || '';
-    let first_name = user_data.first_name || user_data.user?.first_name || '';
-    let last_name = user_data.last_name || user_data.user?.last_name || '';
-    let email = user_data.email || user_data.user?.email || '';
-    let name = (first_name + " " + last_name).trim();
-
-    // 2. Extraemos el ROL como un texto simple (por si viene como arreglo ['maestro'])
-    let userRole = Array.isArray(user_data.roles) ? user_data.roles[0] : (user_data.roles || '');
-
-    // 3. Guardamos forzando TODO a String() para evitar valores mutados o "undefined"
-    this.cookieService.set(user_id_cookie_name, String(id), 1, '/');
-    this.cookieService.set(user_email_cookie_name, String(email), 1, '/');
-    this.cookieService.set(user_complete_name_cookie_name, String(name), 1, '/');
-    this.cookieService.set(session_cookie_name, String(user_data.token || ''), 1, '/');
-    this.cookieService.set(group_name_cookie_name, String(userRole), 1, '/');
-
-    console.log('Cookies guardadas:', this.cookieService.get(session_cookie_name));
-
-    // 4. Actualizamos la señal con los datos recién salidos de la cookie
-    this.currentUser.set({
-      id: id,
-      email: email,
-      nameComplete: this.cookieService.get(user_complete_name_cookie_name),
-      name: first_name,
-      lastName: last_name,
-      group: userRole
-    });
-}
 
   destroyUser(){
-    var secure = environment.url_api.indexOf("https") !== -1;
-
-    this.cookieService.delete(user_id_cookie_name, '/', undefined, secure, secure ? "None" : "Lax");
-    this.cookieService.delete(user_email_cookie_name, '/', undefined, secure, secure ? "None" : "Lax");
-    this.cookieService.delete(user_complete_name_cookie_name, '/', undefined, secure, secure ? "None" : "Lax");
-    this.cookieService.delete(session_cookie_name, '/', undefined, secure, secure ? "None" : "Lax");
-    this.cookieService.delete(group_name_cookie_name, '/', undefined, secure, secure ? "None" : "Lax");
-
-    console.trace('🚨 ¡ALERTA! Alguien ejecutó destroyUser() y borró las cookies');
-  }
-
-  getUserDataFromCookie(){
-    return {
-      id: this.getUserId(),
-      email: this.getUserEmail(),
-      name: this.getUserCompleteName(),
-      group: this.getUserGroup()
+    if(isPlatformBrowser(this.platformId)){
+      this.cookieService.deleteAll('/');
     }
+
+    this.currentUser.set(null);
   }
 
-  getSessionToken(){
-    return this.cookieService.get(session_cookie_name);
+  userToken(){
+    return this.cookieService.get(this.TOKEN_COOKIE_NAME);
   }
 
-  getUserEmail(){
-    return this.cookieService.get(user_email_cookie_name);
-  }
+  private loadUserFromCookies(): UserSesion | null {
+    if (isPlatformBrowser(this.platformId)) {
+      const userData = this.cookieService.get(this.USER_DATA_COOKIE_NAME);
+      if(userData){
+        try {
+          return JSON.parse(userData);
+        } catch (error) {
+          console.log('Error al pasear los datos del usuario')
+          return null;
+        }
+      }
 
-  getUserCompleteName(){
-    return this.cookieService.get(user_complete_name_cookie_name);
-  }
-
-  getUserId(){
-    return this.cookieService.get(user_id_cookie_name);
-  }
-
-  getUserGroup(){
-    return this.cookieService.get(group_name_cookie_name);
-  }
-
-  isValidForm(errors: any): boolean { // Verifica si el formulario es válido
-      return Object.values(errors).every(error => !error);
+    }
+    return null;
   }
 
 }

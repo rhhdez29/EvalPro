@@ -35,15 +35,17 @@ export class SettingsComponent {
 
   // ESTADO: Pestaña activa (profile, stats, preferences)
   activeTab = signal<'profile' | 'stats' | 'preferences'>('profile');
-  userData = linkedSignal(() => this.facadeService.currentUser());
+  userRole = this.facadeService.userRole;
+  userData= this.facadeService.currentUser;
+
 
   constructor() {
     console.log(this.userData());
   }
 
   myForm = this.fb.group({
-    name: [this.userData().name, [Validators.required]],
-    email: [this.userData().email, [Validators.required]],
+    name: [this.userData()?.firtsName, [Validators.required]],
+    email: [this.userData()?.email, [Validators.required]],
   });
 
 
