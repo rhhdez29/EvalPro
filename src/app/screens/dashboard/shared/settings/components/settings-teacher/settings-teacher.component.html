@@ -26,8 +26,14 @@
                   type="text"
                   formControlName="firstName"
                   class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+                  [class.border-red-500]="formUtils.isValidField(myForm,'firstName')"
                 />
               </div>
+              @if (formUtils.isValidField(myForm,'firstName')) {
+                <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                  {{ formUtils.getFieldError(myForm,'firstName') }}
+                </p>
+              }
             </div>
 
             <div class="space-y-2">
@@ -38,8 +44,15 @@
                   type="text"
                   formControlName="lastName"
                   class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+                  [class.border-red-500]="formUtils.isValidField(myForm,'lastName')"
+
                 />
               </div>
+              @if (formUtils.isValidField(myForm,'lastName')) {
+                <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                  {{ formUtils.getFieldError(myForm,'lastName') }}
+                </p>
+              }
             </div>
 
             <div class="space-y-2">
@@ -49,9 +62,15 @@
                 <input
                   type="text"
                   formControlName="id_teacher"
-                  class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+                  class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+                  [class.border-red-500]="formUtils.isValidField(myForm,'id_teacher')"
                 />
               </div>
+              @if (formUtils.isValidField(myForm,'id_teacher')) {
+                <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                  {{ formUtils.getFieldError(myForm,'id_teacher') }}
+                </p>
+              }
             </div>
 
             <div class="space-y-2">
@@ -61,6 +80,7 @@
                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none bg-white" r
                   equired
                   formControlName="faculty"
+                  [class.border-red-500]="formUtils.isValidField(myForm,'faculty')"
                 >
                   >
                   <option value="">Seleccionar faculty</option>
@@ -73,6 +93,11 @@
                   }
                 </select>
               </div>
+              @if (formUtils.isValidField(myForm,'faculty')) {
+                <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                  {{ formUtils.getFieldError(myForm,'faculty') }}
+                </p>
+              }
             </div>
           </div>
 

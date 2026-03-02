@@ -26,9 +26,16 @@
                 <input
                   type="text"
                   formControlName="firstName"
+                  appOnlyLetters
                   class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+                  [class.border-red-500]="formUtils.isValidField(myForm,'firstName')"
                 />
               </div>
+              @if (formUtils.isValidField(myForm,'firstName')) {
+                <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                  {{ formUtils.getFieldError(myForm,'firstName') }}
+                </p>
+              }
             </div>
 
             <div class="space-y-2">
@@ -38,9 +45,16 @@
                 <input
                   type="text"
                   formControlName="lastName"
+                  appOnlyLetters
                   class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+                  [class.border-red-500]="formUtils.isValidField(myForm,'lastName')"
                 />
               </div>
+              @if (formUtils.isValidField(myForm,'lastName')) {
+                <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                  {{ formUtils.getFieldError(myForm,'lastName') }}
+                </p>
+              }
             </div>
 
             <div class="space-y-2">
@@ -49,6 +63,7 @@
                 <select
                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none bg-white"
                   formControlName="career"
+                  [class.border-red-500]="formUtils.isValidField(myForm,'career')"
                 >
                   <option value="">Seleccionar career</option>
                   @for (career of listCareers; track career) {
@@ -60,6 +75,11 @@
                   }
                 </select>
               </div>
+              @if (formUtils.isValidField(myForm,'career')) {
+                <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                  {{ formUtils.getFieldError(myForm,'career') }}
+                </p>
+              }
             </div>
 
             <div class="space-y-2">
@@ -68,6 +88,7 @@
                 <select
                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none bg-white"
                   formControlName="semester"
+                  [class.border-red-500]="formUtils.isValidField(myForm,'semester')"
                 >
                   <option value="">Seleccionar semestre</option>
                   @for (sem of listSemesters; track sem) {
@@ -79,6 +100,11 @@
                   }
                 </select>
               </div>
+              @if (formUtils.isValidField(myForm,'semester')) {
+                <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                  {{ formUtils.getFieldError(myForm,'semester') }}
+                </p>
+              }
             </div>
           </div>
 

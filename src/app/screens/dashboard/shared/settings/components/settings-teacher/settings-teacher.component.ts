@@ -16,10 +16,12 @@ import { Teacher, UserSesion } from '../../../../../../shared/interfaces/user.in
 import { FACULTIES } from '../../../../../../shared/constants/academic-data';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { first } from 'rxjs';
+import { FormUtilsService } from '../../../../../../services/tools/form-utils.service';
+import { OnlyLettersDirective } from '../../../../../../shared/directives/only-letters.directive';
 
 @Component({
   selector: 'settings-teacher',
-  imports: [ LucideAngularModule, ReactiveFormsModule ],
+  imports: [ LucideAngularModule, ReactiveFormsModule, OnlyLettersDirective ],
   templateUrl: './settings-teacher.component.html',
 })
 export class SettingsTeacherComponent {
@@ -29,6 +31,7 @@ export class SettingsTeacherComponent {
   user = input.required<UserSesion | null>();
 
   private fb = inject(FormBuilder);
+  formUtils = inject(FormUtilsService);
 
   listFaculties = FACULTIES;
 
@@ -87,7 +90,8 @@ export class SettingsTeacherComponent {
 
 
   onSubmit() {
-    throw new Error('Method not implemented.');
+    this.myForm.markAllAsTouched();
+    console.log(this.myForm.value);
   }
 
 }

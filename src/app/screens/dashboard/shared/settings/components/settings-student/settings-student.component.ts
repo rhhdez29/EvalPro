@@ -14,11 +14,14 @@ import {
 } from 'lucide-angular';
 import { Student, Teacher, UserSesion } from '../../../../../../shared/interfaces/user.inteface';
 import { CAREERS, SEMESTERS } from '../../../../../../shared/constants/academic-data';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { strictEmailValidator } from '../../../../../../services/tools/custom-validator.service';
+import { FormUtilsService } from '../../../../../../services/tools/form-utils.service';
+import { OnlyLettersDirective } from '../../../../../../shared/directives/only-letters.directive';
 
 @Component({
   selector: 'settings-student',
-  imports: [LucideAngularModule, ReactiveFormsModule],
+  imports: [LucideAngularModule, ReactiveFormsModule, OnlyLettersDirective],
   templateUrl: './settings-student.component.html',
 })
 export class SettingsStudentComponent {
@@ -27,6 +30,7 @@ export class SettingsStudentComponent {
   activeTab = input.required()
   user = input.required<UserSesion | null>()
   private fb = inject(FormBuilder);
+  formUtils = inject(FormUtilsService);
 
   listCareers = CAREERS;
   listSemesters = SEMESTERS
@@ -35,7 +39,7 @@ export class SettingsStudentComponent {
   readonly icons = { User, Mail, Phone, Building, Save, Bell, Lock, Globe, Moon, Eye };
 
   myForm: FormGroup = this.fb.group({
-    firstName: ['', Validators.required],
+    firstName: ['', [Validators.required], ],
     lastName: ['', Validators.required],
     career: ['', Validators.required],
     semester: ['', Validators.required]
@@ -84,7 +88,9 @@ export class SettingsStudentComponent {
   }
 
   onSubmit() {
-    throw new Error('Method not implemented.');
+    this.myForm.markAllAsTouched();
+    console.log(this.myForm.errors);
+
   }
 
 }
