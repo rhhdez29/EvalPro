@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { map } from 'rxjs/operators';
 import {
@@ -12,10 +12,12 @@ import { FacadeService } from '../../../services/facade.service';
 import { HttpClient } from '@angular/common/http';
 import { error } from 'console';
 import { UserSesion } from '../../../shared/interfaces/user.inteface';
+import { FormUtilsService } from '../../../services/tools/form-utils.service';
+import { LoadingModalComponent } from '../../../shared/modals/loading-modal/loading-modal.component';
 
 @Component({
   selector: 'app-auth-login',
-  imports: [LucideAngularModule, FormsModule,CommonModule,RouterLink],
+  imports: [LucideAngularModule, FormsModule,CommonModule,RouterLink, ReactiveFormsModule, LoadingModalComponent],
   templateUrl: './auth-login.component.html',
 })
 export class AuthLoginComponent {
@@ -23,9 +25,12 @@ export class AuthLoginComponent {
   private facadeService = inject(FacadeService);
   private http = inject(HttpClient);
   private router = inject(Router);
+  private fb = inject(FormBuilder);
+  formUtils = inject(FormUtilsService);
 
-  isLoading = false;
-  errorMessage = '';
+  modalStatus = signal<'oculto' | 'cargando' | 'exito' | 'error'>('oculto');
+  messageModal1 = signal<string>('');
+  messageModal2 = signal<string>('');
 
   // --- ICONS ---
   readonly icons = {
@@ -33,62 +38,36 @@ export class AuthLoginComponent {
     Upload, CheckCircle, BookOpen, Briefcase, Hash, CircleX, Eye, EyeOff
   };
 
-  user = signal({
-    username: '',
-    password: ''
+  formUser: FormGroup = this.fb.group({
+    username: ['', [Validators.required, this.formUtils.strictEmailValidator()]],
+    password: ['', [Validators.required]]
   })
 
-  touchedFields =signal<Set<string>>(new Set());
   showPassword = signal(false);
-
-  constructor() { }
-
-  setData(field: string, value: string) { // Actualizar datos
-    this.user.update(a => ({ ...a, [field]: value }));
-  }
-
-  userErrors = computed(() => {
-    const data = this.user();
-
-    console.log(data);
-
-    return this.facadeService.validarLogin(data.username, data.password);
-
-  });
-
-  markAsTouched(field: string) { // Marcar campo como "tocado" para mostrar errores solo después de la interacción
-    this.touchedFields.update(set =>
-    {
-      const newSet = new Set(set);
-      newSet.add(field);
-      return newSet;
-    });
-  }
-
-  shouldShowError(field: string): boolean {
-    const errors = this.userErrors(); // Obtener errores actuales
-    const touched = this.touchedFields(); // Obtener campos tocados
-
-    // @ts-ignore (Si usas tipado estricto, indexar por string requiere cuidado)
-    return !!errors[field] && touched.has(field);
-  }
 
   togglePassword() {
     this.showPassword.update(v => !v);
   }
 
-  isValidForm = computed(() => {
-
-    return this.facadeService.isValidForm(this.userErrors());
-
-  })
-
   login() {
-    // Aquí iría la lógica para enviar los datos al backend
-    console.log('Formulario enviado', this.user());
 
-    this.facadeService.login(this.user().username, this.user().password).subscribe({
+    if(this.formUser.invalid){
+      this.formUser.markAllAsTouched();
+      return;
+    }
+
+    const userData = this.formUser.getRawValue();
+
+    this.modalStatus.set('cargando');
+    this.messageModal1.set('Cargando');
+    this.messageModal2.set('Estamos procesando tu solicitud...')
+
+    this.facadeService.login(userData.username, userData.password).subscribe({
       next: (response) => {
+
+        this.modalStatus.set('exito');
+        this.messageModal1.set('¡Inicio de sesion exitoso!');
+        this.messageModal2.set('Espere un momento...')
 
         let userData: UserSesion;
 
@@ -124,24 +103,31 @@ export class AuthLoginComponent {
 
         this.facadeService.saveUserData(userData, response.token);
 
-        if(response.roles[0]==='administrador'){
-          this.router.navigate(['home/admin/validation']);
-        }else if(response.roles[0]==='maestro'){
-          this.router.navigate(['home/teacher/subjects']);
-        }else{
-          this.router.navigate(['home/student/classes']);
-        }
+        setTimeout(() => {
+          this.modalStatus.set('oculto');
+          if(response.roles[0]==='administrador'){
+            this.router.navigate(['home/admin/validation']);
+          }else if(response.roles[0]==='maestro'){
+            this.router.navigate(['home/teacher/subjects']);
+          }else{
+            this.router.navigate(['home/student/classes']);
+          }
+        }, 3000);
 
       },
       error: (err) => {
-        // Manejo de errores (credenciales incorrectas)
-        this.isLoading = false;
-        if (err.status === 400 || err.status === 403 || err.status === 404) {
-          this.errorMessage = 'Correo o contraseña incorrectos.';
-        } else {
-          this.errorMessage = 'Error de conexión con el servidor.';
-        }
-        console.error('Error de login:', err);
+
+        this.modalStatus.set('error');
+        const mensajeError = err.error?.detail || 'Hubo un error'
+
+        this.messageModal1.set('Uy, algo salió mal...');
+        this.messageModal2.set(mensajeError);
+
+        setTimeout(() => {
+          this.modalStatus.set('oculto');
+          this.formUser.reset();
+        }, 3000);
+
       }
     })
 

@@ -1,4 +1,4 @@
- <form (ngSubmit)="login()">
+ <form (ngSubmit)="login()" [formGroup]="formUser">
   <div class="space-y-2">
     <label class="text-sm font-medium text-gray-700">
       Correo Electrónico
@@ -10,22 +10,20 @@
         placeholder="estudiante@alumno.buap.mx"
         class="w-full pl-11 pr-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
         required
-        [value]="user().username"
-        (input)="setData('username', $event.target.value)"
-        (blur)="markAsTouched('username')"
-        [class.border-red-500]="shouldShowError('username')"
+        formControlName="username"
+        [class.border-red-500]="formUtils.isValidField(formUser,'username')"
       />
       <lucide-icon
-        [hidden]="!touchedFields().has('username')"
-        [img]="userErrors().username ? icons.CircleX :icons.CheckCircle"
+        [hidden]="!formUser.controls['username'].touched"
+        [img]="formUtils.isValidField(formUser,'username') ? icons.CircleX :icons.CheckCircle"
         class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 "
-        [ngClass]="userErrors().username ? 'text-red-500': 'text-green-500'"
+        [ngClass]="formUtils.isValidField(formUser,'username') ? 'text-red-500': 'text-green-500'"
       >
       </lucide-icon>
     </div>
-    @if (shouldShowError('username')) {
+    @if (formUtils.isValidField(formUser,'username')) {
       <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-        {{ userErrors().username }}
+        {{ formUtils.getFieldError(formUser,'username') }}
       </p>
     }
   </div>
@@ -38,11 +36,8 @@
         placeholder="••••••••"
         class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
         required
-        [value]="user().password"
-        (input)="setData('password', $event.target.value)"
-        [class.border-red-500]="userErrors().password"
-        (blur)="markAsTouched('password')"
-        [class.border-red-500]="shouldShowError('password')"
+        formControlName="password"
+        [class.border-red-500]="formUtils.isValidField(formUser,'password')"
         [type]="showPassword() ? 'text' : 'password'"
       />
       <button
@@ -56,9 +51,9 @@
         ></lucide-icon>
       </button>
     </div>
-    @if (shouldShowError('password')) {
+    @if (formUtils.isValidField(formUser,'password')) {
       <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-        {{ userErrors().password }}
+        {{ formUtils.getFieldError(formUser,'password') }}
       </p>
     }
   </div>
@@ -74,7 +69,6 @@
   <button
     type="submit"
     class="w-full py-3.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-semibold mt-6 cursor-pointer"
-    [disabled]="!isValidForm()"
   >
     Iniciar Sesión
     <lucide-icon [img]="icons.ArrowRight" class="w-5 h-5"></lucide-icon>
@@ -84,4 +78,12 @@
     ¿No tienes una cuenta?
     <a routerLink="/auth/register" class="text-yellow-600 hover:text-yellow-700 font-medium">Regístrate</a>
   </div>
+
+  <loading-modal
+    [status]="modalStatus()"
+    [message1]="messageModal1()"
+    [message2]="messageModal2()"
+  >
+  </loading-modal>
+
 </form>

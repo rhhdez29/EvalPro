@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environments';
 import{ CookieService } from 'ngx-cookie-service';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { group } from 'console';
 import { UserSesion } from '../shared/interfaces/user.inteface';
 import { isPlatformBrowser } from '@angular/common';
@@ -79,7 +79,15 @@ export class FacadeService {
   //Cerrar sesión
   public logout(): Observable<any> {
 
-    return this.http.get<any>(`${environment.url_api}/logout/`);
+    return this.http.get<any>(`${environment.url_api}/logout/`)
+    .pipe(
+          catchError (error => {
+            console.log('Error fetching', error);
+            return throwError( //utilizamos el operador catchError de RxJS para manejar los errores que puedan ocurrir durante la solicitud al API, en este caso estamos utilizando el método throwError de RxJS para lanzar un error personalizado, esto nos permite tener un mejor manejo de errores en nuestra aplicación y evitar que se muestren errores genéricos en la consola
+              () => new Error('Usuario no registrado')
+            )
+          })
+        );
   }
 
 

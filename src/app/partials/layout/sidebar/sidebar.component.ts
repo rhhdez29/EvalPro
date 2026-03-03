@@ -12,6 +12,8 @@ import {
   UserCheck
 } from 'lucide-angular';
 import { FacadeService } from '../../../services/facade.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { LoadingModalComponent } from "../../../shared/modals/loading-modal/loading-modal.component";
 
 // Interfaz para el menú
 export interface MenuItem {
@@ -30,7 +32,7 @@ export interface MockUser {
 @Component({
   selector: 'side-bar',
   standalone: true,
-  imports: [CommonModule, RouterLink, LucideAngularModule, RouterLinkActive],
+  imports: [CommonModule, RouterLink, LucideAngularModule, RouterLinkActive, LoadingModalComponent],
   templateUrl: './sidebar.component.html'
 })
 export class SidebarComponent {
@@ -38,13 +40,14 @@ export class SidebarComponent {
   private facadeService = inject(FacadeService);
 
   // Iconos
-  readonly icons = { GraduationCap, User, LogOut, BookOpen, Settings, Users, UserCheck };
+  readonly icons = { GraduationCap, User, LogOut, BookOpen, Settings, Users, UserCheck, ReactiveFormsModule };
 
   userRole = this.facadeService.userRole;
   userName = this.facadeService.userName;
 
-  isLoading = false;
-  errorMessage = '';
+  modalStatus = signal<'oculto' | 'cargando' | 'exito' | 'error'>('oculto');
+  messageModal1 = signal<string>('');
+  messageModal2 = signal<string>('');
 
 
   // Equivalente al useMemo de React
@@ -73,23 +76,37 @@ export class SidebarComponent {
   });
 
   Logout() {
-    // Aquí llamarás a tu logout real
+
+    this.modalStatus.set('cargando');
+    this.messageModal1.set('Cargando');
+    this.messageModal2.set('Estamos procesando tu solicitud...')
+
     this.facadeService.logout().subscribe({
       next: (response) => {
-        this.facadeService.destroyUser();
-        this.router.navigate(['auth/login']);
-        this.isLoading = false;
+
+        this.modalStatus.set('exito');
+        this.messageModal1.set('Cerrando Sesion');
+        this.messageModal2.set('Espere un momento...')
+
+        setTimeout(() => {
+          this.modalStatus.set('oculto');
+          this.facadeService.destroyUser();
+          this.router.navigate(['auth/login']);
+        }, 3000);
+
       },
       error: (err) => {
         this.facadeService.destroyUser();
         // Manejo de errores (credenciales incorrectas)
-        this.isLoading = false;
-        if (err.status === 400 || err.status === 403 || err.status === 404) {
-          this.errorMessage = 'Correo o contraseña incorrectos.';
-        } else {
-          this.errorMessage = 'Error de conexión con el servidor.';
-        }
-        console.error('Error de login:', err);
+        this.modalStatus.set('error');
+        const mensajeError = err.error?.detail || 'Hubo un error en el servidor'
+
+        this.messageModal1.set('Uy, algo salió mal...');
+        this.messageModal2.set(mensajeError);
+
+        setTimeout(() => {
+          this.modalStatus.set('oculto');
+        }, 3000);
       }
     })
   }
