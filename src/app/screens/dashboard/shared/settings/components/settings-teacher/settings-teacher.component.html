@@ -25,6 +25,7 @@
                 <input
                   type="text"
                   formControlName="firstName"
+                  appOnlyLetters
                   class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
                   [class.border-red-500]="formUtils.isValidField(myForm,'firstName')"
                 />
@@ -43,6 +44,7 @@
                 <input
                   type="text"
                   formControlName="lastName"
+                  appOnlyLetters
                   class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
                   [class.border-red-500]="formUtils.isValidField(myForm,'lastName')"
 

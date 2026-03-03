@@ -10,25 +10,32 @@
   import { OnlyNumbersDirective } from '../../../../../shared/directives/only-numbers.directive';
   import { OnlyLettersDirective } from '../../../../../shared/directives/only-letters.directive';
   import { RouterLink, Router } from '@angular/router';
-  import { FormsModule } from '@angular/forms';
+  import { FormBuilder, FormsModule, ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
   import { CommonModule } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
+import { CAREERS, FACULTIES, SEMESTERS } from '../../../../../shared/constants/academic-data';
+import { FormUtilsService } from '../../../../../services/tools/form-utils.service';
+import { LoadingModalComponent } from '../../../../../shared/modals/loading-modal/loading-modal.component';
 
   @Component({
     selector: 'app-student-form',
-    imports: [CommonModule, FormsModule, LucideAngularModule, RouterLink, OnlyLettersDirective, OnlyNumbersDirective],
+    imports: [CommonModule, FormsModule, LucideAngularModule, RouterLink, OnlyLettersDirective, OnlyNumbersDirective, ReactiveFormsModule, LoadingModalComponent],
     templateUrl: './student-form.component.html',
   })
   export class StudentFormComponent {
 
     studentService = inject(AlumnoService);
-    route = inject(Router)
+    route = inject(Router);
+    private fb = inject(FormBuilder);
+    formUtils = inject(FormUtilsService);
 
     // --- STATE (Signals) ---
     uploadedFile = signal<File | null>(null);
     isDragging = signal(false);
-    rolActivo = signal<'alumno' | 'maestro'>('alumno');
+    modalStatus = signal<'oculto' | 'cargando' | 'exito' | 'error'>('oculto');
+    messageModal1 = signal<string>('');
+    messageModal2 = signal<string>('');
     showPassword = signal(false);
 
     touchedFields =signal<Set<string>>(new Set());
@@ -36,34 +43,22 @@ import { of } from 'rxjs';
     // Cuando tenga datos, lanzará la petición.
     registerPayload = signal<FormData | null>(null);
 
-    student =signal<StudentData>({
-      rol: 'alumno',
-      first_name: '',
-      last_name: '',
-      email: '',
-      password: '',
-      id_student: '',
-      career: '',
-      semester: '',
-      kardex: ''
+    formStudent: FormGroup = this.fb.group({
+      rol: ['alumno'],
+      first_name: ['', [Validators.required]],
+      last_name: ['', [Validators.required]],
+      email: ['', [Validators.required, this.formUtils.strictEmailValidator()]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      id_student: ['', [Validators.required, Validators.minLength(9)]],
+      career: ['', [Validators.required]],
+      semester: ['', [Validators.required]],
+      kardex: [null, [Validators.required]]
     })
 
     // --- DATA ---
-    readonly semesters = Array.from({length: 10}, (_, i) => i + 1); // [1, 2, ... 12]
-    careers = [
-      'Ingeniería en Sistemas Computacionales',
-      'Ingeniería Industrial',
-      'Ingeniería Mecánica',
-      'Ingeniería Eléctrica',
-      'Ingeniería Civil'];
+    listCareers = CAREERS;
+    listSemesters = SEMESTERS;
 
-    facultyes = [
-      'Ciencias de la Computación',
-      'Ingeniería Industrial',
-      'Ingeniería Mecánica',
-      'Ingeniería Eléctrica',
-      'Ingeniería Civil'
-    ];
 
     // --- ICONS ---
     readonly icons = {
@@ -80,27 +75,6 @@ import { of } from 'rxjs';
       this.showPassword.update(v => !v);
     }
 
-    markAsTouched(field: string) { // Marcar campo como "tocado" para mostrar errores solo después de la interacción
-      this.touchedFields.update(set =>
-      {
-        const newSet = new Set(set);
-        newSet.add(field);
-        return newSet;
-      });
-    }
-
-    shouldShowError(field: string): boolean {
-      const errors = this.StudentErrors(); // Obtener errores actuales
-      const touched = this.touchedFields(); // Obtener campos tocados
-
-      // @ts-ignore (Si usas tipado estricto, indexar por string requiere cuidado)
-      return !!errors[field] && touched.has(field);
-    }
-
-    setData(field: string, value: string) { // Actualizar datos
-      this.student.update(a => ({ ...a, [field]: value }));
-
-    }
 
     // File Upload: Input Change
     onFileSelected(event: Event) {
@@ -108,7 +82,8 @@ import { of } from 'rxjs';
       const file = input.files?.[0] ?? null
 
       if (file){
-        this.student.update(a => ({...a, kardex: file!.name}));
+
+        this.formStudent.patchValue({ kardex: file });
         this.uploadedFile.set(file);
       }
 
@@ -138,47 +113,64 @@ import { of } from 'rxjs';
     }
 
     removeFile() {
+      this.formStudent.patchValue({ kardex: null });
       this.uploadedFile.set(null);
     }
 
-    StudentErrors = computed(() => {
-      const data = this.student();
-      return this.studentService.validateStudent(data, this.uploadedFile()!);
-    })
-
-    isFormValid = computed(() => {
-        return this.studentService.isValidForm(this.StudentErrors());
-    });
-
-    registerResource = rxResource({
-    params: () => this.registerPayload(),
-    stream: ({ params }) => {
-      // Si el payload es null (estado inicial), no disparamos la petición
-      if (!params) return of(null);
-
-      // Si hay datos, hacemos el POST al backend de Django
-      return this.studentService.registerStudent(params);
-    }
-  });
-
     register() {
 
+      if(this.formStudent.invalid){
+        this.formStudent.markAllAsTouched();
+        return;
+      }
       const formData = new FormData();
+      const rawData = this.formStudent.getRawValue();
 
-      formData.append('rol', this.student().rol);
-      formData.append('first_name', this.student().first_name);
-      formData.append('last_name', this.student().last_name);
-      formData.append('email', this.student().email);
-      formData.append('password', this.student().password);
-      formData.append('id_student', this.student().id_student);
-      formData.append('career', this.student().career);
-      formData.append('semester', this.student().semester);
-
+      formData.append('rol', rawData.rol);
+      formData.append('first_name', rawData.first_name);
+      formData.append('last_name', rawData.last_name);
+      formData.append('email', rawData.email);
+      formData.append('password', rawData.password);
+      formData.append('id_student', rawData.id_teacher);
+      formData.append('career', rawData.career);
+      formData.append('semester', rawData.semester);
       formData.append('kardex', this.uploadedFile()!, this.uploadedFile()!.name);
 
-      this.registerPayload.set(formData);
+      this.modalStatus.set('cargando');
+      this.messageModal1.set('Cargando');
+      this.messageModal2.set('Estamos procesando tu solicitud...')
 
-      this.route.navigate(['/landing']);
+      this.studentService.registerStudent(formData).subscribe({
+        next: (response) => {
+          this.modalStatus.set('exito');
+          this.messageModal1.set('¡Registro exitoso!');
+          this.messageModal2.set('Ya puedes iniciar sesion')
+
+
+          setTimeout(() => {
+            this.modalStatus.set('oculto');
+            this.route.navigate(['/landing']);
+          }, 3000);
+
+        },
+        error: (err) => {
+
+          this.modalStatus.set('error');
+          const mensajeError = err.error?.detail || 'Hubo un error al registrar tu cuenta'
+
+          this.messageModal1.set('Uy, algo salió mal...');
+          this.messageModal2.set(mensajeError);
+
+          setTimeout(() => {
+            this.modalStatus.set('oculto');
+            this.formStudent.reset();
+            this.uploadedFile.set(null);
+          }, 3000);
+
+
+
+        }
+      })
 
     }
   }

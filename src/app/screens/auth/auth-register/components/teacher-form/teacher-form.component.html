@@ -1,4 +1,4 @@
-<form (ngSubmit)="register()">
+<form (ngSubmit)="register()" [formGroup]="formTeacher">
 
   <div class="grid sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2 duration-300 delay-75">
     <div class="space-y-2">
@@ -10,17 +10,15 @@
           placeholder="John"
           class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
           required
-          [value]="teacher().first_name"
-          (input)="setData('first_name', $event.target.value)"
-          (blur)="markAsTouched('first_name')"
-          [class.border-red-500]="shouldShowError('first_name')"
+          formControlName="first_name"
+          [class.border-red-500]="formUtils.isValidField(formTeacher,'first_name')"
           appOnlyLetters
         />
 
       </div>
-      @if (shouldShowError('first_name')) {
+      @if (formUtils.isValidField(formTeacher,'first_name')) {
         <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-          {{ TeacherErrors().first_name }}
+          {{formUtils.getFieldError(formTeacher,'first_name') }}
         </p>
       }
     </div>
@@ -33,17 +31,15 @@
           placeholder="Doe"
           class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
           required
-          [value]="teacher().last_name"
-          (input)="setData('last_name', $event.target.value)"
-          (blur)="markAsTouched('last_name')"
-          [class.border-red-500]="shouldShowError('last_name')"
+          formControlName="last_name"
+          [class.border-red-500]="formUtils.isValidField(formTeacher,'last_name')"
           appOnlyLetters
         />
 
       </div>
-      @if (shouldShowError('last_name')) {
+      @if (formUtils.isValidField(formTeacher,'last_name')) {
         <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-          {{ TeacherErrors().last_name }}
+          {{ formUtils.getFieldError(formTeacher,'last_name') }}
         </p>
       }
     </div>
@@ -60,22 +56,20 @@
         placeholder="estudiante@alumno.buap.mx"
         class="w-full pl-12 pr-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
         required
-        [value]="teacher().email"
-        (input)="setData('email', $event.target.value)"
-        (blur)="markAsTouched('email')"
-        [class.border-red-500]="shouldShowError('email')"
+        formControlName="email"
+        [class.border-red-500]="formUtils.isValidField(formTeacher,'email')"
       />
       <lucide-icon
-        [hidden]="!touchedFields().has('email')"
-        [img]="shouldShowError('email') ? icons.CircleX :icons.CheckCircle"
+        [hidden]="!formTeacher.controls.email.touched"
+        [img]="formUtils.isValidField(formTeacher,'email') ? icons.CircleX : icons.CheckCircle"
         class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5"
-        [ngClass]="shouldShowError('email') ? 'text-red-500': 'text-green-500'"
+        [ngClass]="formUtils.isValidField(formTeacher,'email') ? 'text-red-500' : 'text-green-500'"
       >
       </lucide-icon>
     </div>
-    @if (shouldShowError('email')) {
+    @if (formUtils.isValidField(formTeacher,'email')) {
       <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-        {{ TeacherErrors().email }}
+        {{ formUtils.getFieldError(formTeacher,'email') }}
       </p>
     }
   </div>
@@ -88,10 +82,8 @@
         placeholder="••••••••"
         class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
         required
-        [value]="teacher().password"
-        (input)="setData('password', $event.target.value)"
-        (blur)="markAsTouched('password')"
-        [class.border-red-500]="shouldShowError('password')"
+        formControlName="password"
+        [class.border-red-500]="formUtils.isValidField(formTeacher,'password')"
         [type]="showPassword() ? 'text' : 'password'"
       />
       <button
@@ -105,9 +97,9 @@
         ></lucide-icon>
       </button>
     </div>
-    @if (shouldShowError('password')) {
+    @if (formUtils.isValidField(formTeacher,'password')) {
       <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-        {{ TeacherErrors().password }}
+        {{ formUtils.getFieldError(formTeacher,'password') }}
       </p>
     }
   </div>
@@ -118,20 +110,19 @@
       <div class="relative">
         <lucide-icon [img]="icons.Hash" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
         <input
-          type="text" placeholder="123456"
+          type="text"
+          placeholder="123456"
           class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
           required
-          [value]="teacher().id_teacher"
-          (input)="setData('id_teacher', $event.target.value)"
-          (blur)="markAsTouched('id_teacher')"
-          [class.border-red-500]="shouldShowError('id_teacher')"
+          formControlName="id_teacher"
+          [class.border-red-500]="formUtils.isValidField(formTeacher,'id_teacher')"
           appOnlyNumbers
           maxlength="9"
         />
       </div>
-      @if (shouldShowError('id_teacher')) {
+      @if (formUtils.isValidField(formTeacher,'id_teacher')) {
         <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-          {{ TeacherErrors().id_teacher }}
+          {{ formUtils.getFieldError(formTeacher,'id_teacher') }}
         </p>
       }
     </div>
@@ -142,19 +133,17 @@
         <select
         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none bg-white" r
         equired
-        #txtfaculty
-        (change)="setData('faculty', txtfaculty.value)"
-        (blur)="markAsTouched('faculty')"
-        [class.border-red-500]="shouldShowError('faculty')"
+        formControlName="faculty"
+        [class.border-red-500]="formUtils.isValidField(formTeacher,'faculty')"
         >
-        <option value="">Seleccionar faculty</option>
-        @for(faculty of facultyes; track faculty) {
+        <option >Seleccionar faculty</option>
+        @for(faculty of listFaculties; track faculty) {
           <option [value]="faculty">{{ faculty }}</option>
         }
       </select>
-      @if (shouldShowError('faculty')) {
+      @if (formUtils.isValidField(formTeacher,'faculty')) {
         <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-          {{ TeacherErrors().faculty }}
+          {{ formUtils.getFieldError(formTeacher,'faculty') }}
         </p>
       }
     </div>
@@ -165,7 +154,6 @@
   <button
     type="submit"
     class="w-full py-3.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-semibold mt-6 cursor-pointer"
-    [disabled]="!isFormValid() || registerResource.isLoading()"
   >
     Crear Cuenta
     <lucide-icon [img]="icons.ArrowRight" class="w-5 h-5"></lucide-icon>
@@ -176,4 +164,11 @@
     <a routerLink="/auth/login" class="text-yellow-600 hover:text-yellow-700 font-medium">Inicia Sesión</a>
   </div>
 
+  <loading-modal
+    [status]="modalStatus()"
+    [message1]="messageModal1()"
+    [message2]="messageModal2()"
+  >
+
+  </loading-modal>
 </form>
