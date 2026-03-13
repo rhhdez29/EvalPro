@@ -1,0 +1,69 @@
+src/app/
+│
+├── core/                # Módulo Core: Solo importado en AppModule. Cosas de uso único global.
+│   ├── guards/          # Guards de rutas (AuthGuard, RoleGuard)
+│   ├── interceptors/    # Interceptores HTTP (TokenInterceptor, ErrorInterceptor)
+│   ├── models/          # Interfaces y Clases modelo de datos de uso global
+│   └── services/        # Servicios singleton globales (AuthService, ConfigService)
+│                        # Nota: Si exam.service o facade.service son de uso global, podrían ir aquí.
+│
+├── shared/              # Módulo Shared: Importado en múltiples módulos funcionales.
+│   ├── components/      # Componentes reutilizables "tontos"/presentacionales (Botones, Modales, Tablas)
+│   ├── directives/      # Directivas personalizadas de uso común (ej. drag-and-drop, validaciones)
+│   ├── pipes/           # Pipes reutilizables (ej. formateo de moneda especial, fechas)
+│   └── utils/           # Funciones de utilidad sin dependencias de Angular
+│
+├── modules/ (o features/ o pages/)   # Agrupación por funcionalidades de negocio (Lazy Loading por defecto)
+│   ├── auth/            # Módulo de Autenticación
+│   │   ├── components/  # Componentes propios (LoginForm, RegisterForm)
+│   │   ├── pages/       # Vistas enrutables (LoginPage, RegisterPage) -> equivalente a tus "screens"
+│   │   └── services/    # Servicios específicos de autenticación
+│   │
+│   ├── exams/           # Módulo de Exámenes (Tu dominio de evaluar)
+│   │   ├── components/  # Componentes propios de exámenes (ExamCard, QuestionList)
+│   │   ├── pages/       # Vistas ruteables (ExamDashboard, TakeExam)
+│   │   ├── models/      # Interfaces propias de exámenes
+│   │   └── services/    # exam.service.ts y facade.service.ts podrían vivir aquí si solo se usan en exams.
+│   │
+│   └── dashboard/       # Otro módulo funcional...
+│
+├── layout/ (o partials/)# Layouts base de la aplicación
+│   ├── header/          # Componentes del layout (Navbar)
+│   ├── sidebar/         # Menú lateral
+│   ├── footer/          # Pie de página
+│   └── main-layout/     # Layout contenedor que agrupa header + sidebar + router-outlet
+│
+└── app.*                # routing, componentes raíz, etc. (app.component.ts, app.routes.ts)
+
+
+src/app/features/dashboard/ (o modules/dashboard/)
+│
+├── pages/                        # TODAS las vistas enrutables van aquí
+│   │
+│   ├── admin/                    # Vistas exclusivas del admin
+│   │   ├── subject-management/   # (Tu componente actual SubjectManagementComponent)
+│   │   ├── teacher-validation/   # (Tu componente actual TeacherValidationComponent)
+│   │   └── users-list/           # (Tu componente actual UsersListComponent)
+│   │
+│   ├── teacher/                  # Vistas exclusivas del profesor
+│   │   └── subjects/             # (Tu componente actual SubjectsComponent)
+│   │
+│   ├── student/                  # Vistas exclusivas del alumno
+│   │   └── classes/              # (Tu componente actual ClassesComponent)
+│   │
+│   └── shared-pages/             # Vistas a las que pueden entrar varios roles
+│       ├── settings/             # (Tu componente actual SettingsComponent)
+│       └── subject-detail/       # (Tu componente actual SubjectDetailComponent)
+│
+├── components/                   # Componentes visuales que SOLO se usan dentro del dashboard
+│   │                             # (Ej. un modal específico de validación, tarjetas de métricas, etc.)
+│   │                             # Actualmente, si tienes componentes compartidos entre admin/teacher, irían aquí.
+│   │
+├── layout/                       # El "cascarón" de la zona privada de tu app
+│   └── dashboard-layout/         # Tu componente DashboardLayoutComponent (que tiene el router-outlet interno)
+│
+├── services/                     # Servicios únicos para el dashboard
+│   │                             # (Ej: dashboard-stats.service.ts)
+│   │
+└── dashboard.routes.ts           # (Opcional pero recomendado) Recomendable sacar las rutas del
+                                  # app.routes.ts y tener aquí las rutas hijas del dashboard.

@@ -1,0 +1,172 @@
+<div class="p-8">
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <p class="text-gray-600 mt-1">Manage all subjects across the institution</p>
+    </div>
+    <button
+      (click)="toggleModal()"
+      class="flex items-center gap-2 px-4 py-2.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
+    >
+      <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
+      Create Subject
+    </button>
+  </div>
+
+  @if (isModalOpen()) {
+    <app-create-subject-form
+      (submitForm)="createSubjectData($event)"
+      (closeDialog)="toggleModal()"
+    >
+    </app-create-subject-form>
+  }
+
+  <div class="grid grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-xl p-6 border border-gray-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Total Subjects</p>
+          <p class="text-3xl font-bold text-gray-900">{{ totalSubjects() }}</p>
+        </div>
+        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+          <lucide-icon [img]="icons.BookOpen" class="w-6 h-6 text-yellow-600"></lucide-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 border border-gray-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Total Students</p>
+          <p class="text-3xl font-bold text-gray-900">{{ 0 }}</p>
+        </div>
+        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+          <lucide-icon [img]="icons.Users" class="w-6 h-6 text-blue-600"></lucide-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 border border-gray-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Active Teachers</p>
+          <p class="text-3xl font-bold text-gray-900">{{ activeTeachers() }}</p>
+        </div>
+        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+          <lucide-icon [img]="icons.Users" class="w-6 h-6 text-green-600"></lucide-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 border border-gray-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Departments</p>
+          <p class="text-3xl font-bold text-gray-900">{{ departmentsCount() }}</p>
+        </div>
+        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+          <lucide-icon [img]="icons.BookOpen" class="w-6 h-6 text-purple-600"></lucide-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-6">
+    <div class="relative">
+      <lucide-icon [img]="icons.Search" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
+      <input
+        type="text"
+        placeholder="Search subjects, codes, or teachers..."
+        [(ngModel)]="searchQuery"
+        class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+      />
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <table class="w-full">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Subject</th>
+          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Code</th>
+          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Teacher</th>
+          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Department</th>
+          <th class="px-6 py-4 text-center text-sm font-semibold text-gray-900">Students</th>
+          <th class="px-6 py-4 text-center text-sm font-semibold text-gray-900">Exams</th>
+          <th class="px-6 py-4 text-right text-sm font-semibold text-gray-900">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-200">
+
+        @if (filteredSubjects().length === 0) {
+          <tr>
+            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+              No subjects found matching "{{ searchQuery() }}".
+            </td>
+          </tr>
+        }
+
+        @for (subject of filteredSubjects(); track subject.id) {
+          <tr
+            class="hover:bg-gray-50 transition-colors cursor-pointer group"
+            (click)="handleSubjectClick(subject.id)"
+          >
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 {{ subject.color }} rounded-lg flex items-center justify-center shrink-0">
+                  <lucide-icon [img]="icons.BookOpen" class="w-5 h-5 text-white"></lucide-icon>
+                </div>
+                <div class="font-medium text-gray-900 group-hover:text-yellow-600 transition-colors">
+                  {{ subject.name }}
+                </div>
+              </div>
+            </td>
+
+            <td class="px-6 py-4">
+              <span class="font-mono text-sm text-gray-600">{{ subject.code }}</span>
+            </td>
+
+            <td class="px-6 py-4">
+              <span class="text-sm text-gray-900">{{ subject.teacher_name }}</span>
+            </td>
+
+            <td class="px-6 py-4">
+              <span class="text-sm text-gray-600">{{ subject.department }}</span>
+            </td>
+
+            <td class="px-6 py-4 text-center">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700">
+                {{ subject.students_count }}
+              </span>
+            </td>
+
+            <td class="px-6 py-4 text-center">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
+                {{ 0 }}
+              </span>
+            </td>
+
+            <td class="px-6 py-4">
+              <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  (click)="handleEdit($event, subject.id)"
+                  class="p-2 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"
+                  title="Edit Subject"
+                >
+                  <lucide-icon [img]="icons.Edit" class="w-4 h-4 text-gray-600"></lucide-icon>
+                </button>
+                <button
+                  (click)="handleDelete($event, subject.id)"
+                  class="p-2 hover:bg-red-100 rounded-lg transition-colors cursor-pointer"
+                  title="Delete Subject"
+                >
+                  <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600"></lucide-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

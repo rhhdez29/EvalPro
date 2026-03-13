@@ -1,0 +1,107 @@
+<div>
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 class="text-xl font-bold text-gray-900">Exam Management</h2>
+      <p class="text-gray-600 text-sm mt-1">Create and manage evaluations for this subject</p>
+    </div>
+    <button
+      (click)="handleCreateExam()"
+      class="flex items-center gap-2 px-4 py-2.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
+    >
+      <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
+      Create Exam
+    </button>
+  </div>
+
+  <div class="space-y-4">
+    @if(examsResource.isLoading()){
+      <div class="loading-spinner">
+        <p>Cargando Examenes...</p>
+      </div>
+    }
+    @else if (examsResource.error()){
+      <div class="error-message">
+        <p>Ocurrió un error al cargar los examenes</p>
+      </div>
+    }@else{
+
+      @if(examsResource.value()?.length === 0){
+        <div class="text-2xl font-bold text-gray-600 text-center mt-8">
+          <p>No hay examenes para esta materia aun.</p>
+        </div>
+      }@else {
+        @for (exam of examsResource.value(); track exam.id) {
+      <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all">
+
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <h3 class="font-bold text-gray-900 text-lg">{{ exam.title }}</h3>
+
+              <span class="px-3 py-1 rounded-full text-xs font-medium border capitalize {{ getStatusClasses(exam.status) }}">
+                {{ exam.status }}
+              </span>
+            </div>
+
+            <div class="flex items-center gap-6 text-sm text-gray-600">
+              <div class="flex items-center gap-2">
+                <lucide-icon [img]="icons.Calendar" class="w-4 h-4"></lucide-icon>
+                <span>{{ exam.start_date| date:'MMM d, y' }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <lucide-icon [img]="icons.Clock" class="w-4 h-4"></lucide-icon>
+                <span>{{ exam.duration_minutes }} min</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-medium">{{ exam.questions_count }}</span>
+                <span>questions</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer" title="View Details">
+              <lucide-icon [img]="icons.Eye" class="w-4 h-4 text-gray-600"></lucide-icon>
+            </button>
+            <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer" title="Edit Exam">
+              <lucide-icon [img]="icons.Edit" class="w-4 h-4 text-gray-600"></lucide-icon>
+            </button>
+            <button class="p-2 hover:bg-red-50 rounded-lg transition-colors cursor-pointer" title="Delete Exam">
+              <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600"></lucide-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="flex items-center justify-between text-sm mb-2">
+            <span class="text-gray-600">Submissions</span>
+            <span class="font-medium text-gray-900">
+              {{ 1 }}/{{ 5 }}
+            </span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div
+              class="bg-yellow-600 h-2 rounded-full transition-all"
+              [style.width.%]="(50 / 50) * 100"
+            ></div>
+          </div>
+        </div>
+
+      </div>
+    }
+      }
+
+    }
+  </div>
+
+  @if (showCreateForm()) {
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white p-8 rounded-xl">
+        <app-create-exam-form
+          [subjectId]="subjectId()"
+          (closeDialog)="handleCreateExam()"
+        />
+      </div>
+    </div>
+  }
+</div>

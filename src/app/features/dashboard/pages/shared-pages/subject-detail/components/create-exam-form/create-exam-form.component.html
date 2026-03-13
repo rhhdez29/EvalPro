@@ -1,0 +1,307 @@
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col">
+
+    <div class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-xl shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+          <lucide-icon [img]="icons.FileText" class="w-5 h-5 text-yellow-600"></lucide-icon>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900">Create New Exam</h2>
+          <p class="text-sm text-gray-600">Build a comprehensive evaluation</p>
+        </div>
+      </div>
+      <button
+        type="button"
+        (click)="onClose()"
+        class="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+      >
+        <lucide-icon [img]="icons.X" class="w-5 h-5 text-gray-600"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="border-b border-gray-200 bg-gray-50 px-6 shrink-0">
+      <div class="flex gap-1">
+        <button
+          type="button"
+          (click)="setSection('metadata')"
+          class="px-6 py-3 font-medium transition-colors relative cursor-pointer"
+          [class.text-yellow-600]="currentSection() === 'metadata'"
+          [class.border-b-2]="currentSection() === 'metadata'"
+          [class.border-yellow-600]="currentSection() === 'metadata'"
+          [class.bg-white]="currentSection() === 'metadata'"
+          [class.text-gray-600]="currentSection() !== 'metadata'"
+          [class.hover:text-gray-900]="currentSection() !== 'metadata'"
+        >
+          1. Exam Metadata
+        </button>
+        <button
+          type="button"
+          (click)="setSection('questions')"
+          class="px-6 py-3 font-medium transition-colors relative flex items-center cursor-pointer"
+          [class.text-yellow-600]="currentSection() === 'questions'"
+          [class.border-b-2]="currentSection() === 'questions'"
+          [class.border-yellow-600]="currentSection() === 'questions'"
+          [class.bg-white]="currentSection() === 'questions'"
+          [class.text-gray-600]="currentSection() !== 'questions'"
+          [class.hover:text-gray-900]="currentSection() !== 'questions'"
+        >
+          2. Question Builder
+          @if (formData().questions.length > 0) {
+            <span class="ml-2 bg-yellow-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+              {{ formData().questions.length }}
+            </span>
+          }
+        </button>
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto">
+
+      @if (currentSection() === 'metadata') {
+
+        <form [formGroup]="examForm">
+
+        <div class="p-6 space-y-6">
+
+          <div>
+            <label for="title" class="block text-sm font-semibold text-gray-900 mb-2">
+              Exam Title <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              formControlName="title"
+              placeholder="e.g., Midterm Exam - Calculus"
+              class="w-full px-4 py-3 border rounded-lg transition-all focus:outline-none focus:ring-2 font-mono focus:ring-yellow-500 outline-none"
+              [class.border-red-500]="formUtils.isValidField(examForm, 'title')"
+              [class.focus:ring-red-500]="formUtils.isValidField(examForm, 'title')"
+            />
+            @if (formUtils.isValidField(examForm, 'title')) {
+              <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                {{ formUtils.getFieldError(examForm, 'title')}}
+              </p>
+            }
+          </div>
+
+          <div>
+            <label for="description" class="block text-sm font-semibold text-gray-900 mb-2">
+              Description <span class="text-red-500">*</span>
+            </label>
+            <textarea
+              formControlName="description"
+              placeholder="e.g., Midterm Exam - Calculus"
+              class="w-full px-4 py-3 border rounded-lg transition-all focus:outline-none focus:ring-2 font-mono focus:ring-yellow-500 outline-none"
+              [class.border-red-500]="formUtils.isValidField(examForm, 'description')"
+              [class.focus:ring-red-500]="formUtils.isValidField(examForm, 'description')"
+              placeholder="Provide a brief description of the exam content and objectives..."
+              rows="4"
+
+            ></textarea>
+            @if (formUtils.isValidField(examForm, 'description')) {
+              <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                {{ formUtils.getFieldError(examForm, 'description')}}
+              </p>
+            }
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="startDateTime" class="block text-sm font-semibold text-gray-900 mb-2">
+                Start Date/Time <span class="text-red-500">*</span>
+              </label>
+              <input
+                formControlName="start_date"
+                type="datetime-local"
+                class="w-full px-4 py-3 border rounded-lg transition-all focus:outline-none focus:ring-2 font-mono focus:ring-yellow-500 outline-none"
+                [class.border-red-500]="formUtils.isValidField(examForm, 'start_date')"
+                [class.focus:ring-red-500]="formUtils.isValidField(examForm, 'start_date')"
+              />
+              @if (formUtils.isValidField(examForm, 'start_date')) {
+                <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                  {{ formUtils.getFieldError(examForm, 'start_date')}}
+                </p>
+              }
+            </div>
+
+            <div>
+              <label for="endDateTime" class="block text-sm font-semibold text-gray-900 mb-2">
+                End Date/Time <span class="text-red-500">*</span>
+              </label>
+              <input
+                formControlName="end_date"
+                type="datetime-local"
+                class="w-full px-4 py-3 border rounded-lg transition-all focus:outline-none focus:ring-2 font-mono focus:ring-yellow-500 outline-none"
+                [class.border-red-500]="formUtils.isValidField(examForm, 'end_date')"
+                [class.focus:ring-red-500]="formUtils.isValidField(examForm, 'end_date')"
+              />
+              @if (formUtils.isValidField(examForm, 'end_date')) {
+                <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                  {{ formUtils.getFieldError(examForm, 'end_date')}}
+                </p>
+              }
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="duration" class="block text-sm font-semibold text-gray-900 mb-2">
+                Total Duration (minutes) <span class="text-red-500">*</span>
+              </label>
+              <input
+                formControlName="duration"
+                type="number"
+                min="1"
+                class="w-full px-4 py-3 border rounded-lg transition-all focus:outline-none focus:ring-2 font-mono focus:ring-yellow-500 outline-none"
+                [class.border-red-500]="formUtils.isValidField(examForm, 'duration')"
+                [class.focus:ring-red-500]="formUtils.isValidField(examForm, 'duration')"
+              />
+              @if (formUtils.isValidField(examForm, 'duration')) {
+                <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                  {{ formUtils.getFieldError(examForm, 'duration')}}
+                </p>
+              }
+            </div>
+            <div>
+              <label for="totalScore" class="block text-sm font-semibold text-gray-900 mb-2">
+                Target Total Score <span class="text-red-500">*</span>
+              </label>
+              <input
+                formControlName="total_score"
+                type="number"
+                min="1"
+                step="0.01"
+                class="w-full px-4 py-3 border rounded-lg transition-all focus:outline-none focus:ring-2 font-mono focus:ring-yellow-500 outline-none"
+                [class.border-red-500]="formUtils.isValidField(examForm, 'total_score')"
+                [class.focus:ring-red-500]="formUtils.isValidField(examForm, 'total_score')"
+              />
+              @if (formUtils.isValidField(examForm, 'total_score')) {
+                <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                  {{ formUtils.getFieldError(examForm, 'total_score')}}
+                </p>
+              }
+            </div>
+          </div>
+
+          <div class="flex justify-end pt-4 border-t border-gray-200">
+            <button
+              type="button"
+              (click)="setSection('questions')"
+              class="px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
+            >
+              Next: Add Questions
+            </button>
+          </div>
+
+        </div>
+
+        </form>
+      }
+
+      @if (currentSection() === 'questions') {
+        <div class="p-6 space-y-6">
+
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+            <lucide-icon [img]="icons.AlertCircle" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5"></lucide-icon>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-blue-900">Score Distribution</p>
+              <p class="text-sm text-blue-700 mt-1">
+                Current total: <span class="font-bold">{{ calculatedTotalScore() }}</span> points
+                | Target: <span class="font-bold">{{ formData().totalScore }}</span> points
+
+                @if (calculatedTotalScore() !== formData().totalScore) {
+                  <span class="text-red-600 font-semibold ml-2">
+                    (Difference: {{ (calculatedTotalScore() - formData().totalScore) | number:'1.0-2' }})
+                  </span>
+                }
+              </p>
+            </div>
+          </div>
+
+          @if (formData().questions.length > 0) {
+            <div class="space-y-4">
+              @for (question of formData().questions; track question.id; let i = $index) {
+                <div class="bg-white border-2 border-gray-200 rounded-lg p-4 hover:border-yellow-400 transition-all">
+                  <div class="flex items-start gap-3">
+
+                    <div class="flex flex-col gap-1 mt-1 shrink-0">
+                      <button
+                        type="button"
+                        (click)="moveQuestion(i, 'up')"
+                        [disabled]="i === 0"
+                        class="p-1 hover:bg-gray-100 rounded disabled:opacity-30 cursor-pointer"
+                      >
+                        <lucide-icon [img]="icons.GripVertical" class="w-4 h-4 text-gray-400"></lucide-icon>
+                      </button>
+                    </div>
+
+                    <div class="flex-1">
+                      <div class="flex items-start justify-between mb-2">
+                        <div>
+                          <span class="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium mb-2">
+                            Question {{ i + 1 }}
+                          </span>
+                          <h4 class="font-semibold text-gray-900">{{ question.question }}</h4>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-sm font-bold">
+                            {{ question.score }} pts
+                          </span>
+                          <button
+                            type="button"
+                            (click)="removeQuestion(i)"
+                            class="p-2 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                          >
+                            <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600"></lucide-icon>
+                          </button>
+                        </div>
+                      </div>
+
+                      <p class="text-sm text-gray-600 capitalize">Type: {{ question.type }}</p>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <div class="p-6 border-2 border-dashed border-gray-300 rounded-lg text-center">
+            <p class="text-gray-500">app-question-builder placeholder</p>
+          </div>
+
+        </div>
+      }
+
+    </div>
+
+    <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 rounded-b-xl shrink-0">
+      <div class="flex gap-3">
+        <button
+          type="button"
+          (click)="onClose()"
+          class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium cursor-pointer"
+        >
+          Cancel
+        </button>
+
+        @if (currentSection() === 'questions') {
+          <button
+            type="button"
+            (click)="setSection('metadata')"
+            class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium cursor-pointer"
+          >
+            Back to Metadata
+          </button>
+        }
+
+        <button
+          type="button"
+          (click)="handleSubmit()"
+          class="flex-1 px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
+        >
+          Create Exam
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
