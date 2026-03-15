@@ -1,43 +1,47 @@
-import { Component, computed, inject, input, signal, OnInit, effect } from '@angular/core';
+import { Component, computed, inject, input, signal, OnInit, effect, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
-import { FacadeService } from '../../../../../core/services/facade.service';
+import { isPlatformBrowser } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { SubjectService } from '../../../services/subject.service';
-import { ExamsTabComponent } from "./components/exams-tab/exams-tab.component";
-// Importa aquí tus componentes de pestañas
+import { NEVER } from 'rxjs';
 
-// Definimos la interfaz de la pestaña para TypeScript
+
+import { FacadeService } from '../../../../../core/services/facade.service';
+import { SubjectService } from '../../../services/subject.service';
+
+import { ExamsTabComponent } from "./components/exams-tab/exams-tab.component";
+import { LoadingInformationComponent } from "../../../../../shared/components/loading-information/loading-information.component";
+
 interface Tab {
   id: string;
   label: string;
-  icon: string; // Usaremos el nombre del icono
+  icon: string;
 }
 
 @Component({
   selector: 'app-subject-detail',
   standalone: true,
   imports: [
-    ExamsTabComponent
+    ExamsTabComponent,
+    LoadingInformationComponent
 ],
   templateUrl: './subject-detail.component.html'
 })
 export class SubjectDetailComponent {
-  private router = inject(Router);
-  public facade = inject(FacadeService);
-  private subjectService = inject(SubjectService);
+
 
   //Recibimos el :id de la URL automáticamente como Señal
   id = input.required<string>();
 
-  // 🌟 2. Estado de la pestaña activa (Usamos el ID en lugar del índice numérico, es más seguro)
+  private router = inject(Router);
+  public facade = inject(FacadeService);
+  private subjectService = inject(SubjectService);
+  private platformId = inject(PLATFORM_ID);
+
+  //Estado de la pestaña activa (Usamos el ID en lugar del índice numérico, es más seguro)
   activeTabId = signal<string>('');
 
-  subject = rxResource({
-    params: () => this.id(),
-    stream: () => this.subjectService.getSubjectById(this.id()),
-  })
 
-  // 🌟 4. Pestañas dinámicas basadas en el rol usando computed()
+  //Pestañas dinámicas basadas en el rol usando computed()
   tabs = computed<Tab[]>(() => {
     const role = this.facade.userRole();
 
@@ -56,6 +60,25 @@ export class SubjectDetailComponent {
     return [];
   });
 
+  isSubjectDetailEmpty = computed(() => {
+    const data = this.subjectDetailResource.value()
+
+    if(!data || !Array.isArray(data)) return false;
+
+    return data.length === 0;
+
+  })
+
+  subjectDetailResource = rxResource({
+    params: () => this.id(),
+    stream: ({params}) => {
+      if(isPlatformBrowser(this.platformId)){
+        return this.subjectService.getSubjectById(params)
+      }
+      return NEVER
+    },
+  })
+
   constructor() {
     // Efecto para seleccionar la primera pestaña por defecto cuando se carguen
     effect(() => {
@@ -66,7 +89,10 @@ export class SubjectDetailComponent {
     });
   }
 
-  // 🌟 5. Navegación de regreso
+  ngAfterNextRender(){
+    this.subjectDetailResource.reload();
+  }
+  //Navegación de regreso
   handleBack() {
     const role = this.facade.userRole();
     if (role === 'maestro') {

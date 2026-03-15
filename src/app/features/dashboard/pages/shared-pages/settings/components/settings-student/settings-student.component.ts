@@ -1,4 +1,6 @@
 import { Component, computed, effect, inject, input } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+
 import {
   LucideAngularModule,
   User,
@@ -12,10 +14,11 @@ import {
   Moon,
   Eye
 } from 'lucide-angular';
+
+import { FormUtilsService } from '../../../../../../../shared/utils/form-utils.service'
+
 import { Student, Teacher, UserLoginData } from '../../../../../../../core/models/user.inteface';
 import { CAREERS, SEMESTERS } from '../../../../../../../shared/constants/academic-data';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FormUtilsService } from '../../../../../../../shared/utils/form-utils.service'
 import { OnlyLettersDirective } from '../../../../../../../shared/directives/only-letters.directive';
 
 @Component({
@@ -28,8 +31,9 @@ export class SettingsStudentComponent {
 
   activeTab = input.required()
   user = input.required<UserLoginData | null>()
-  private fb = inject(FormBuilder);
+
   formUtils = inject(FormUtilsService);
+  private fb = inject(FormBuilder);
 
   listCareers = CAREERS;
   listSemesters = SEMESTERS

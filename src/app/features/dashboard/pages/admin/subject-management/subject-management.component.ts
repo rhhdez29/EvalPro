@@ -41,36 +41,36 @@ export class SubjectManagementComponent {
 
   private subjectsService = inject(SubjectService);
 
-
   // --- ESTADOS BASE ---
   searchQuery = signal('');
   isModalOpen = signal(false);
   isLoading = signal(false);
-
-  // --- RX RESOURCES ---
-  subjectsResource = rxResource({
-    stream: () => this.subjectsService.getSubjects(),
-  });
-
   subjects = linkedSignal(() => this.subjectsResource.value() || []);
 
-// --- ESTADOS DERIVADOS ---
+  // --- ESTADOS DERIVADOS ---
 
-// 1. El filtro en tiempo real. Se actualiza solo si cambian los subjects o cambia el texto de búsqueda.
-filteredSubjects = computed(() => {
-  const query = this.searchQuery().toLowerCase();
-  return this.subjects().filter((subject) =>
-    subject.name.toLowerCase().includes(query) ||
-    subject.code.toLowerCase().includes(query) ||
-    subject.teacher_name.toLowerCase().includes(query)
-  );
-});
+  // 1. El filtro en tiempo real. Se actualiza solo si cambian los subjects o cambia el texto de búsqueda.
+  filteredSubjects = computed(() => {
+    const query = this.searchQuery().toLowerCase();
+    return this.subjects().filter((subject) =>
+      subject.name.toLowerCase().includes(query) ||
+      subject.code.toLowerCase().includes(query) ||
+      subject.teacher_name.toLowerCase().includes(query)
+    );
+  });
 
   // 2. Estadísticas automáticas
   totalSubjects = computed(() => this.subjects().length);
   // totalStudents = computed(() => this.subjects().reduce((acc, s) => acc + s.students, 0));
   activeTeachers = computed(() => new Set(this.subjects().map(s => s.teacher_name)).size);
   departmentsCount = computed(() => new Set(this.subjects().map(s => s.department)).size);
+
+  // --- RX RESOURCES ---
+  subjectsResource = rxResource({
+    stream: () => this.subjectsService.getSubjects(),
+  });
+
+
 
   // --- MÉTODOS ---
 

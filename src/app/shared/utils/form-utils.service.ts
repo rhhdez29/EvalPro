@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { ValidatorService } from './validator.service';
-import { ValidatorService2 } from './validator.service copy';
+import { ValidatorService2 } from './validator.service';
 
 @Injectable({
   providedIn: 'root'

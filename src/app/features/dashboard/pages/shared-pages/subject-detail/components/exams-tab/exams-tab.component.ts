@@ -1,6 +1,8 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-// import { CreateExamFormComponent, ExamFormData } from '../../../../forms/create-exam-form/create-exam-form.component';
+import { Component, computed, effect, inject, input, PLATFORM_ID, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { of } from 'rxjs';
+
 import {
   LucideAngularModule,
   Plus,
@@ -11,26 +13,18 @@ import {
   Trash2,
   Eye
 } from 'lucide-angular';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { ExamService } from '../../../../../services/exam.service';
-import { CreateExamFormComponent } from "../create-exam-form/create-exam-form.component";
 
-export interface Exam {
-  id: string;
-  title: string;
-  date: string;
-  duration: number; // en minutos
-  questions: number;
-  submissions: number;
-  totalStudents: number;
-  status: 'draft' | 'scheduled' | 'active' | 'completed';
-}
+import { ExamService } from '../../../../../services/exam.service';
+
+import { ExamBase } from '../../../../../models/RESTExamResponse.interface';
+
+import { CreateExamFormComponent } from "../create-exam-form/create-exam-form.component";
+import { LoadingInformationComponent } from "../../../../../../../shared/components/loading-information/loading-information.component";
 
 @Component({
   selector: 'app-exams-tab',
   standalone: true,
-  // Asegúrate de importar el CreateExamFormComponent cuando lo tengas listo
-  imports: [CommonModule, LucideAngularModule, CreateExamFormComponent],
+  imports: [CommonModule, LucideAngularModule,CreateExamFormComponent, LoadingInformationComponent],
   templateUrl: './exams-tab.component.html'
 })
 export class ExamsTabComponent {
@@ -39,33 +33,46 @@ export class ExamsTabComponent {
   // Al ser 'required', Angular te exigirá pasarlo desde el HTML padre
   subjectId = input.required<string>();
 
-  examService = inject(ExamService);
 
-  // Iconos
-  readonly icons = { Plus, Calendar, Clock, MoreVertical, Edit, Trash2, Eye };
+  private examService = inject(ExamService);
+  private platformId = inject(PLATFORM_ID);
 
   // Estados
   showCreateForm = signal(false);
   isModalOpen = signal(false);
 
+  isExamsEmpty = computed(() => {
+    const data = this.examsResource.value()
+
+    if(!data || !Array.isArray(data)) return false;
+
+    return data.length === 0;
+
+  })
+
   examsResource = rxResource({
     params: () => this.subjectId(),
-    stream: () => this.examService.getExamsBySubject(this.subjectId()),
+    stream: () => {
+      if(isPlatformBrowser(this.platformId)){
+        return this.examService.getExamsBySubject(this.subjectId())
+      }
+      return of([])
+    },
   });
 
-  constructor(){
-    effect(() => {
-      // Esto se imprimirá varias veces: primero cuando esté cargando, luego cuando lleguen los datos.
-      console.log('¿Está cargando?', this.examsResource.isLoading());
-      console.log('Datos que tiene Angular en la mano:', this.examsResource.value());
+  // Iconos
+  readonly icons = { Plus, Calendar, Clock, MoreVertical, Edit, Trash2, Eye };
 
-      if (this.examsResource.error()) {
-        console.error('Hubo un error interno:', this.examsResource.error());
-      }
-    });
+  constructor(){
+
   }
+
+  ngAfterNextRender(){
+    this.examsResource.reload();
+  }
+
   // En Angular evitamos devolver JSX/HTML desde el TS. Solo devolvemos las clases CSS.
-  getStatusClasses(status: Exam['status']): string {
+  getStatusClasses(status: ExamBase['status']): string {
     const styles = {
       draft: 'bg-gray-100 text-gray-700 border-gray-300',
       scheduled: 'bg-blue-100 text-blue-700 border-blue-300',

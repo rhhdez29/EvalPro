@@ -1,5 +1,4 @@
 import { inject, Injectable } from '@angular/core';
-import { ValidatorService } from '../../../shared/utils/validator.service';
 import { TeacherRegister } from '../models/teacher.inteface';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
@@ -15,7 +14,6 @@ const httpOptions = {
 })
 export class MaestroService {
 
-  validator = inject(ValidatorService);
   http = inject(HttpClient);
 
 

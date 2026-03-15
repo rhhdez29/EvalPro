@@ -1,4 +1,11 @@
-<div class="min-h-full bg-gray-50">
+<div class="min-h-full h-full bg-gray-50">
+
+  <loading-information
+    [isLoading]="subjectDetailResource.isLoading()"
+    [error]="subjectDetailResource.error()"
+    [hasValue]="isSubjectDetailEmpty()"
+    [emptyMessage]="'No se pudo cargar la informacion de la materia.'"
+    >
 
   <div class="bg-white border-b border-gray-200">
     <div class="px-8 py-6">
@@ -12,29 +19,29 @@
       </button>
 
       <div class="flex items-center gap-4 mb-6">
-        <div class="w-16 h-16 {{ subject.value()?.color }} rounded-xl flex items-center justify-center">
+        <div class="w-16 h-16 {{ subjectDetailResource.value()?.color }} rounded-xl flex items-center justify-center">
           <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         </div>
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">{{ subject.value()?.name }}</h1>
-          <p class="text-gray-600">{{ subject.value()?.code }}</p>
+          <h1 class="text-2xl font-bold text-gray-900">{{ subjectDetailResource.value()?.name }}</h1>
+          <p class="text-gray-600">{{ subjectDetailResource.value()?.code }}</p>
         </div>
       </div>
 
       <div class="flex items-center gap-8 text-sm text-gray-600">
         <div class="flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-          <span>{{ subject.value()?.students_count }} students</span>
+          <span>{{ subjectDetailResource.value()?.students_count }} students</span>
         </div>
         <div class="flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          <span>{{ subject.value()?.exams_count }} exams</span>
+          <span>{{ subjectDetailResource.value()?.exams_count }} exams</span>
         </div>
 
         @if (facade.userRole() !== 'alumno') {
           <div class="flex items-center gap-2">
             <span class="font-medium">Teacher:</span>
-            <span>{{ subject.value()?.teacher_name }}</span>
+            <span>{{ subjectDetailResource.value()?.teacher_name }}</span>
           </div>
         }
       </div>
@@ -83,4 +90,6 @@
 
     }
   </div>
+
+  </loading-information>
 </div>

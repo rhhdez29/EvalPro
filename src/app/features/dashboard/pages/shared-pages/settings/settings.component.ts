@@ -1,5 +1,6 @@
 import { Component, inject, linkedSignal, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, Validators, ReactiveFormsModule} from '@angular/forms';
 import {
   LucideAngularModule,
   User,
@@ -13,8 +14,9 @@ import {
   Moon,
   Eye
 } from 'lucide-angular';
+
 import { FacadeService } from '../../../../../core/services/facade.service';
-import { FormBuilder, Validators, ReactiveFormsModule} from '@angular/forms';
+
 import { SettingsTeacherComponent } from './components/settings-teacher/settings-teacher.component';
 import { SettingsStudentComponent } from './components/settings-student/settings-student.component';
 
@@ -26,9 +28,8 @@ import { SettingsStudentComponent } from './components/settings-student/settings
 })
 export class SettingsComponent {
 
-  facadeService = inject(FacadeService);
+  private facadeService = inject(FacadeService);
   private fb = inject(FormBuilder);
-
 
   // Iconos
   readonly icons = { User, Mail, Phone, Building, Save, Bell, Lock, Globe, Moon, Eye };

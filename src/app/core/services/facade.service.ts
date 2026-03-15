@@ -1,13 +1,13 @@
 import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
-import { ValidatorService } from '../../shared/utils/validator.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { environment } from '../../../environments/environments';
-import{ CookieService } from 'ngx-cookie-service';
 import { catchError, Observable, throwError } from 'rxjs';
-import { group } from 'console';
-import { UserLoginData } from '../../core/models/user.inteface';
 import { isPlatformBrowser } from '@angular/common';
+
+import{ CookieService } from 'ngx-cookie-service';
+
+import { environment } from '../../../environments/environments';
+import { UserLoginData } from '../../core/models/user.inteface';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -29,7 +29,6 @@ export class FacadeService {
   private http = inject(HttpClient);
   public router = inject(Router);
   private cookieService = inject(CookieService);
-  private validatorService = inject(ValidatorService);
   private platformId = inject(PLATFORM_ID);
 
   //nombres de las cookies
@@ -47,21 +46,6 @@ export class FacadeService {
   // Ejemplos de validaciones de rol rápidas:
   isTeacher = computed(() => this.currentUser()?.role === 'Teacher');
   isStudent = computed(() => this.currentUser()?.role === 'Student');
-
-  //Funcion para validar login
-  public validarLogin(username: string, password: string){
-    let data = {
-      "username": username,
-      "password": password
-    };
-
-    return {
-      username: this.validatorService.required(data.username) || this.validatorService.email(data.username),
-      password: this.validatorService.required(data.password) || this.validatorService.minLength(data.password, 8)
-    }
-
-
-  }
 
   isValidForm(errors: any): boolean { // Verifica si el formulario es válido
       return Object.values(errors).every(error => !error);

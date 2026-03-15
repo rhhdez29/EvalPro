@@ -1,33 +1,28 @@
 import { Injectable } from '@angular/core';
+import { ValidationErrors } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ValidatorService {
+export class ValidatorService2 {
 
-  // Reglas (Regex)
-  private readonly EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@alumno\.buap\.mx$/;
-
-  required(value: string): string | null {
-    return value ? null : 'Este campo es obligatorio';
+  getTextError(errors: ValidationErrors){
+    console.log(errors);
+    for(const key of Object.keys(errors)){
+      switch(key){
+        case 'required':
+          return 'Este campo es requerido';
+        case 'minlength':
+          return `Minimo de ${errors['minlength'].requiredLength} caracteres.`;
+        case 'min':
+          return `Minimo minimo de ${errors['min'].min} caracteres.`;
+        case 'email':
+          return 'Ingrese un correo valido.'
+        case 'invalidFormat':
+          return 'Ingrese un correo valido.'
+      }
+    }
+    return null;
   }
 
-  email(email: string): string | null {
-    if (!email) return null; // Dejamos que 'required' maneje el vacío
-    return this.EMAIL_REGEX.test(email) ? null : 'Debe ser email @alumno.buap.mx';
-  }
-
-  minLength(value: string, min: number): string | null {
-    if (!value) return null;
-    return value.length >= min ? null : `Mínimo ${min} caracteres`;
-  }
-
-  justLength(value: string, len: number): string | null {
-    if (!value) return null;
-    return value.length === len ? null : `Deben ser exactamente ${len} digitos`;
-  }
-
-  requiredFile(value: File|null): string | null{
-    return value ? null : 'Archivo obligatorio'
-  }
 }
