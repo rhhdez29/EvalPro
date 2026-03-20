@@ -1,5 +1,11 @@
-import { Subject } from './subject.interface';
 
-export interface RESTSubject extends Subject {
-
+export interface RESTSubject {
+  id:             number;
+  name:           string;
+  code:           string;
+  color:          string;
+  department:     string;
+  teacher_name:   string;
+  students_count: number;
+  exams_count:    number;
 }

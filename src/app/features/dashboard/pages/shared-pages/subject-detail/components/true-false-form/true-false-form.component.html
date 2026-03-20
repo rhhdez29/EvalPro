@@ -1,0 +1,96 @@
+<form [formGroup]="tfForm" (ngSubmit)="handleAdd()" class="space-y-6">
+
+  <div>
+    <label class="block text-sm font-semibold text-gray-900 mb-2">
+      Statement <span class="text-red-500">*</span>
+    </label>
+    <textarea
+      formControlName="prompt"
+      placeholder="Enter a true/false statement..."
+      rows="3"
+      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none"
+      [class.border-red-500]="formUtils.isValidField(tfForm, 'prompt')"
+    ></textarea>
+
+    @if (formUtils.isValidField(tfForm, 'prompt')) {
+      <p class="mt-1 text-sm text-red-500">{{ formUtils.getFieldError(tfForm, 'prompt') }}</p>
+    }
+  </div>
+
+  <div>
+    <label class="block text-sm font-semibold text-gray-900 mb-2">
+      Points <span class="text-red-500">*</span>
+    </label>
+    <input
+      type="number"
+      formControlName="points"
+      min="1"
+      step="5"
+      appOnlyNumbers
+      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+    />
+  </div>
+
+  <div>
+    <label class="block text-sm font-semibold text-gray-900 mb-3">
+      Correct Answer <span class="text-red-500">*</span>
+    </label>
+    <div class="grid grid-cols-2 gap-4">
+
+      <button
+        type="button"
+        (click)="setCorrectAnswer(true)"
+        class="p-4 border-2 rounded-lg transition-all cursor-pointer"
+        [class.border-green-600]="correctAnswer === true"
+        [class.bg-green-50]="correctAnswer === true"
+        [class.border-gray-300]="correctAnswer === false"
+        [class.hover:border-gray-400]="correctAnswer === false"
+      >
+        <div class="text-center">
+          <div class="text-2xl font-bold mb-1"
+              [class.text-green-600]="correctAnswer === true"
+              [class.text-gray-700]="correctAnswer === false">
+            TRUE
+          </div>
+          <div class="text-sm text-gray-600">This statement is correct</div>
+        </div>
+      </button>
+
+      <button
+        type="button"
+        (click)="setCorrectAnswer(false)"
+        class="p-4 border-2 rounded-lg transition-all cursor-pointer"
+        [class.border-red-600]="correctAnswer === false"
+        [class.bg-red-50]="correctAnswer === false"
+        [class.border-gray-300]="correctAnswer === true"
+        [class.hover:border-gray-400]="correctAnswer === true"
+      >
+        <div class="text-center">
+          <div class="text-2xl font-bold mb-1"
+              [class.text-red-600]="correctAnswer === false"
+              [class.text-gray-700]="correctAnswer === true">
+            FALSE
+          </div>
+          <div class="text-sm text-gray-600">This statement is incorrect</div>
+        </div>
+      </button>
+
+    </div>
+  </div>
+
+  <div class="flex gap-3 pt-4 border-t border-gray-200">
+    <button
+      type="button"
+      (click)="cancel()"
+      class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium cursor-pointer"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="flex-1 px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
+    >
+      Add Question
+    </button>
+  </div>
+</form>

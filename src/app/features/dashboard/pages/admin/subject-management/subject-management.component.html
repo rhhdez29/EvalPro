@@ -109,7 +109,7 @@
         @for (subject of filteredSubjects(); track subject.id) {
           <tr
             class="hover:bg-gray-50 transition-colors cursor-pointer group"
-            (click)="handleSubjectClick(subject.id)"
+            (click)="handleSubjectClick(subject.id.toString())"
           >
             <td class="px-6 py-4">
               <div class="flex items-center gap-3">
@@ -142,21 +142,21 @@
 
             <td class="px-6 py-4 text-center">
               <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
-                {{ 0 }}
+                {{ subject.exams_count }}
               </span>
             </td>
 
             <td class="px-6 py-4">
               <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
-                  (click)="handleEdit($event, subject.id)"
+                  (click)="handleEdit($event, subject.id.toString())"
                   class="p-2 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"
                   title="Edit Subject"
                 >
                   <lucide-icon [img]="icons.Edit" class="w-4 h-4 text-gray-600"></lucide-icon>
                 </button>
                 <button
-                  (click)="handleDelete($event, subject.id)"
+                  (click)="handleDelete($event, subject.id.toString())"
                   class="p-2 hover:bg-red-100 rounded-lg transition-colors cursor-pointer"
                   title="Delete Subject"
                 >

@@ -17,8 +17,8 @@ export interface MatchMetaData{
 //Para las preguntas de codigo
 export interface CodeMetaData{
   language: string;
+  framework: string;
   initial_code: string;
-  test_cases: { input: string; output: string;}[];
 }
 
 export type QuestionMetaData = MatchMetaData | CodeMetaData | Record<string, any>;
@@ -56,4 +56,12 @@ export interface ExamDetail extends ExamBase{
   total_score: number;
   description: string;
   questions: Question[];
+}
+
+export interface ExamForm extends Omit<ExamDetail, 'id' | 'subject' | 'status'>{
+
+}
+
+export interface QuestionForm extends Omit<Question, 'id' | 'exam'>{
+
 }

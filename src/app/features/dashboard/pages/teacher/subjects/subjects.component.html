@@ -80,7 +80,7 @@
 
     @for (subject of subjectsResource.value(); track subject.id) {
       <div
-        (click)="handleSubjectClick(subject.id)"
+        (click)="handleSubjectClick(subject.id.toString())"
         class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer group"
       >
 
@@ -103,7 +103,7 @@
             >
               <li>
                 <button
-                  (click)="handleMoreOptions($event, subject.id)"
+                  (click)="handleMoreOptions($event, subject.id.toString())"
                   class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer flex items-center gap-2"
                 >
                   <lucide-icon [img]="icons.Edit" class="w-4 h-4"></lucide-icon>
@@ -113,7 +113,7 @@
 
               <li>
                 <button
-                  (click)="handleMoreOptions($event, subject.id)"
+                  (click)="handleMoreOptions($event, subject.id.toString())"
                   class="text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer flex items-center gap-2"
                 >
                   <lucide-icon [img]="icons.Trash2" class="w-4 h-4"></lucide-icon>

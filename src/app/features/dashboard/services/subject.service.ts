@@ -20,7 +20,7 @@ export class SubjectService {
 
 
   // Obtener todas las materias
-  getSubjects (): Observable<Subject[]> {
+  getSubjects (): Observable<RESTSubject[]> {
     return this.http.get<PaginationResult<RESTSubject>>(this.apiUrl)
     .pipe(
       map((response) => response.results),

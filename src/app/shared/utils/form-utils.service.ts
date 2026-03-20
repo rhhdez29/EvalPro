@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { ValidatorService2 } from './validator.service';
 
 @Injectable({
@@ -31,6 +31,15 @@ export class FormUtilsService {
     return !!(myForm.controls[fieldName].errors && myForm.controls[fieldName].touched); //Doble negacion para saber si tiene algo esa variable
   }
 
+  isValidFieldInArray(formArray: FormArray, index: number){
+    return (formArray.controls[index].errors && formArray.controls[index].touched)
+  }
+
+  isValidFieldInArrayGroup(formArray: FormArray, index: number, fieldName: string): boolean {
+    const group = formArray.at(index);
+    const control = group.get(fieldName);
+    return !!(control && control.invalid && control.touched);
+  }
   getFieldError(myForm: FormGroup, fieldName: string): string | null {
     if (!myForm.controls[fieldName]) return null;
 

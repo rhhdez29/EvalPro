@@ -1,0 +1,225 @@
+<form [formGroup]="codeForm" class="space-y-6">
+
+  <div>
+    <label class="block text-sm font-semibold text-gray-900 mb-2">
+      Challenge Description <span class="text-red-500">*</span>
+    </label>
+    <textarea
+      formControlName="prompt"
+      placeholder="Describe the programming challenge, requirements, and constraints..."
+      rows="4"
+      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none"
+      [class.border-red-500]="formUtils.isValidField(codeForm, 'prompt')"
+    ></textarea>
+    @if (formUtils.isValidField(codeForm, 'prompt')) {
+      <p class="mt-1 text-sm text-red-500">{{ formUtils.getFieldError(codeForm, 'prompt') }}</p>
+    }
+  </div>
+
+  <div>
+    <label class="block text-sm font-semibold text-gray-900 mb-2">
+      Points <span class="text-red-500">*</span>
+    </label>
+    <input
+      type="number"
+      min="1"
+      step="5"
+      appOnlyNumbers
+      formControlName="points"
+      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+    />
+  </div>
+
+  <div formGroupName="metadata">
+
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <label class="block text-sm font-semibold text-gray-900 mb-2">
+        Programming Language <span class="text-red-500">*</span>
+      </label>
+      <select
+        formControlName="language"
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+      >
+        @for (lang of LANGUAGES; track lang.value) {
+          <option [value]="lang.value">{{ lang.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-semibold text-gray-900 mb-2">
+        Framework (Optional)
+      </label>
+      <select
+        formControlName="framework"
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+      >
+        @for (fw of FRAMEWORKS; track fw.value) {
+          <option [value]="fw.value">{{ fw.label }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div>
+    <label class="block text-sm font-semibold text-gray-900 mb-2">
+      Starter Code (Optional)
+    </label>
+    <div class="border-2 border-gray-300 rounded-lg overflow-hidden h-[200px] text-left">
+
+      <ngx-monaco-editor
+        class="h-full w-full"
+        [options]="editorOptions()"
+        formControlName="starterCode"
+      >
+      </ngx-monaco-editor>
+
+    </div>
+    <p class="mt-2 text-xs text-gray-500">
+      This code will be pre-populated in the student's editor
+    </p>
+  </div>
+
+  </div>
+
+  <!-- <div class="border-2 border-yellow-300 rounded-lg p-4 bg-yellow-50/30">
+    <div class="flex items-center gap-2 mb-4">
+      <lucide-icon [img]="icons.Code" class="w-5 h-5 text-yellow-600"></lucide-icon>
+      <h4 class="font-semibold text-gray-900">Validation Configuration</h4>
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-sm font-semibold text-gray-900 mb-3">
+        Validation Method <span class="text-red-500">*</span>
+      </label>
+      <div class="space-y-2">
+
+        <label class="flex items-start gap-3 p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-yellow-400 transition-colors">
+          <input
+            type="radio"
+            name="validationType"
+            value="output"
+            [ngModel]="validationType()"
+            (ngModelChange)="validationType.set($event)"
+            class="mt-1 w-4 h-4 text-yellow-600 border-gray-300 focus:ring-yellow-500"
+          />
+          <div class="flex-1">
+            <div class="font-medium text-gray-900">Expected Output Match</div>
+            <div class="text-sm text-gray-600">Compare program output with expected result</div>
+          </div>
+        </label>
+
+        <label class="flex items-start gap-3 p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-yellow-400 transition-colors">
+          <input
+            type="radio"
+            name="validationType"
+            value="structure"
+            [ngModel]="validationType()"
+            (ngModelChange)="validationType.set($event)"
+            class="mt-1 w-4 h-4 text-yellow-600 border-gray-300 focus:ring-yellow-500"
+          />
+          <div class="flex-1">
+            <div class="font-medium text-gray-900">Code Structure Validation</div>
+            <div class="text-sm text-gray-600">Check for specific patterns, functions, or syntax</div>
+          </div>
+        </label>
+
+        <label class="flex items-start gap-3 p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-yellow-400 transition-colors">
+          <input
+            type="radio"
+            name="validationType"
+            value="custom"
+            [ngModel]="validationType()"
+            (ngModelChange)="validationType.set($event)"
+            class="mt-1 w-4 h-4 text-yellow-600 border-gray-300 focus:ring-yellow-500"
+          />
+          <div class="flex-1">
+            <div class="font-medium text-gray-900">Custom Validation Logic</div>
+            <div class="text-sm text-gray-600">Advanced validation with custom rules</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    @switch (validationType()) {
+
+      @case ('output') {
+        <div>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">
+            Expected Output <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            [ngModel]="expectedOutput()"
+            (ngModelChange)="expectedOutput.set($event)"
+            placeholder="Enter the exact expected output of the program..."
+            rows="6"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none font-mono text-sm bg-white"
+          ></textarea>
+          <p class="mt-2 text-xs text-gray-500">
+            Student code will be executed and output compared (case-sensitive, whitespace-sensitive)
+          </p>
+        </div>
+      }
+
+      @case ('structure') {
+        <div>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">
+            Structure Validation Rules <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            [ngModel]="structureRules()"
+            (ngModelChange)="structureRules.set($event)"
+            placeholder="Example:&#10;- Must contain a function named 'calculate'&#10;- Must use a for loop&#10;- Must include error handling (try/catch)&#10;- Must define a class named 'User'"
+            rows="8"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none bg-white"
+          ></textarea>
+          <div class="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2">
+            <lucide-icon [img]="icons.AlertCircle" class="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5"></lucide-icon>
+            <p class="text-xs text-blue-700">
+              Define specific code patterns, keywords, or structures that must be present in the solution
+            </p>
+          </div>
+        </div>
+      }
+
+      @case ('custom') {
+        <div>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">
+            Custom Validation Logic <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            [ngModel]="customValidation()"
+            (ngModelChange)="customValidation.set($event)"
+            placeholder="Define your custom validation criteria:&#10;&#10;Example for SQL:&#10;- Query must return exactly 5 rows&#10;- Must include JOIN statement&#10;- Result must contain columns: id, name, email&#10;- Must use WHERE clause with date filter"
+            rows="10"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none bg-white"
+          ></textarea>
+          <div class="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2">
+            <lucide-icon [img]="icons.AlertCircle" class="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5"></lucide-icon>
+            <p class="text-xs text-blue-700">
+              Describe detailed validation requirements. This will be used by the grading system to evaluate submissions.
+            </p>
+          </div>
+        </div>
+      }
+    }
+  </div> -->
+
+  <div class="flex gap-3 pt-4 border-t border-gray-200">
+    <button
+      type="button"
+      (click)="cancel()"
+      class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium cursor-pointer"
+    >
+      Cancel
+    </button>
+    <button
+      type="button"
+      (click)="addQuestion()"
+      class="flex-1 px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
+    >
+      Add Question
+    </button>
+  </div>
+</form>

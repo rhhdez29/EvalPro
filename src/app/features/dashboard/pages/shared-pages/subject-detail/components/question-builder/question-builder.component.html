@@ -1,0 +1,117 @@
+@if (!isBuilding()) {
+  <button
+    type="button"
+    (click)="isBuilding.set(true)"
+    class="w-full py-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition-all text-gray-600 hover:text-yellow-600 font-medium flex items-center justify-center gap-2 cursor-pointer"
+  >
+    <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
+    Add New Question
+  </button>
+}
+
+@else {
+  <div class="border-2 border-yellow-500 rounded-lg bg-yellow-50/30 p-6">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-lg font-bold text-gray-900">Build New Question</h3>
+      <button
+        type="button"
+        (click)="handleCancel()"
+        class="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+      >
+        <lucide-icon [img]="icons.X" class="w-5 h-5 text-gray-600"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="mb-6">
+      <label class="block text-sm font-semibold text-gray-900 mb-3">
+        Question Type <span class="text-red-500">*</span>
+      </label>
+      <div class="grid grid-cols-2 gap-3">
+
+        <button
+          type="button"
+          (click)="selectType('MCQ')"
+          class="p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
+          [class.border-yellow-600]="selectedType() === 'MCQ'"
+          [class.border-gray-300]="selectedType() !== 'MCQ'"
+          [class.hover:border-gray-400]="selectedType() !== 'MCQ'"
+        >
+          <div class="flex items-center gap-2 mb-1">
+            <lucide-icon [img]="icons.Check" class="w-4 h-4"></lucide-icon>
+            <span class="font-semibold text-gray-900">Multiple Choice</span>
+          </div>
+          <p class="text-xs text-gray-600">Select one or more correct answers</p>
+        </button>
+
+        <button
+          type="button"
+          (click)="selectType('TF')"
+          class="p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
+          [class.border-yellow-600]="selectedType() === 'TF'"
+          [class.border-gray-300]="selectedType() !== 'TF'"
+          [class.hover:border-gray-400]="selectedType() !== 'TF'"
+        >
+          <div class="flex items-center gap-2 mb-1">
+            <lucide-icon [img]="icons.Check" class="w-4 h-4"></lucide-icon>
+            <span class="font-semibold text-gray-900">True/False</span>
+          </div>
+          <p class="text-xs text-gray-600">Simple binary choice question</p>
+        </button>
+
+        <button
+          type="button"
+          (click)="selectType('MATCH')"
+          class="p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
+          [class.border-yellow-600]="selectedType() === 'MATCH'"
+          [class.border-gray-300]="selectedType() !== 'MATCH'"
+          [class.hover:border-gray-400]="selectedType() !== 'MATCH'"
+        >
+          <div class="flex items-center gap-2 mb-1">
+            <lucide-icon [img]="icons.Check" class="w-4 h-4"></lucide-icon>
+            <span class="font-semibold text-gray-900">Statement Matching</span>
+          </div>
+          <p class="text-xs text-gray-600">Match pairs of related items</p>
+        </button>
+
+        <button
+          type="button"
+          (click)="selectType('Code')"
+          class="p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
+          [class.border-yellow-600]="selectedType() === 'Code'"
+          [class.border-gray-300]="selectedType() !== 'Code'"
+          [class.hover:border-gray-400]="selectedType() !== 'Code'"
+        >
+          <div class="flex items-center gap-2 mb-1">
+            <lucide-icon [img]="icons.Code" class="w-4 h-4"></lucide-icon>
+            <span class="font-semibold text-gray-900">Code Editor</span>
+          </div>
+          <p class="text-xs text-gray-600">Programming challenge with validation</p>
+        </button>
+
+      </div>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-lg p-6">
+      @switch (selectedType()) {
+<!--
+        @case ('multiple-choice') {
+          <app-multiple-choice-builder (onAdd)="handleAdd($event)" (onCancel)="handleCancel()"></app-multiple-choice-builder>
+        }
+
+
+        -->
+        @case ('MATCH') {
+          <app-matching-form (onAdd)="handleAdd($event)" (onCancel)="handleCancel()"></app-matching-form>
+        }
+        @case ('TF') {
+          <app-true-false-form (onAdd)="handleAdd($event)" (onCancel)="handleCancel()"></app-true-false-form>
+        }
+
+        @case ('Code') {
+          <app-code-editor-builder (onAdd)="handleAdd($event)" (onCancel)="handleCancel()"></app-code-editor-builder>
+        }
+
+      }
+    </div>
+  </div>
+}
