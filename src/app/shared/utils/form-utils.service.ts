@@ -13,18 +13,51 @@ export class FormUtilsService {
 
   strictEmailValidator(): ValidatorFn{
 
-  return (control: AbstractControl): ValidationErrors | null => {
-    const value = control.value;
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
 
-    if(!value) return null;
+      if(!value) return null;
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@alumno\.buap\.mx$/;
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@alumno\.buap\.mx$/;
 
-    const isValid = emailRegex.test(value);
+      const isValid = emailRegex.test(value);
 
-    return isValid ? null: {invalidFormat: true}
+      return isValid ? null: {invalidFormat: true}
     }
 
+  }
+
+  minValue(min: number): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      if(value === null || value === undefined || value === '') return null;
+
+      const numValue = Number(value);
+
+      const isValid = numValue >= min;
+
+      return isValid ? null: {minValue: {min: min}}
+    }
+  }
+
+  maxValue(max: number): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      if(!value) return null;
+
+      const isValid = value <= max;
+
+      return isValid ? null: {maxValue: {max: max}}
+    }
+  }
+
+  //Valida que al menos una opcion sea correcta
+  hasAtLeastOneCorrectAnswer(formArray: FormArray): boolean {
+    return formArray.controls.some(
+      (control) => control.get('isCorrect')?.value === true
+    );
   }
 
   isValidField(myForm: FormGroup, fieldName: string): boolean {

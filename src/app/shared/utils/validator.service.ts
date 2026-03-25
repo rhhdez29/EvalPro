@@ -15,11 +15,17 @@ export class ValidatorService2 {
         case 'minlength':
           return `Minimo de ${errors['minlength'].requiredLength} caracteres.`;
         case 'min':
-          return `Minimo minimo de ${errors['min'].min} caracteres.`;
+          return `Minimo de ${errors['min'].min} caracteres.`;
         case 'email':
           return 'Ingrese un correo valido.'
         case 'invalidFormat':
           return 'Ingrese un correo valido.'
+        case 'max':
+          return `Maximo de ${errors['max'].max} caracteres.`;
+        case 'minValue':
+          return `El valor minimo es ${errors['minValue'].min}.`;
+        case 'maxValue':
+          return `El valor maximo es ${errors['maxValue'].max}.`;
       }
     }
     return null;

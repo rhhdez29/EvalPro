@@ -28,6 +28,9 @@
       appOnlyNumbers
       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
     />
+    @if(formUtils.isValidField(matchingForm, 'points')){
+      <p class="text-red-500 text-sm">{{ formUtils.getFieldError(matchingForm, 'points') }}</p>
+    }
     <p class="mt-2 text-xs text-gray-500">
       Points will be divided equally among all pairs
       ({{ pairsArray.length }} pairs = {{ (matchingForm.get('points')?.value / pairsArray.length) | number:'1.2-2' }} points each)

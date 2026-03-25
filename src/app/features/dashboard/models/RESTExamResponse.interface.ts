@@ -6,6 +6,7 @@ export interface AnswerOption{
   id: number;
   question?: number;
   text: string;
+  partial_score: number;
   is_correct: boolean;
 }
 
@@ -38,7 +39,7 @@ export interface Question{
 //Examen informacion basica
 export interface ExamBase{
   id: number;
-  subject: number;
+  subject: number | string;
   title: string;
   start_date: string;
   end_date: string;
@@ -58,7 +59,7 @@ export interface ExamDetail extends ExamBase{
   questions: Question[];
 }
 
-export interface ExamForm extends Omit<ExamDetail, 'id' | 'subject' | 'status'>{
+export interface ExamForm extends Omit<ExamDetail, 'id' | 'status'>{
 
 }
 

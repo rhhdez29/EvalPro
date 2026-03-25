@@ -93,20 +93,16 @@
 
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       @switch (selectedType()) {
-<!--
-        @case ('multiple-choice') {
-          <app-multiple-choice-builder (onAdd)="handleAdd($event)" (onCancel)="handleCancel()"></app-multiple-choice-builder>
+
+        @case ('MCQ') {
+          <app-multiple-choice-form (onAdd)="handleAdd($event)" (onCancel)="handleCancel()"></app-multiple-choice-form>
         }
-
-
-        -->
         @case ('MATCH') {
           <app-matching-form (onAdd)="handleAdd($event)" (onCancel)="handleCancel()"></app-matching-form>
         }
         @case ('TF') {
           <app-true-false-form (onAdd)="handleAdd($event)" (onCancel)="handleCancel()"></app-true-false-form>
         }
-
         @case ('Code') {
           <app-code-editor-builder (onAdd)="handleAdd($event)" (onCancel)="handleCancel()"></app-code-editor-builder>
         }

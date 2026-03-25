@@ -16,8 +16,10 @@ import {
 } from 'lucide-angular';
 
 import { FormUtilsService } from '../../../../../../../shared/utils/form-utils.service';
-import { ExamForm, QuestionForm, QuestionType } from '../../../../../models/RESTExamResponse.interface';
+import { ExamForm, Question, QuestionForm, QuestionType } from '../../../../../models/RESTExamResponse.interface';
 import { QuestionBuilderComponent } from "../question-builder/question-builder.component";
+import { OnlyNumbersDirective } from "../../../../../../../shared/directives/only-numbers.directive";
+import { ExamService } from '../../../../../services/exam.service';
 
 @Component({
   selector: 'app-create-exam-form',
@@ -29,7 +31,8 @@ import { QuestionBuilderComponent } from "../question-builder/question-builder.c
     ReactiveFormsModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
-    QuestionBuilderComponent
+    QuestionBuilderComponent,
+    OnlyNumbersDirective
 ],
   templateUrl: './create-exam-form.component.html'
 })
@@ -42,6 +45,7 @@ export class CreateExamFormComponent {
 
   private fb = inject(NonNullableFormBuilder);
   public formUtils = inject(FormUtilsService);
+  private examService = inject(ExamService);
 
 
   readonly icons = { X, FileText, Plus, Trash2, GripVertical, AlertCircle, MoveUp };
@@ -56,8 +60,8 @@ export class CreateExamFormComponent {
     description: ['', Validators.required],
     start_date: ['', Validators.required],
     end_date: ['', Validators.required],
-    duration_minutes: [60, Validators.required],
-    total_score: [100, Validators.required],
+    duration_minutes: [60, [Validators.required, this.formUtils.minValue(1), this.formUtils.maxValue(120)]],
+    total_score: [100, [Validators.required, this.formUtils.minValue(10), this.formUtils.maxValue(100)]],
     questions: this.fb.array([])
   })
 
@@ -131,10 +135,64 @@ export class CreateExamFormComponent {
   }
 
   createExam(){
-    const examData = this.examForm.getRawValue() as ExamForm;
-    console.log('Formulario completo: ', examData);
+    const examFormValue = this.examForm.getRawValue()
+    const dt_start = new Date(examFormValue.start_date);
+    const dt_end = new Date(examFormValue.end_date);
+
+    dt_start.setSeconds(0,0);
+    dt_end.setSeconds(0,0);
+
+    if(this.examForm.invalid){
+      this.examForm.markAllAsTouched();
+      return;
+    }
+
+    if(this.questionsFormArray.length === 0){
+      alert('Debe agregar al menos una pregunta');
+      return;
+    }
+
+    const examData: ExamForm = {
+      subject: this.subjectId(),
+      title: examFormValue.title,
+      description: examFormValue.description,
+      start_date: this.toIsoWithOffset(dt_start),
+      end_date: this.toIsoWithOffset(dt_end),
+      duration_minutes: examFormValue.duration_minutes,
+      total_score: examFormValue.total_score,
+      questions: examFormValue.questions as Question[]
+
+    }
+
+    this.examService.createExam(examData).subscribe({
+      next: (response) => {
+        console.log('Examen creado exitosamente: ', response);
+        this.closeDialog.emit();
+      },
+      error: (error) => {
+        console.error('Error al crear el examen: ', error);
+      }
+    })
 
 
   }
+
+  toIsoWithOffset(d: Date) {
+  const pad = (n: number) => String(n).padStart(2, '0');
+
+  const yyyy = d.getFullYear();
+  const mm = pad(d.getMonth() + 1);
+  const dd = pad(d.getDate());
+  const hh = pad(d.getHours());
+  const mi = pad(d.getMinutes());
+  const ss = pad(d.getSeconds());
+
+  const offsetMin = -d.getTimezoneOffset(); // -360 => -06:00
+  const sign = offsetMin >= 0 ? '+' : '-';
+  const offH = pad(Math.floor(Math.abs(offsetMin) / 60));
+  const offM = pad(Math.abs(offsetMin) % 60);
+
+  return `${yyyy}-${mm}-${dd}T${hh}:${mi}:${ss}${sign}${offH}:${offM}`;
+}
 
 }

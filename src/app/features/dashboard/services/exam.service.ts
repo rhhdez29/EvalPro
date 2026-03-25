@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
 import { PaginationResult } from '../models/PaginationResult';
-import { ExamSummary } from '../models/RESTExamResponse.interface';
+import { ExamForm, ExamSummary } from '../models/RESTExamResponse.interface';
 import { catchError, map, throwError } from 'rxjs';
 
 @Injectable({
@@ -19,6 +19,25 @@ export class ExamService {
     return this.http.get<PaginationResult<ExamSummary>>(this.apiUrl, {params: param})
     .pipe(
       map(res => res.results),
+      catchError((err: HttpErrorResponse) => {
+        let errorMsg = 'Ocurrio un error inesperado'
+
+        if(err.status === 403){
+          errorMsg = 'No tienes permiso para acceder a este recurso'
+        }
+
+        if(err.status === 404){
+          errorMsg = 'No se encontro el recurso'
+        }
+
+        return throwError(() => new Error(errorMsg));
+      })
+    )
+  }
+
+  createExam(exam: ExamForm){
+    return this.http.post(this.apiUrl, exam)
+    .pipe(
       catchError((err: HttpErrorResponse) => {
         let errorMsg = 'Ocurrio un error inesperado'
 

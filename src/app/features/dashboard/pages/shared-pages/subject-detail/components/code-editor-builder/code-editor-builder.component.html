@@ -28,6 +28,9 @@
       formControlName="points"
       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
     />
+    @if (formUtils.isValidField(codeForm, 'points')) {
+      <p class="mt-1 text-sm text-red-500">{{ formUtils.getFieldError(codeForm, 'points') }}</p>
+    }
   </div>
 
   <div formGroupName="metadata">

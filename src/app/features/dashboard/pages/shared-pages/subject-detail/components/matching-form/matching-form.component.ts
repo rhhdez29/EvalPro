@@ -25,8 +25,7 @@ export class MatchingFormComponent {
   // 2. Formulario Principal
   matchingForm: FormGroup = this.fb.group({
     prompt: ['', Validators.required],
-    points: [10, [Validators.required, Validators.min(1)]],
-    // Aquí usamos un FormArray para los pares dinámicos
+    points: [10, [Validators.required, this.formUtils.minValue(1)]],
     pairs: this.fb.array([
       this.createPair(),
       this.createPair(),

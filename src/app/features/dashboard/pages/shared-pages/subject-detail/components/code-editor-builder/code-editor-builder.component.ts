@@ -43,7 +43,7 @@ export class CodeEditorBuilderComponent {
   codeForm = this.fb.group({
     question_type: ['Code' as QuestionType, Validators.required],
     prompt: ['', Validators.required],
-    points: [10, Validators.required],
+    points: [10, [Validators.required, this.formUtils.minValue(1)]],
     order: [0, Validators.required],
     metadata: this.fb.group({
       language: ['typescript', Validators.required],

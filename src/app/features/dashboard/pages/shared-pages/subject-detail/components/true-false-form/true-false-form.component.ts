@@ -25,7 +25,7 @@ export class TrueFalseFormComponent {
 
   tfForm: FormGroup = this.fb.group({
     prompt: ['', Validators.required],
-    points: [10, [Validators.required, Validators.min(1)]],
+    points: [10, [Validators.required, this.formUtils.minValue(1)]],
     metadata: this.fb.group({
       correctAnswer: [true, Validators.required]
     })

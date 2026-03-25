@@ -114,6 +114,7 @@
                 [owlDateTimeTrigger]="dt1"
                 placeholder="Set star date"
                 formControlName="start_date"
+                readonly
                 class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
                 />
               <owl-date-time #dt1></owl-date-time>
@@ -133,6 +134,7 @@
                 [owlDateTimeTrigger]="dt2"
                 placeholder="Set end date"
                 formControlName="end_date"
+                readonly
                 class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
                 />
               <owl-date-time #dt2></owl-date-time>
@@ -153,6 +155,7 @@
                 formControlName="duration_minutes"
                 type="number"
                 min="1"
+                appOnlyNumbers
                 class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
                 [class.border-red-500]="formUtils.isValidField(examForm, 'duration_minutes')"
                 [class.focus:ring-red-500]="formUtils.isValidField(examForm, 'duration_minutes')"
@@ -171,6 +174,7 @@
                 formControlName="total_score"
                 type="number"
                 min="1"
+                appOnlyNumbers
                 step="0.01"
                 class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
                 [class.border-red-500]="formUtils.isValidField(examForm, 'total_score')"

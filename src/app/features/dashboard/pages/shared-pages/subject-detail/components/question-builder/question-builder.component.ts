@@ -14,6 +14,7 @@ import { QuestionForm, QuestionType } from '../../../../../models/RESTExamRespon
 import { FormGroup } from '@angular/forms';
 import { TrueFalseFormComponent } from "../true-false-form/true-false-form.component";
 import { MatchingFormComponent } from "../matching-form/matching-form.component";
+import { MultipleChoiceFormComponent } from "../multiple-choice-form/multiple-choice-form.component";
 
 
 @Component({
@@ -24,7 +25,8 @@ import { MatchingFormComponent } from "../matching-form/matching-form.component"
     LucideAngularModule,
     CodeEditorBuilderComponent,
     TrueFalseFormComponent,
-    MatchingFormComponent
+    MatchingFormComponent,
+    MultipleChoiceFormComponent
 ],
   templateUrl: './question-builder.component.html'
 })
