@@ -20,11 +20,12 @@ import { ExamBase } from '../../../../../models/RESTExamResponse.interface';
 
 import { CreateExamFormComponent } from "../create-exam-form/create-exam-form.component";
 import { LoadingInformationComponent } from "../../../../../../../shared/components/loading-information/loading-information.component";
+import { DeleteModalComponent } from "../../../../../../../shared/components/delete-modal/delete-modal.component";
 
 @Component({
   selector: 'app-exams-tab',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule,CreateExamFormComponent, LoadingInformationComponent],
+  imports: [CommonModule, LucideAngularModule, CreateExamFormComponent, LoadingInformationComponent, DeleteModalComponent],
   templateUrl: './exams-tab.component.html'
 })
 export class ExamsTabComponent {
@@ -40,6 +41,7 @@ export class ExamsTabComponent {
   // Estados
   showCreateForm = signal(false);
   isModalOpen = signal(false);
+  isModalDeleteOpen = signal(false);
 
   isExamsEmpty = computed(() => {
     const data = this.examsResource.value()
@@ -60,8 +62,13 @@ export class ExamsTabComponent {
     },
   });
 
+
   // Iconos
   readonly icons = { Plus, Calendar, Clock, MoreVertical, Edit, Trash2, Eye };
+
+  private idExam: number | null = null;
+
+  messageDelete = '¿Estas seguro de que deseas eliminar este examen? Esta acción no se puede deshacer.';
 
   constructor(){
 
@@ -69,6 +76,7 @@ export class ExamsTabComponent {
 
   ngAfterNextRender(){
     this.examsResource.reload();
+    console.log(this.examsResource.value());
   }
 
   // En Angular evitamos devolver JSX/HTML desde el TS. Solo devolvemos las clases CSS.
@@ -88,5 +96,28 @@ export class ExamsTabComponent {
 
   handleSubmitExam() {
 
+  }
+
+  openDeleteModal(id: number){
+    this.idExam = id;
+    this.isModalDeleteOpen.set(true);
+  }
+
+  closeDeleteModal(){
+    this.isModalDeleteOpen.set(false);
+  }
+  deleteExam(){
+    console.log('Eliminando examen: ', this.idExam);
+
+    this.examService.deleteExam(this.idExam!).subscribe({
+      next: () => {
+        this.examsResource.reload();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    })
+
+    this.closeDeleteModal();
   }
 }

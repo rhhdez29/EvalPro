@@ -19,6 +19,12 @@
     [hasValue]="isExamsEmpty()"
     [emptyMessage]="'No hay examenes para esta materia aun.'"
   >
+  <app-delete-modal
+    [isOpen]="isModalDeleteOpen()"
+    (cancel)="closeDeleteModal()"
+    [message]="messageDelete"
+    (confirm)="deleteExam()"
+  />
 
   <div class="space-y-4">
       @if (!examsResource.error() && !isExamsEmpty()) {
@@ -59,7 +65,7 @@
               <lucide-icon [img]="icons.Edit" class="w-4 h-4 text-gray-600"></lucide-icon>
             </button>
             <button class="p-2 hover:bg-red-50 rounded-lg transition-colors cursor-pointer" title="Delete Exam">
-              <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600"></lucide-icon>
+              <lucide-icon [img]="icons.Trash2" (click)="openDeleteModal(exam.id)" class="w-4 h-4 text-red-600"></lucide-icon>
             </button>
           </div>
         </div>

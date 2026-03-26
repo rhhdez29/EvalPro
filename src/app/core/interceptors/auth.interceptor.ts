@@ -7,6 +7,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const facadeService = inject(FacadeService);
   const token = facadeService.userToken();
   // Si hay un token, clonamos la petición y le pegamos la cabecera
+  console.log(token);
   if (token) {
     const clonedRequest = req.clone({
       setHeaders: {

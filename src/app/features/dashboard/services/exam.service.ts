@@ -54,4 +54,23 @@ export class ExamService {
     )
   }
 
+  deleteExam(id: number){
+    return this.http.delete(this.apiUrl + id)
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let errorMsg = 'Ocurrio un error inesperado'
+
+        if(err.status === 403){
+          errorMsg = 'No tienes permiso para acceder a este recurso'
+        }
+
+        if(err.status === 404){
+          errorMsg = 'No se encontro el recurso'
+        }
+
+        return throwError(() => new Error(errorMsg));
+      })
+    )
+  }
+
 }

@@ -22,10 +22,11 @@ import { FormSubjectComponent } from '../../../components/form-subject/form-subj
 import { CreateSubjectForm } from '../../../models/subject.interface';
 import { LoadingModalComponent } from '../../../../../shared/components/loading-modal/loading-modal.component';
 import { LoadingInformationComponent } from "../../../../../shared/components/loading-information/loading-information.component";
+import { DeleteModalComponent } from "../../../../../shared/components/delete-modal/delete-modal.component";
 @Component({
   selector: 'app-my-subjects',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, FormSubjectComponent, LoadingModalComponent, LoadingInformationComponent],
+  imports: [CommonModule, LucideAngularModule, FormSubjectComponent, LoadingModalComponent, LoadingInformationComponent, DeleteModalComponent],
   templateUrl: './subjects.component.html'
 })
 export class SubjectsComponent {
@@ -37,6 +38,7 @@ export class SubjectsComponent {
   resfreshTrigger = signal(0);
   isLoading = signal(false);
   isModalOpen = signal(false);
+  isModalDeleteOpen = signal(false);
 
   // Modales
   modalStatus = signal<'oculto' | 'cargando' | 'exito' | 'error'>('oculto');
@@ -67,6 +69,10 @@ export class SubjectsComponent {
 
   // Mapeo de iconos para el HTML
   readonly icons = { Plus, BookOpen, Users, FileText, MoreVertical, Edit, Trash2, AlertCircle };
+
+  messageDelete = '¿Estas seguro de que deseas eliminar esta materia? Esta acción no se puede deshacer.';
+  private idSubject: number | null = null;
+
 
   constructor() {
     // Si estamos en el navegador, recargamos la data (ya que en SSR evitamos el HTTP)
@@ -127,7 +133,32 @@ export class SubjectsComponent {
   // Angular necesita recibir el $event explícitamente para detener la propagación
   handleMoreOptions(event: Event, subjectId: string) {
     event.stopPropagation(); // Evita que se dispare el click de la tarjeta (handleSubjectClick)
+  }
 
+  deleteSubject(){
+    console.log('Eliminando materia: ', this.idSubject);
 
+    this.subjectsService.deleteSubject(this.idSubject!).subscribe({
+      next: () => {
+        this.subjectsResource.reload();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    })
+
+    this.closeDeleteModal();
+
+  }
+
+  openDeleteModal(event: Event, id: number){
+    event.stopPropagation();
+    this.idSubject = id;
+    this.isModalDeleteOpen.set(true);
+
+  }
+
+  closeDeleteModal(){
+    this.isModalDeleteOpen.set(false);
   }
 }

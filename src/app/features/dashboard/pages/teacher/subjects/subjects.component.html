@@ -74,6 +74,13 @@
     [emptyMessage]="'No hay materias registradas'"
   >
 
+  <app-delete-modal
+    [isOpen]="isModalDeleteOpen()"
+    (cancel)="closeDeleteModal()"
+    [message]="messageDelete"
+    (confirm)="deleteSubject()"
+  />
+
     @if (!subjectsResource.error() && subjectsResource.hasValue()) {
 
     <div class="grid grid-cols-3 gap-6">
@@ -113,7 +120,7 @@
 
               <li>
                 <button
-                  (click)="handleMoreOptions($event, subject.id.toString())"
+                  (click)="openDeleteModal($event, subject.id)"
                   class="text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer flex items-center gap-2"
                 >
                   <lucide-icon [img]="icons.Trash2" class="w-4 h-4"></lucide-icon>
