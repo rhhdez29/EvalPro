@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Output, computed, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Output, computed, inject, signal, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LucideAngularModule, X, BookOpen, Check } from 'lucide-angular';
-import {  CreateSubjectForm } from '../../models/subject.interface'
+import {  CreateSubjectForm, EditSubjectForm } from '../../models/subject.interface'
 import { SubjectService } from '../../services/subject.service';
 import { FormUtilsService } from '../../../../shared/utils/form-utils.service';
 
@@ -23,8 +23,11 @@ export class FormSubjectComponent {
 
 
   // Reemplazamos los props de React por Outputs de Angular
+  isOpen = input<boolean>(false);
   @Output() closeDialog = new EventEmitter<void>();
   @Output() submitForm = new EventEmitter<CreateSubjectForm>();
+  subjectData = input<EditSubjectForm | null>(null);
+  isEdit = input<boolean>(false);
 
   touchedFields =signal<Set<string>>(new Set());
 
@@ -51,6 +54,25 @@ export class FormSubjectComponent {
     { value: 'bg-orange-500', label: 'Orange', hex: '#f97316' },
     { value: 'bg-cyan-500', label: 'Cyan', hex: '#06b6d4' },
   ];
+
+  constructor(){
+
+      effect(() => {
+      const subject = this.subjectData();
+      console.log('Editando materia: ', subject);
+      if(subject){
+        this.myForm.patchValue({
+          name: subject.name,
+          code: subject.code,
+          department: subject.department,
+          color: subject.color
+        });
+      }else{
+        this.myForm.reset();
+      }
+    });
+
+  }
 
   // Métodos
 

@@ -19,7 +19,7 @@ import {
 import { SubjectService } from '../../../services/subject.service';
 
 import { FormSubjectComponent } from '../../../components/form-subject/form-subject.component';
-import { CreateSubjectForm } from '../../../models/subject.interface';
+import { CreateSubjectForm, EditSubjectForm, Subject } from '../../../models/subject.interface';
 import { LoadingModalComponent } from '../../../../../shared/components/loading-modal/loading-modal.component';
 import { LoadingInformationComponent } from "../../../../../shared/components/loading-information/loading-information.component";
 import { DeleteModalComponent } from "../../../../../shared/components/delete-modal/delete-modal.component";
@@ -39,6 +39,8 @@ export class SubjectsComponent {
   isLoading = signal(false);
   isModalOpen = signal(false);
   isModalDeleteOpen = signal(false);
+  isEditModalOpen = signal(false);
+  subjectToEdit = signal<EditSubjectForm | null>(null);
 
   // Modales
   modalStatus = signal<'oculto' | 'cargando' | 'exito' | 'error'>('oculto');
@@ -88,20 +90,43 @@ export class SubjectsComponent {
     this.router.navigate([`home/subject/${subjectId}`]);
   }
 
-  toggleModal() {
-    this.isModalOpen.set(!this.isModalOpen());
-  }
-
   createSubjectData(data: CreateSubjectForm){
 
     this.modalStatus.set('cargando');
     this.messageModal1.set('Cargando');
     this.messageModal2.set('Estamos procesando tu solicitud...')
 
-    this.subjectsService.createSubject(data).subscribe({
-      next: () => {
+    if(this.isEditModalOpen()){
+      this.subjectsService.updateSubject(this.idSubject!, data).subscribe({
+        next: () => {
+          this.closeCreateSubjectModal();
+          this.modalStatus.set('exito');
+          this.messageModal1.set('Listo!');
+          this.messageModal2.set('Materia actualizada con éxito');
+          setTimeout(() => {
+            this.modalStatus.set('oculto');
+            this.subjectsResource.reload();
+          }, 3000);
+        },
+        error: (err) => {
+          console.error(err);
+          this.modalStatus.set('error');
+          const mensajeError = err.error?.detail || 'Hubo un error en el servidor'
+
+          this.messageModal1.set('Uy, algo salió mal...');
+          this.messageModal2.set(mensajeError);
+
+          setTimeout(() => {
+            this.modalStatus.set('oculto');
+          }, 3000);
+        }
+      });
+    }else{
+
+      this.subjectsService.createSubject(data).subscribe({
+        next: () => {
         // 1. Cerramos el modal
-        this.toggleModal();
+        this.closeCreateSubjectModal();
 
         this.modalStatus.set('exito');
         this.messageModal1.set('Listo!');
@@ -129,6 +154,7 @@ export class SubjectsComponent {
       }
     });
   }
+  }
 
   // Angular necesita recibir el $event explícitamente para detener la propagación
   handleMoreOptions(event: Event, subjectId: string) {
@@ -149,6 +175,36 @@ export class SubjectsComponent {
 
     this.closeDeleteModal();
 
+  }
+
+  openCreateSubjectModal(event: Event | null, id: number | null, subject: EditSubjectForm | null){
+
+    if(event){
+      event.stopPropagation();
+    }
+
+    this.isModalOpen.set(true);
+    if(id){
+      this.idSubject = id;
+      this.isEditModalOpen.set(true);
+      this.subjectToEdit.set(subject);
+    }else{
+      this.isEditModalOpen.set(false);
+      this.subjectToEdit.set(null);
+    }
+  }
+
+  closeCreateSubjectModal(){
+    this.isModalOpen.set(false);
+    this.isEditModalOpen.set(false);
+    this.subjectToEdit.set(null);
+  }
+
+  openEditModal(event: Event, id: number, subject: EditSubjectForm){
+    event.stopPropagation();
+    this.idSubject = id;
+    this.isEditModalOpen.set(true);
+    this.subjectToEdit.set(subject);
   }
 
   openDeleteModal(event: Event, id: number){

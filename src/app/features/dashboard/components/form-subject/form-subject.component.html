@@ -1,3 +1,4 @@
+@if (isOpen()) {
 <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
   <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
 
@@ -6,10 +7,17 @@
         <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
           <lucide-icon [img]="icons.BookOpen" class="w-5 h-5 text-yellow-600"></lucide-icon>
         </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900">Create New Subject</h2>
-          <p class="text-sm text-gray-600">Add a new subject to your curriculum</p>
-        </div>
+        @if(isEdit()){
+          <div>
+            <h2 class="text-xl font-bold text-gray-900">Edit Subject</h2>
+            <p class="text-sm text-gray-600">Edit subject information</p>
+          </div>
+        }@else {
+          <div>
+            <h2 class="text-xl font-bold text-gray-900">Create New Subject</h2>
+            <p class="text-sm text-gray-600">Add a new subject to your curriculum</p>
+          </div>
+        }
       </div>
       <button
         type="button"
@@ -159,10 +167,11 @@
           type="submit"
           class="flex-1 px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Create Subject
+          {{ isEdit() ? 'Update Subject' : 'Create Subject' }}
         </button>
       </div>
 
     </form>
   </div>
 </div>
+}

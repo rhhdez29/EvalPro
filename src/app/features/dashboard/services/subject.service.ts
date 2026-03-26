@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from './../../../../environments/environments';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { RESTSubject } from '../models/RESTSubjectResponse.interface';
-import { Subject, } from '../models/subject.interface';
+import { EditSubjectForm, Subject, } from '../models/subject.interface';
 // import { SubjectMapper } from '../../../shared/mappers/subject-mapper';
 
 
@@ -48,6 +48,10 @@ export class SubjectService {
   // Obtener una materia por su ID
   getSubjectById(id: string): Observable<Subject> {
     return this.http.get<Subject>(`${this.apiUrl}${id}/`);
+  }
+
+  updateSubject(id: number, subjectData: EditSubjectForm) {
+    return this.http.put<any>(`${this.apiUrl}${id}/`, subjectData);
   }
 
   deleteSubject(id: number) {
