@@ -5,7 +5,7 @@
       <p class="text-gray-600 text-sm mt-1">Create and manage evaluations for this subject</p>
     </div>
     <button
-      (click)="handleCreateExam()"
+      (click)="openCreateExamModal(null)"
       class="flex items-center gap-2 px-4 py-2.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
     >
       <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
@@ -62,10 +62,10 @@
               <lucide-icon [img]="icons.Eye" class="w-4 h-4 text-gray-600"></lucide-icon>
             </button>
             <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer" title="Edit Exam">
-              <lucide-icon [img]="icons.Edit" class="w-4 h-4 text-gray-600"></lucide-icon>
+              <lucide-icon [img]="icons.Edit" (click)="openCreateExamModal(exam.id!)" class="w-4 h-4 text-gray-600"></lucide-icon>
             </button>
             <button class="p-2 hover:bg-red-50 rounded-lg transition-colors cursor-pointer" title="Delete Exam">
-              <lucide-icon [img]="icons.Trash2" (click)="openDeleteModal(exam.id)" class="w-4 h-4 text-red-600"></lucide-icon>
+              <lucide-icon [img]="icons.Trash2" (click)="openDeleteModal(exam.id!)" class="w-4 h-4 text-red-600"></lucide-icon>
             </button>
           </div>
         </div>
@@ -97,7 +97,9 @@
       <div class="bg-white p-8 rounded-xl">
         <app-create-exam-form
           [subjectId]="subjectId()"
-          (closeDialog)="handleCreateExam()"
+          (closeDialog)="closeCreateExamModal()"
+          [examData]="examToEdit()"
+          [isEditExam]="isEditExam()"
         />
       </div>
     </div>

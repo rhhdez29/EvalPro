@@ -54,8 +54,47 @@ export class ExamService {
     )
   }
 
+  getExamByID(id: number){
+
+    return this.http.get(this.apiUrl + id)
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let errorMsg = 'Ocurrio un error inesperado'
+
+        if(err.status === 403){
+          errorMsg = 'No tienes permiso para acceder a este recurso'
+        }
+
+        if(err.status === 404){
+          errorMsg = 'No se encontro el recurso'
+        }
+
+        return throwError(() => new Error(errorMsg));
+      })
+    )
+  }
+
   deleteExam(id: number){
     return this.http.delete(this.apiUrl + id)
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let errorMsg = 'Ocurrio un error inesperado'
+
+        if(err.status === 403){
+          errorMsg = 'No tienes permiso para acceder a este recurso'
+        }
+
+        if(err.status === 404){
+          errorMsg = 'No se encontro el recurso'
+        }
+
+        return throwError(() => new Error(errorMsg));
+      })
+    )
+  }
+
+  updateExam(id: number, exam: ExamForm){
+    return this.http.put(this.apiUrl + id, exam)
     .pipe(
       catchError((err: HttpErrorResponse) => {
         let errorMsg = 'Ocurrio un error inesperado'

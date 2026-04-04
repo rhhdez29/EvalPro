@@ -16,9 +16,9 @@ import {
 
 import { ExamService } from '../../../../../services/exam.service';
 
-import { ExamBase } from '../../../../../models/RESTExamResponse.interface';
+import { ExamBase, ExamDetail } from '../../../../../models/RESTExamResponse.interface';
 
-import { CreateExamFormComponent } from "../create-exam-form/create-exam-form.component";
+import { CreateExamFormComponent } from "../exam-builder/create-exam-form/create-exam-form.component";
 import { LoadingInformationComponent } from "../../../../../../../shared/components/loading-information/loading-information.component";
 import { DeleteModalComponent } from "../../../../../../../shared/components/delete-modal/delete-modal.component";
 
@@ -42,6 +42,8 @@ export class ExamsTabComponent {
   showCreateForm = signal(false);
   isModalOpen = signal(false);
   isModalDeleteOpen = signal(false);
+  isEditExam = signal(false);
+  examToEdit = signal<ExamDetail | null>(null);
 
   isExamsEmpty = computed(() => {
     const data = this.examsResource.value()
@@ -90,8 +92,30 @@ export class ExamsTabComponent {
     return styles[status];
   }
 
-  handleCreateExam() {
-    this.showCreateForm.set(!this.showCreateForm());
+  openCreateExamModal(id: number | null) {
+    this.idExam = id;
+
+    this.showCreateForm.set(true);
+
+    if(id){
+      this.isEditExam.set(true);
+
+      this.examService.getExamByID(id).subscribe({
+        next: (exam) => {
+          this.examToEdit.set(exam as ExamDetail);
+          console.log(this.examToEdit());
+        },
+        error: (err) => {
+          console.error(err);
+        }
+      })
+    }
+  }
+
+  closeCreateExamModal(){
+    this.showCreateForm.set(false);
+    this.isEditExam.set(false);
+    this.examToEdit.set(null);
   }
 
   handleSubmitExam() {

@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NonNullableFormBuilder, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
 
@@ -9,9 +9,9 @@ import { Code, AlertCircle, LucideAngularModule } from 'lucide-angular';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 // Asumiendo que esta es tu interfaz global
-import { QuestionForm, QuestionType } from '../../../../../models/RESTExamResponse.interface';
-import { FormUtilsService } from '../../../../../../../shared/utils/form-utils.service';
-import { OnlyNumbersDirective } from "../../../../../../../shared/directives/only-numbers.directive";
+import { CodeMetaData, Question, QuestionForm, QuestionType } from '../../../../../../../../models/RESTExamResponse.interface';
+import { FormUtilsService } from '../../../../../../../../../../shared/utils/form-utils.service';
+import { OnlyNumbersDirective } from "../../../../../../../../../../shared/directives/only-numbers.directive";
 
 @Component({
   selector: 'app-code-editor-builder',
@@ -32,6 +32,8 @@ export class CodeEditorBuilderComponent {
   // 1. Outputs
   onAdd = output<QuestionForm>();
   onCancel = output<void>();
+  questionToEdit = input<Question | null>(null);
+  isEditing = signal(false);
 
   private fb = inject(NonNullableFormBuilder);
   public formUtils = inject(FormUtilsService);
@@ -41,7 +43,7 @@ export class CodeEditorBuilderComponent {
 
   // Formulario
   codeForm = this.fb.group({
-    question_type: ['Code' as QuestionType, Validators.required],
+    question_type: ['CODE' as QuestionType, Validators.required],
     prompt: ['', Validators.required],
     points: [10, [Validators.required, this.formUtils.minValue(1)]],
     order: [0, Validators.required],
@@ -103,6 +105,22 @@ export class CodeEditorBuilderComponent {
     });
   }
 
+  constructor(){
+    effect(() => {
+      const question = this.questionToEdit();
+      if(question){
+        this.isEditing.set(true);
+        this.codeForm.patchValue({
+          prompt: question.prompt,
+          points: Number(question.points),
+          order: question.order!,
+          metadata: question.metadata as CodeMetaData,
+          question_type: question.question_type
+        });
+      }
+    });
+  }
+
   private getDefaultStarterCode(lang: string): string {
     const templates: Record<string, string> = {
       html: '<!DOCTYPE html>\n<html>\n<head>\n  <title>Document</title>\n</head>\n<body>\n  \n</body>\n</html>',
@@ -129,17 +147,32 @@ export class CodeEditorBuilderComponent {
     }
 
     const questionData = this.codeForm.getRawValue()
+    if(this.isEditing()){
+      const updateQuestion: Question = {
+        id: this.questionToEdit()?.id,
+        exam: this.questionToEdit()?.exam!,
+        question_type: 'CODE',
+        prompt: questionData.prompt,
+        points: questionData.points,
+        order: this.questionToEdit()?.order!,
+        metadata: questionData.metadata,
+        options: []
+      }
+      this.onAdd.emit(updateQuestion);
 
-    const newQuestion: QuestionForm = {
-      question_type: questionData.question_type,
-      prompt: questionData.prompt,
-      points: questionData.points,
-      order: questionData.order,
-      metadata: questionData.metadata,
-      options: []
+    }else{
+
+      const newQuestion: QuestionForm = {
+        question_type: questionData.question_type,
+        prompt: questionData.prompt,
+        points: questionData.points,
+        order: null,
+        metadata: questionData.metadata,
+        options: []
+      }
+
+      this.onAdd.emit(newQuestion);
     }
-
-    this.onAdd.emit(newQuestion);
   }
 
   cancel() {

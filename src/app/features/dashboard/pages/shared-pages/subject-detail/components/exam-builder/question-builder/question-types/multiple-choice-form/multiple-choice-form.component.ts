@@ -1,10 +1,10 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Plus, Trash2, AlertCircle, LucideAngularModule } from 'lucide-angular';
-import { QuestionForm } from '../../../../../models/RESTExamResponse.interface';
-import { FormUtilsService } from '../../../../../../../shared/utils/form-utils.service';
-import { OnlyNumbersDirective } from "../../../../../../../shared/directives/only-numbers.directive";
+import { Question, QuestionForm } from '../../../../../../../../models/RESTExamResponse.interface';
+import { FormUtilsService } from '../../../../../../../../../../shared/utils/form-utils.service';
+import { OnlyNumbersDirective } from "../../../../../../../../../../shared/directives/only-numbers.directive";
 
 @Component({
   selector: 'app-multiple-choice-form',
@@ -16,6 +16,9 @@ export class MultipleChoiceFormComponent {
   private fb = inject(FormBuilder);
   readonly icons = { Plus, Trash2, AlertCircle };
   formUtils = inject(FormUtilsService);
+
+  questionToEdit = input<Question | null>(null);
+  isEditing = signal<boolean>(false);
 
 
   // 1. Outputs
@@ -31,6 +34,27 @@ export class MultipleChoiceFormComponent {
       this.createOption()
     ], Validators.minLength(2))
   });
+
+  constructor(){
+
+    effect(() => {
+    const question = this.questionToEdit();
+    console.log(question);
+    if(question){
+      this.isEditing.set(true);
+      this.mcqForm.patchValue({
+        prompt: question.prompt,
+        points: question.points
+      });
+
+      this.optionsArray.clear();
+      question.options.forEach((option: any) => {
+        this.optionsArray.push(this.createOption());
+      });
+    }
+  });
+
+  }
 
   // 3. Getter para el FormArray
   get optionsArray(): FormArray {

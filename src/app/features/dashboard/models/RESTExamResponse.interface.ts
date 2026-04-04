@@ -1,9 +1,9 @@
 //Tipo de pregunta
-export type QuestionType = 'MCQ' | 'TF' | 'MATCH' | 'Code';
+export type QuestionType = 'MCQ' | 'TF' | 'MATCH' | 'CODE';
 
 //Opciones de respuesta
 export interface AnswerOption{
-  id: number;
+  id?: number;
   question?: number;
   text: string;
   partial_score: number;
@@ -26,19 +26,19 @@ export type QuestionMetaData = MatchMetaData | CodeMetaData | Record<string, any
 
 //Pregunta con sus opciones anidadas
 export interface Question{
-  id: number;
+  id?: number;
   exam: number;
   question_type: QuestionType;
   prompt: string;
   points: number | string;
-  order: number;
+  order: number | null;
   metadata: QuestionMetaData;
   options: AnswerOption[];
 }
 
 //Examen informacion basica
 export interface ExamBase{
-  id: number;
+  id?: number;
   subject: number | string;
   title: string;
   start_date: string;

@@ -1,15 +1,4 @@
-@if (!isBuilding()) {
-  <button
-    type="button"
-    (click)="isBuilding.set(true)"
-    class="w-full py-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition-all text-gray-600 hover:text-yellow-600 font-medium flex items-center justify-center gap-2 cursor-pointer"
-  >
-    <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
-    Add New Question
-  </button>
-}
-
-@else {
+@if (isBuilding()) {
   <div class="border-2 border-yellow-500 rounded-lg bg-yellow-50/30 p-6">
     <div class="flex items-center justify-between mb-6">
       <h3 class="text-lg font-bold text-gray-900">Build New Question</h3>
@@ -75,11 +64,11 @@
 
         <button
           type="button"
-          (click)="selectType('Code')"
+          (click)="selectType('CODE')"
           class="p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
-          [class.border-yellow-600]="selectedType() === 'Code'"
-          [class.border-gray-300]="selectedType() !== 'Code'"
-          [class.hover:border-gray-400]="selectedType() !== 'Code'"
+          [class.border-yellow-600]="selectedType() === 'CODE'"
+          [class.border-gray-300]="selectedType() !== 'CODE'"
+          [class.hover:border-gray-400]="selectedType() !== 'CODE'"
         >
           <div class="flex items-center gap-2 mb-1">
             <lucide-icon [img]="icons.Code" class="w-4 h-4"></lucide-icon>
@@ -95,16 +84,16 @@
       @switch (selectedType()) {
 
         @case ('MCQ') {
-          <app-multiple-choice-form (onAdd)="handleAdd($event)" (onCancel)="handleCancel()"></app-multiple-choice-form>
+          <app-multiple-choice-form (onAdd)="handleAdd($event)" [questionToEdit]="questionToEdit()" (onCancel)="handleCancel()" ></app-multiple-choice-form>
         }
         @case ('MATCH') {
-          <app-matching-form (onAdd)="handleAdd($event)" (onCancel)="handleCancel()"></app-matching-form>
+          <app-matching-form (onAdd)="handleAdd($event)" [questionToEdit]="questionToEdit()" (onCancel)="handleCancel()"></app-matching-form>
         }
         @case ('TF') {
-          <app-true-false-form (onAdd)="handleAdd($event)" (onCancel)="handleCancel()"></app-true-false-form>
+          <app-true-false-form (onAdd)="handleAdd($event)" [questionToEdit]="questionToEdit()" (onCancel)="handleCancel()"></app-true-false-form>
         }
-        @case ('Code') {
-          <app-code-editor-builder (onAdd)="handleAdd($event)" (onCancel)="handleCancel()"></app-code-editor-builder>
+        @case ('CODE') {
+          <app-code-editor-builder (onAdd)="handleAdd($event)" [questionToEdit]="questionToEdit()" (onCancel)="handleCancel()"></app-code-editor-builder>
         }
 
       }
