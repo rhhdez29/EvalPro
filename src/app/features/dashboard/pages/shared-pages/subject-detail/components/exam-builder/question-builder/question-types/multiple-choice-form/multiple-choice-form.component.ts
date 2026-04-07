@@ -27,8 +27,10 @@ export class MultipleChoiceFormComponent {
 
   // 2. Formulario Principal
   mcqForm: FormGroup = this.fb.group({
+    id: [null],
     prompt: ['', Validators.required],
     points: [10, [Validators.required, this.formUtils.minValue(1)]],
+    order: [0],
     options: this.fb.array([
       this.createOption(),
       this.createOption()
@@ -38,21 +40,36 @@ export class MultipleChoiceFormComponent {
   constructor(){
 
     effect(() => {
-    const question = this.questionToEdit();
-    console.log(question);
-    if(question){
-      this.isEditing.set(true);
-      this.mcqForm.patchValue({
-        prompt: question.prompt,
-        points: question.points
-      });
+      const question = this.questionToEdit();
+      if(question){
+        console.log('editando pregunta: ',question);
+        this.isEditing.set(true);
 
-      this.optionsArray.clear();
-      question.options.forEach((option: any) => {
-        this.optionsArray.push(this.createOption());
-      });
-    }
-  });
+        this.mcqForm.patchValue({
+          prompt: question.prompt,
+          points: question.points,
+        });
+
+        const optionsArray = this.mcqForm.get('options') as FormArray;
+        optionsArray.clear();
+
+
+        // 3. Si el backend nos mandó opciones, las iteramos una por una
+        if (question.options && question.options.length > 0) {
+          question.options.forEach((opt: any) => {
+
+            // EMPUJAMOS UN NUEVO FORMGROUP POR CADA OPCIÓN
+            this.optionsArray.push(this.fb.group({
+              text: [opt.text],
+              is_correct: [opt.is_correct],
+              partial_points: [opt.partial_points]
+            }));
+
+          });
+        }
+
+      }
+    })
 
   }
 
@@ -64,16 +81,16 @@ export class MultipleChoiceFormComponent {
   // 4. Getter para calcular la suma de puntos parciales en tiempo real
   get totalPartialScore(): number {
     return this.optionsArray.controls
-      .filter(ctrl => ctrl.get('isCorrect')?.value === true)
-      .reduce((sum, ctrl) => sum + (Number(ctrl.get('partialScore')?.value) || 0), 0);
+      .filter(ctrl => ctrl.get('is_correct')?.value === true)
+      .reduce((sum, ctrl) => sum + (Number(ctrl.get('partial_points')?.value) || 0), 0);
   }
 
   // 5. Métodos del FormArray
   private createOption(): FormGroup {
     return this.fb.group({
       text: ['', Validators.required],
-      isCorrect: [false],
-      partialScore: [0, Validators.min(0)]
+      is_correct: [false],
+      partial_points: [0, Validators.min(0)]
     });
   }
 
@@ -90,18 +107,18 @@ export class MultipleChoiceFormComponent {
   // 6. Lógica de negocio al marcar/desmarcar "Correcto"
   onCorrectChange(index: number) {
     const optionGroup = this.optionsArray.at(index) as FormGroup;
-    const isCorrect = optionGroup.get('isCorrect')?.value;
+    const isCorrect = optionGroup.get('is_correct')?.value;
     const totalScore = this.mcqForm.get('points')?.value || 0;
 
     if (isCorrect) {
       // Si la marcó correcta y no tiene puntos, le asigna el total de la pregunta por defecto
-      const currentPartial = optionGroup.get('partialScore')?.value;
+      const currentPartial = optionGroup.get('partial_points')?.value;
       if (!currentPartial) {
-        optionGroup.get('partialScore')?.setValue(totalScore);
+        optionGroup.get('partial_points')?.setValue(totalScore);
       }
     } else {
       // Si la desmarca, sus puntos parciales vuelven a cero
-      optionGroup.get('partialScore')?.setValue(0);
+      optionGroup.get('partial_points')?.setValue(0);
     }
   }
 
@@ -115,7 +132,7 @@ export class MultipleChoiceFormComponent {
     const formValues = this.mcqForm.getRawValue();
 
     // Validación 1: Al menos una correcta
-    const hasCorrectAnswer = formValues.options.some((o: any) => o.isCorrect);
+    const hasCorrectAnswer = formValues.options.some((o: any) => o.is_correct);
     if (!hasCorrectAnswer) {
       alert('Please mark at least one correct answer.');
       return;
@@ -128,17 +145,35 @@ export class MultipleChoiceFormComponent {
       return;
     }
 
-    // Armamos el JSON final
-    const newQuestion: QuestionForm = {
-      question_type: 'MCQ',
-      prompt: formValues.prompt,
-      points: formValues.points,
-      order: 0,
-      metadata: {},
-      options: formValues.options
-    };
 
-    this.onAdd.emit(newQuestion);
+    if(this.isEditing()){
+      const updateQuestion: Question = {
+        id: this.questionToEdit()?.id,
+        exam: this.questionToEdit()?.exam!,
+        question_type: 'MCQ',
+        prompt: formValues.prompt,
+        points: formValues.points,
+        order: this.questionToEdit()?.order!,
+        metadata: {},
+        options: formValues.options
+      }
+      this.onAdd.emit(updateQuestion);
+
+    }else{
+      // Armamos el JSON final
+      const newQuestion: QuestionForm = {
+        question_type: 'MCQ',
+        prompt: formValues.prompt,
+        points: formValues.points,
+        order: 0,
+        metadata: {},
+        options: formValues.options
+      };
+
+      this.onAdd.emit(newQuestion);
+    }
+
+
   }
 
   cancel() {

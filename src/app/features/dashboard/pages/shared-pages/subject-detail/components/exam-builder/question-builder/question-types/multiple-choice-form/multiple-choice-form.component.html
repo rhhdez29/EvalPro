@@ -62,7 +62,7 @@
           <div class="flex items-center h-12">
             <input
               type="checkbox"
-              formControlName="isCorrect"
+              formControlName="is_correct"
               (change)="onCorrectChange($index)"
               class="w-5 h-5 text-yellow-600 border-gray-300 rounded focus:ring-yellow-500 cursor-pointer"
             />
@@ -78,11 +78,11 @@
             />
           </div>
 
-          @if (optCtrl.get('isCorrect')?.value) {
+          @if (optCtrl.get('is_correct')?.value) {
             <div class="w-32">
               <input
                 type="number"
-                formControlName="partialScore"
+                formControlName="partial_points"
                 min="0"
                 step="1"
                 appOnlyNumbers
@@ -131,7 +131,7 @@
       type="submit"
       class="flex-1 px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
     >
-      Add Question
+      {{ isEditing() ? 'Update Question' : 'Add Question' }}
     </button>
   </div>
 </form>

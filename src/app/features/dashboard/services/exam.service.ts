@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
 import { PaginationResult } from '../models/PaginationResult';
-import { ExamForm, ExamSummary } from '../models/RESTExamResponse.interface';
+import { ExamDetail, ExamForm, ExamSummary } from '../models/RESTExamResponse.interface';
 import { catchError, map, throwError } from 'rxjs';
 
 @Injectable({
@@ -36,6 +36,7 @@ export class ExamService {
   }
 
   createExam(exam: ExamForm){
+    console.log('Examen en el service ',exam);
     return this.http.post(this.apiUrl, exam)
     .pipe(
       catchError((err: HttpErrorResponse) => {
@@ -93,8 +94,8 @@ export class ExamService {
     )
   }
 
-  updateExam(id: number, exam: ExamForm){
-    return this.http.put(this.apiUrl + id, exam)
+  updateExam(id: number, exam: ExamDetail){
+    return this.http.put(`${this.apiUrl}${id}/`, exam)
     .pipe(
       catchError((err: HttpErrorResponse) => {
         let errorMsg = 'Ocurrio un error inesperado'

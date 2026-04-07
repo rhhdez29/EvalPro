@@ -196,27 +196,57 @@ export class CreateExamFormComponent {
       return;
     }
 
-    const examData: ExamForm = {
-      subject: this.subjectId(),
-      title: examFormValue.title,
-      description: examFormValue.description,
-      start_date: this.toIsoWithOffset(dt_start),
-      end_date: this.toIsoWithOffset(dt_end),
-      duration_minutes: examFormValue.duration_minutes,
-      total_score: examFormValue.total_score,
-      questions: examFormValue.questions as Question[]
+    if(this.isEditExam()){
+
+      const examUpdateData: ExamDetail = {
+        id: this.examData()?.id,
+        subject: this.examData()?.subject!,
+        title: examFormValue.title,
+        description: examFormValue.description,
+        start_date: this.toIsoWithOffset(dt_start),
+        status: this.examData()?.status!,
+        end_date: this.toIsoWithOffset(dt_end),
+        duration_minutes: examFormValue.duration_minutes,
+        total_score: examFormValue.total_score,
+        questions: examFormValue.questions as Question[]
+      }
+
+      this.examService.updateExam(this.examData()?.id!, examUpdateData).subscribe({
+        next: (response) => {
+          console.log('Examen actualizado exitosamente: ', response);
+          this.closeDialog.emit();
+        },
+        error: (error) => {
+          console.error('Error al actualizar el examen: ', error);
+        }
+      })
+
+    }else{
+
+      const examData: ExamForm = {
+        subject: this.subjectId(),
+        title: examFormValue.title,
+        description: examFormValue.description,
+        start_date: this.toIsoWithOffset(dt_start),
+        end_date: this.toIsoWithOffset(dt_end),
+        duration_minutes: examFormValue.duration_minutes,
+        total_score: examFormValue.total_score,
+        questions: examFormValue.questions as Question[]
+
+      }
+
+      this.examService.createExam(examData).subscribe({
+        next: (response) => {
+          console.log('Examen creado exitosamente: ', response);
+          this.closeDialog.emit();
+        },
+        error: (error) => {
+          console.error('Error al crear el examen: ', error);
+        }
+      })
 
     }
 
-    this.examService.createExam(examData).subscribe({
-      next: (response) => {
-        console.log('Examen creado exitosamente: ', response);
-        this.closeDialog.emit();
-      },
-      error: (error) => {
-        console.error('Error al crear el examen: ', error);
-      }
-    })
 
 
   }
