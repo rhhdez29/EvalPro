@@ -5,7 +5,9 @@ import {
   LucideAngularModule,
   Search,
   UserPlus,
-  MoreVertical
+  MoreVertical,
+  Edit,
+  Trash2
 } from 'lucide-angular';
 
 export interface User {
@@ -26,7 +28,7 @@ export interface User {
 export class UsersListComponent {
 
   // Iconos
-  readonly icons = { Search, UserPlus, MoreVertical };
+  readonly icons = { Search, UserPlus, MoreVertical, Edit, Trash2 };
 
   // --- ESTADOS BASE (Signals) ---
   searchQuery = signal('');

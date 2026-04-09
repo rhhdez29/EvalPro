@@ -45,7 +45,7 @@ export class SubjectDetailComponent {
   tabs = computed<Tab[]>(() => {
     const role = this.facade.userRole();
 
-    if (role === 'admin' || role === 'maestro') {
+    if (role === 'administrador' || role === 'maestro') {
       return [
         { id: 'exams', label: 'Exams', icon: 'file-text' },
         { id: 'students', label: 'Students', icon: 'users' },
@@ -97,8 +97,8 @@ export class SubjectDetailComponent {
     const role = this.facade.userRole();
     if (role === 'maestro') {
       this.router.navigate(['home/teacher/subjects']);
-    } else if (role === 'alumno') {
-      this.router.navigate(['/app/my-classes']);
+    } else if (role === 'administrador') {
+      this.router.navigate(['home/admin/subjects']);
     } else {
       this.router.navigate(['/app/subject-management']);
     }

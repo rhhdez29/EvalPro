@@ -64,7 +64,7 @@
           <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Role</th>
           <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Department</th>
           <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
-          <th class="px-6 py-4 text-right text-sm font-semibold text-gray-900">Actions</th>
+          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
         </tr>
       </thead>
 
@@ -113,14 +113,41 @@
               </span>
             </td>
 
-            <td class="px-6 py-4 text-right">
-              <div class="flex items-center justify-end">
+            <td class="px-8 py-4 text-left">
+              <div class="relative flex items-center justify-end dropdown dropdown-end">
+
                 <button
-                  (click)="handleUserOptions(user.id)"
-                  class="p-2 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"
+                  tabindex="0"
+                  role="button"
+                  (click)="$event.stopPropagation()"
+                  class="p-2 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition-colors cursor-pointer"
                 >
-                  <lucide-icon [img]="icons.MoreVertical" class="w-4 h-4 text-gray-600"></lucide-icon>
+                  <lucide-icon [img]="icons.MoreVertical" class="w-5 h-5 text-gray-600"></lucide-icon>
                 </button>
+
+                <ul
+                  tabindex="0"
+                  class="dropdown-content menu bg-white rounded-box z-[1] w-30 p-2 shadow-xl mt-2 border border-gray-100"
+                >
+                  <li>
+                    <button
+                      class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer flex items-center gap-2"
+                    >
+                      <lucide-icon [img]="icons.Edit" class="w-4 h-4"></lucide-icon>
+                      Editar
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      class="text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer flex items-center gap-2"
+                    >
+                      <lucide-icon [img]="icons.Trash2" class="w-4 h-4"></lucide-icon>
+                      Eliminar
+                    </button>
+                  </li>
+                </ul>
+
               </div>
             </td>
 
