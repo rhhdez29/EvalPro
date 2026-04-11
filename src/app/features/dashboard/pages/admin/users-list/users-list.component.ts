@@ -1,4 +1,4 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Necesario para ngModel
 import {
@@ -9,15 +9,10 @@ import {
   Edit,
   Trash2
 } from 'lucide-angular';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { UsersService } from '../../../services/users.service';
+import { UserList } from '../../../models/UserList.interface';
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'administrator' | 'teacher' | 'student';
-  department?: string;
-  status: 'active' | 'inactive';
-}
 
 @Component({
   selector: 'app-users-list',
@@ -32,16 +27,10 @@ export class UsersListComponent {
 
   // --- ESTADOS BASE (Signals) ---
   searchQuery = signal('');
+  users = signal<UserList[]>([]);
   roleFilter = signal<string>('all');
 
-  users = signal<User[]>([
-    { id: '1', name: 'Admin User', email: 'admin@university.edu', role: 'administrator', status: 'active' },
-    { id: '2', name: 'Prof. Johnson', email: 'johnson@university.edu', role: 'teacher', department: 'Mathematics', status: 'active' },
-    { id: '3', name: 'Dr. Smith', email: 'smith@university.edu', role: 'teacher', department: 'Computer Science', status: 'active' },
-    { id: '4', name: 'John Doe', email: 'john.doe@university.edu', role: 'student', status: 'active' },
-  ]);
-
-  // --- ESTADOS DERIVADOS (Filtros y Estadísticas) ---
+  private usersService = inject(UsersService)
 
   // Filtro Combinado: Texto + Select de Rol
   filteredUsers = computed(() => {
@@ -49,7 +38,7 @@ export class UsersListComponent {
     const filter = this.roleFilter();
 
     return this.users().filter(user => {
-      const matchesSearch = user.name.toLowerCase().includes(query) ||
+      const matchesSearch = user.complete_name.toLowerCase().includes(query) ||
                             user.email.toLowerCase().includes(query);
       const matchesRole = filter === 'all' || user.role === filter;
 
@@ -59,19 +48,30 @@ export class UsersListComponent {
 
   // Estadísticas para las tarjetas superiores
   totalUsers = computed(() => this.users().length);
-  adminCount = computed(() => this.users().filter(u => u.role === 'administrator').length);
-  teacherCount = computed(() => this.users().filter(u => u.role === 'teacher').length);
-  studentCount = computed(() => this.users().filter(u => u.role === 'student').length);
+  adminCount = computed(() => this.users().filter(u => u.role === 'administrador').length);
+  teacherCount = computed(() => this.users().filter(u => u.role === 'maestro').length);
+  studentCount = computed(() => this.users().filter(u => u.role === 'alumno').length);
 
+  ngOnInit(){
+    this.usersService.getUsers().subscribe({
+      next: (users) => {
+        this.users.set(users);
+        console.log(users);
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    })
+  }
   // --- MÉTODOS DE UI ---
 
   // En Angular evitamos devolver JSX/HTML desde el TS.
   // Evaluamos las clases CSS directamente, y el HTML dibuja la etiqueta.
-  getRoleBadgeClass(role: User['role']): string {
+  getRoleBadgeClass(role: UserList['role']): string {
     const styles = {
-      administrator: 'bg-red-100 text-red-700 border-red-300',
-      teacher: 'bg-blue-100 text-blue-700 border-blue-300',
-      student: 'bg-green-100 text-green-700 border-green-300',
+      administrador: 'bg-red-100 text-red-700 border-red-300',
+      maestro: 'bg-blue-100 text-blue-700 border-blue-300',
+      alumno: 'bg-green-100 text-green-700 border-green-300',
     };
     return styles[role];
   }

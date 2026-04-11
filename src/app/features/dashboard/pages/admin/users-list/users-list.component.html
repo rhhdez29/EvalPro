@@ -49,9 +49,9 @@
       class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none bg-white min-w-[150px]"
     >
       <option value="all">All Roles</option>
-      <option value="administrator">Administrator</option>
-      <option value="teacher">Teacher</option>
-      <option value="student">Student</option>
+      <option value="administrador">Administrador</option>
+      <option value="maestro">Maestro</option>
+      <option value="alumno">Alumno</option>
     </select>
   </div>
 
@@ -62,7 +62,6 @@
           <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
           <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
           <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Role</th>
-          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Department</th>
           <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
           <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
         </tr>
@@ -82,7 +81,7 @@
           <tr class="hover:bg-gray-50 transition-colors">
 
             <td class="px-6 py-4">
-              <div class="font-medium text-gray-900">{{ user.name }}</div>
+              <div class="font-medium text-gray-900">{{ user.complete_name }}</div>
             </td>
 
             <td class="px-6 py-4">
@@ -90,26 +89,22 @@
             </td>
 
             <td class="px-6 py-4">
-              <span class="px-3 py-1 rounded-full text-xs font-medium border capitalize {{ getRoleBadgeClass(user.role) }}">
+              <span class="px-3 py-1 rounded-full text-xs font-medium border capitalize {{ getRoleBadgeClass(user.role ) }}">
                 {{ user.role }}
               </span>
             </td>
 
             <td class="px-6 py-4">
-              <div class="text-sm text-gray-600">{{ user.department || '-' }}</div>
-            </td>
-
-            <td class="px-6 py-4">
               <span
                 class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border capitalize"
-                [class.bg-green-100]="user.status === 'active'"
-                [class.text-green-700]="user.status === 'active'"
-                [class.border-green-300]="user.status === 'active'"
-                [class.bg-gray-100]="user.status !== 'active'"
-                [class.text-gray-700]="user.status !== 'active'"
-                [class.border-gray-300]="user.status !== 'active'"
+                [class.bg-green-100]="user.status === true"
+                [class.text-green-700]="user.status === true"
+                [class.border-green-300]="user.status === true"
+                [class.bg-gray-100]="user.status !== true"
+                [class.text-gray-700]="user.status !== true"
+                [class.border-gray-300]="user.status !== true"
               >
-                {{ user.status }}
+                {{ user.status ? 'Activo' : 'Inactivo' }}
               </span>
             </td>
 
@@ -131,10 +126,11 @@
                 >
                   <li>
                     <button
+                      [disabled]="user.role === 'administrador'"
                       class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer flex items-center gap-2"
                     >
                       <lucide-icon [img]="icons.Edit" class="w-4 h-4"></lucide-icon>
-                      Editar
+                      {{ user.status ? 'Desactivar' : 'Activar'}}
                     </button>
                   </li>
 
