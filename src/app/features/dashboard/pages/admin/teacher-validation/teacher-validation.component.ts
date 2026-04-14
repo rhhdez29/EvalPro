@@ -1,4 +1,4 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject, afterNextRender, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   LucideAngularModule,
@@ -10,6 +10,8 @@ import {
   Briefcase,
   Hash
 } from 'lucide-angular';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { UsersService } from '../../../services/users.service';
 
 export interface TeacherRequest {
   id: string;
@@ -33,6 +35,8 @@ export class TeacherValidationComponent {
   // Mapeo de iconos para usarlos en el HTML
   readonly icons = { Check, X, Eye, UserCheck, Mail, Briefcase, Hash };
 
+  private usersService = inject(UsersService);
+
   // ESTADO (Reemplaza a useState)
   requests = signal<TeacherRequest[]>([
     { id: '1', name: 'Dr. Sarah Williams', email: 'sarah.williams@university.edu', employeeNumber: '123456', department: 'Engineering', requestDate: '2026-02-10', status: 'approved' },
@@ -45,6 +49,16 @@ export class TeacherValidationComponent {
   approvedRequests = computed(() => this.requests().filter(r => r.status === 'approved'));
   pendingCount = computed(() => this.pendingRequests().length);
   totalRequests = computed(() => this.requests().length);
+
+  teacherRequest = rxResource({
+    stream: () => this.usersService.getTeacherRequests()
+  })
+
+  constructor(){
+    afterNextRender(() => {
+      this.teacherRequest.reload();
+    });
+  }
 
   // MÉTODOS
   handleApprove(id: string) {

@@ -115,6 +115,7 @@
                   tabindex="0"
                   role="button"
                   (click)="$event.stopPropagation()"
+                  [disabled]="user.role === 'administrador'"
                   class="p-2 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition-colors cursor-pointer"
                 >
                   <lucide-icon [img]="icons.MoreVertical" class="w-5 h-5 text-gray-600"></lucide-icon>
@@ -127,6 +128,7 @@
                   <li>
                     <button
                       [disabled]="user.role === 'administrador'"
+                      (click)="openWarningModal(user.id.toString(), user.status)"
                       class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer flex items-center gap-2"
                     >
                       <lucide-icon [img]="icons.Edit" class="w-4 h-4"></lucide-icon>
@@ -136,6 +138,8 @@
 
                   <li>
                     <button
+                      [disabled]="user.role === 'administrador'"
+                      (click)="openDeleteModal(user.id.toString())"
                       class="text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer flex items-center gap-2"
                     >
                       <lucide-icon [img]="icons.Trash2" class="w-4 h-4"></lucide-icon>
@@ -153,3 +157,22 @@
     </table>
   </div>
 </div>
+
+
+<app-delete-modal
+  [isOpen]="isDeleteModalOpen()"
+  [title]="'Eliminar Usuario'"
+  [message]="'¿Estás seguro de que deseas eliminar este usuario?'"
+  (confirm)="deleteUser()"
+  (cancel)="closeDeleteModal()"
+  >
+</app-delete-modal>
+
+<app-warning-modal
+  [isOpen]="isWarningModalOpen()"
+  [title]="'Estado de Usuario'"
+  [message]="'¿Estás seguro de que deseas ' + (userStatus() ? 'desactivar' : 'activar') + ' este usuario?'"
+  (confirm)="toggleUserStatus()"
+  (cancel)="closeWarningModal()"
+/>
+

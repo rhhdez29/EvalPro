@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, afterNextRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Necesario para ngModel
 import {
@@ -12,12 +12,14 @@ import {
 import { rxResource } from '@angular/core/rxjs-interop';
 import { UsersService } from '../../../services/users.service';
 import { UserList } from '../../../models/UserList.interface';
+import { DeleteModalComponent } from "../../../../../shared/components/delete-modal/delete-modal.component";
+import { WarningModalComponent } from "../../../../../shared/components/warning-modal/warning-modal.component";
 
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, FormsModule],
+  imports: [CommonModule, LucideAngularModule, FormsModule, DeleteModalComponent, WarningModalComponent],
   templateUrl: './users-list.component.html'
 })
 export class UsersListComponent {
@@ -27,8 +29,11 @@ export class UsersListComponent {
 
   // --- ESTADOS BASE (Signals) ---
   searchQuery = signal('');
-  users = signal<UserList[]>([]);
   roleFilter = signal<string>('all');
+  isDeleteModalOpen = signal(false);
+  isWarningModalOpen = signal(false);
+  userStatus = signal(false);
+  userIdSelected = signal<string>('');
 
   private usersService = inject(UsersService)
 
@@ -37,7 +42,7 @@ export class UsersListComponent {
     const query = this.searchQuery().toLowerCase();
     const filter = this.roleFilter();
 
-    return this.users().filter(user => {
+    return this.users.value()!.filter(user => {
       const matchesSearch = user.complete_name.toLowerCase().includes(query) ||
                             user.email.toLowerCase().includes(query);
       const matchesRole = filter === 'all' || user.role === filter;
@@ -47,23 +52,22 @@ export class UsersListComponent {
   });
 
   // Estadísticas para las tarjetas superiores
-  totalUsers = computed(() => this.users().length);
-  adminCount = computed(() => this.users().filter(u => u.role === 'administrador').length);
-  teacherCount = computed(() => this.users().filter(u => u.role === 'maestro').length);
-  studentCount = computed(() => this.users().filter(u => u.role === 'alumno').length);
+  totalUsers = computed(() => this.users.value()?.length || 0);
+  adminCount = computed(() => this.users.value()?.filter(u => u.role === 'administrador').length || 0);
+  teacherCount = computed(() => this.users.value()?.filter(u => u.role === 'maestro').length || 0);
+  studentCount = computed(() => this.users.value()?.filter(u => u.role === 'alumno').length || 0);
 
-  ngOnInit(){
-    this.usersService.getUsers().subscribe({
-      next: (users) => {
-        this.users.set(users);
-        console.log(users);
-      },
-      error: (error) => {
-        console.error(error);
-      }
-    })
-  }
+  users = rxResource({
+    stream: () => this.usersService.getUsers(),
+  })
   // --- MÉTODOS DE UI ---
+
+
+  constructor() {
+    afterNextRender(() => {
+      this.users.reload();
+    });
+  }
 
   // En Angular evitamos devolver JSX/HTML desde el TS.
   // Evaluamos las clases CSS directamente, y el HTML dibuja la etiqueta.
@@ -82,5 +86,51 @@ export class UsersListComponent {
 
   handleUserOptions(userId: string) {
     console.log('Options for user:', userId);
+  }
+
+  deleteUser() {
+    this.usersService.deleteUser(this.userIdSelected()).subscribe({
+      next: (user) => {
+        this.users.reload()
+        console.log(user);
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    })
+    this.closeDeleteModal();
+  }
+
+  toggleUserStatus() {
+    this.usersService.toggleUserStatus(this.userIdSelected()).subscribe({
+      next: (user) => {
+        this.users.reload()
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    })
+    this.closeWarningModal()
+  }
+
+  openDeleteModal(userId: string) {
+    this.isDeleteModalOpen.set(true);
+    this.userIdSelected.set(userId);
+  }
+
+  closeDeleteModal() {
+    this.isDeleteModalOpen.set(false);
+    this.userIdSelected.set('');
+  }
+
+  openWarningModal(userId: string, status: boolean) {
+    this.isWarningModalOpen.set(true);
+    this.userIdSelected.set(userId);
+    this.userStatus.set(status);
+  }
+
+  closeWarningModal() {
+    this.isWarningModalOpen.set(false);
+    this.userIdSelected.set('');
   }
 }

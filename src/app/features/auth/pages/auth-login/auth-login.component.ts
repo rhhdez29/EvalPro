@@ -115,13 +115,11 @@ export class AuthLoginComponent {
         }, 3000);
 
       },
-      error: (err) => {
+      error: (error: string) => {
 
         this.modalStatus.set('error');
-        const mensajeError = err.error?.detail || 'Hubo un error'
-
         this.messageModal1.set('Uy, algo salió mal...');
-        this.messageModal2.set(mensajeError);
+        this.messageModal2.set(error);
 
         setTimeout(() => {
           this.modalStatus.set('oculto');

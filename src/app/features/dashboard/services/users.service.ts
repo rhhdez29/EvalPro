@@ -20,4 +20,19 @@ export class UsersService {
     )
   }
 
+  getTeacherRequests() {
+    return this.http.get<PaginationResult<UserList>>(`${this.apiUrl}pending_teachers/`)
+    .pipe(
+      map((response) => response.results)
+    )
+  }
+
+  toggleUserStatus(userId: string) {
+    return this.http.patch<UserList>(`${this.apiUrl}${userId}/toggle_status/`, {})
+  }
+
+  deleteUser(userId: string) {
+    return this.http.delete<UserList>(`${this.apiUrl}${userId}/`)
+  }
+
 }
