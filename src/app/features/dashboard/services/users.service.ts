@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { UserList } from '../models/UserList.interface';
 import { PaginationResult } from '../models/PaginationResult';
 import { map } from 'rxjs';
+import { TeacherValidation } from '../../../core/models/user.inteface';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +17,18 @@ export class UsersService {
   getUsers() {
     return this.http.get<PaginationResult<UserList>>(this.apiUrl)
     .pipe(
-      map((response) => response.results)
+      map((response) => {
+        return response.results
+      })
     )
   }
 
   getTeacherRequests() {
-    return this.http.get<PaginationResult<UserList>>(`${this.apiUrl}pending_teachers/`)
+    return this.http.get<PaginationResult<TeacherValidation>>(`${this.apiUrl}pending_teachers/`)
     .pipe(
-      map((response) => response.results)
+      map((response) => {
+        return response.results
+      })
     )
   }
 
@@ -33,6 +38,23 @@ export class UsersService {
 
   deleteUser(userId: string) {
     return this.http.delete<UserList>(`${this.apiUrl}${userId}/`)
+  }
+
+  approveTeacher(userId: string) {
+
+    const body = {
+      status: 'approved'
+    }
+
+    return this.http.patch<TeacherValidation>(`${this.apiUrl}${userId}/review_teacher/`, body);
+  }
+
+  rejectTeacher(userId: string) {
+    const body = {
+      status: 'rejected'
+    }
+
+    return this.http.patch<TeacherValidation>(`${this.apiUrl}${userId}/review_teacher/`, body);
   }
 
 }

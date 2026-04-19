@@ -12,22 +12,12 @@ import {
 } from 'lucide-angular';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { UsersService } from '../../../services/users.service';
-
-export interface TeacherRequest {
-  id: string;
-  name: string;
-  email: string;
-  employeeNumber: string;
-  department: string;
-  requestDate: string;
-  status: 'pending' | 'approved' | 'rejected';
-}
-
+import { WarningModalComponent } from "../../../../../shared/components/warning-modal/warning-modal.component";
 @Component({
   selector: 'app-teacher-validation',
   standalone: true,
   // CommonModule es clave para usar el | date pipe en el HTML
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, WarningModalComponent],
   templateUrl: './teacher-validation.component.html'
 })
 export class TeacherValidationComponent {
@@ -36,19 +26,16 @@ export class TeacherValidationComponent {
   readonly icons = { Check, X, Eye, UserCheck, Mail, Briefcase, Hash };
 
   private usersService = inject(UsersService);
+  id_teacher_selected = signal<string>('');
+  isApproveModalOpen = signal(false);
+  isRejectModalOpen = signal(false);
 
-  // ESTADO (Reemplaza a useState)
-  requests = signal<TeacherRequest[]>([
-    { id: '1', name: 'Dr. Sarah Williams', email: 'sarah.williams@university.edu', employeeNumber: '123456', department: 'Engineering', requestDate: '2026-02-10', status: 'approved' },
-    { id: '2', name: 'Prof. Michael Chen', email: 'michael.chen@university.edu', employeeNumber: '123457', department: 'Computer Science', requestDate: '2026-02-11', status: 'pending' },
-    { id: '3', name: 'Dr. Emily Brown', email: 'emily.brown@university.edu', employeeNumber: '123458', department: 'Mathematics', requestDate: '2026-02-12', status: 'pending' },
-  ]);
 
   // ESTADOS DERIVADOS (Reemplaza los filter/length sueltos en el render)
-  pendingRequests = computed(() => this.requests().filter(r => r.status === 'pending'));
-  approvedRequests = computed(() => this.requests().filter(r => r.status === 'approved'));
-  pendingCount = computed(() => this.pendingRequests().length);
-  totalRequests = computed(() => this.requests().length);
+  // pendingRequests = computed(() => this.teacherRequest().filter(r => r.status === 'pending'));
+  // approvedRequests = computed(() => this.teacherRequest().filter(r => r.status === 'approved'));
+  pendingCount = computed(() => this.teacherRequest.value()?.length ?? 0);
+  // totalRequests = computed(() => this.teacherRequest().length);
 
   teacherRequest = rxResource({
     stream: () => this.usersService.getTeacherRequests()
@@ -61,17 +48,54 @@ export class TeacherValidationComponent {
   }
 
   // MÉTODOS
-  handleApprove(id: string) {
-    console.log('Approving teacher:', id);
-    // Lógica futura:
-    // this.requests.update(reqs => reqs.map(r => r.id === id ? { ...r, status: 'approved' } : r));
+  openApproveModal(id: string) {
+    this.id_teacher_selected.set(id);
+    this.isApproveModalOpen.set(true);
+    console.log(id)
   }
 
-  handleReject(id: string) {
-    console.log('Rejecting teacher:', id);
+  openRejectModal(id: string) {
+    this.id_teacher_selected.set(id);
+    this.isRejectModalOpen.set(true);
   }
 
   handleViewDetails(id: string) {
-    console.log('Viewing details for:', id);
   }
+
+  closeApproveModal() {
+    this.isApproveModalOpen.set(false);
+    this.id_teacher_selected.set('');
+  }
+
+  closeRejectModal() {
+    this.isRejectModalOpen.set(false);
+    this.id_teacher_selected.set('');
+  }
+
+  approveTeacher() {
+    this.usersService.approveTeacher(this.id_teacher_selected()).subscribe({
+      next: () => {
+        this.closeApproveModal();
+        this.teacherRequest.reload();
+      }
+      ,
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  rejectTeacher() {
+    this.usersService.rejectTeacher(this.id_teacher_selected()).subscribe({
+      next: () => {
+        this.closeRejectModal();
+        this.teacherRequest.reload();
+      }
+      ,
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
 }
