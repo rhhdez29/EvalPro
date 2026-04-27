@@ -10,6 +10,7 @@ import { SubjectService } from '../../../services/subject.service';
 
 import { ExamsTabComponent } from "./components/exams-tab/exams-tab.component";
 import { LoadingInformationComponent } from "../../../../../shared/components/loading-information/loading-information.component";
+import { StudentsTabComponent } from "./components/students-tab/students-tab.component";
 
 interface Tab {
   id: string;
@@ -22,7 +23,8 @@ interface Tab {
   standalone: true,
   imports: [
     ExamsTabComponent,
-    LoadingInformationComponent
+    LoadingInformationComponent,
+    StudentsTabComponent
 ],
   templateUrl: './subject-detail.component.html'
 })

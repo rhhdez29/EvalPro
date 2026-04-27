@@ -19,7 +19,7 @@ export interface MatchMetaData{
 export interface CodeMetaData{
   language: string;
   framework: string;
-  initial_code: string;
+  starterCode: string;
 }
 
 export type QuestionMetaData = MatchMetaData | CodeMetaData | Record<string, any>;

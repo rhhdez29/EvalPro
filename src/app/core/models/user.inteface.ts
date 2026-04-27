@@ -24,4 +24,5 @@ export type UserLoginData = Teacher | Student;
 export interface TeacherValidation extends Omit<Teacher, 'first_name' | 'last_name' | 'token'> {
   complete_name: string;
   date_joined: string;
+  status: 'pending' | 'approved' | 'rejected';
 }

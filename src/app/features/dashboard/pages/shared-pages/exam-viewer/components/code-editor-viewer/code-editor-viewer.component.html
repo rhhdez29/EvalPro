@@ -1,0 +1,35 @@
+<div class="space-y-4">
+
+  <div class="flex items-center gap-3 text-sm">
+    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-medium uppercase">
+      Lenguaje: {{ codeMeta().language || 'N/A' }}
+    </span>
+
+    @if (codeMeta().framework && codeMeta().framework !== 'none') {
+      <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full font-medium">
+        Framework: {{ codeMeta().framework }}
+      </span>
+    }
+  </div>
+
+  <div class="border-2 border-gray-300 rounded-lg overflow-hidden shadow-sm">
+
+    <div class="bg-gray-800 px-4 py-2 flex items-center justify-between">
+      <div class="flex items-center gap-2 text-white">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+        <span class="text-sm font-medium">IDE EvalPro</span>
+      </div>
+    </div>
+
+  <div style="height: 400px; width: 100%;" class="flex flex-col">
+    <ngx-monaco-editor
+      class="h-full w-full block flex-1"
+      [options]="editorOptions()"
+      [ngModel]="code()"
+      (ngModelChange)="onCodeChange($event)">
+    </ngx-monaco-editor>
+  </div>
+
+  </div>
+
+</div>

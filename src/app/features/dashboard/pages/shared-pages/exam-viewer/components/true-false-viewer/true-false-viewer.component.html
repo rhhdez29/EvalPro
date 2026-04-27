@@ -1,0 +1,89 @@
+<div class="space-y-3">
+  <p class="text-sm text-gray-600 mb-4">Selecciona la respuesta correcta:</p>
+
+  <div class="grid grid-cols-2 gap-4">
+
+    <button
+      type="button"
+      (click)="selectAnswer(true)"
+      class="relative p-6 border-2 rounded-lg transition-all text-left"
+      [class.border-green-500]="selectedAnswer() === true"
+      [class.bg-green-50]="selectedAnswer() === true"
+      [class.border-gray-200]="selectedAnswer() !== true"
+      [class.hover:border-gray-300]="selectedAnswer() !== true"
+      [class.hover:bg-gray-50]="selectedAnswer() !== true">
+
+      @if (isPreviewMode() && correctAnswer() === true) {
+        <div class="absolute top-3 right-3">
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+            Respuesta Correcta
+          </span>
+        </div>
+      }
+
+      <div class="flex items-center justify-center gap-3 mb-2">
+        <div
+          class="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+          [class.bg-green-500]="selectedAnswer() === true"
+          [class.bg-gray-200]="selectedAnswer() !== true">
+          <svg class="w-5 h-5 transition-colors"
+               [class.text-white]="selectedAnswer() === true"
+               [class.text-gray-500]="selectedAnswer() !== true"
+               fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+      </div>
+
+      <div
+        class="text-2xl font-bold mb-1 text-center transition-colors"
+        [class.text-green-700]="selectedAnswer() === true"
+        [class.text-gray-700]="selectedAnswer() !== true">
+        VERDADERO
+      </div>
+      <p class="text-sm text-gray-600 text-center">Esta afirmación es correcta</p>
+    </button>
+
+    <button
+      type="button"
+      (click)="selectAnswer(false)"
+      class="relative p-6 border-2 rounded-lg transition-all text-left"
+      [class.border-red-500]="selectedAnswer() === false"
+      [class.bg-red-50]="selectedAnswer() === false"
+      [class.border-gray-200]="selectedAnswer() !== false"
+      [class.hover:border-gray-300]="selectedAnswer() !== false"
+      [class.hover:bg-gray-50]="selectedAnswer() !== false">
+
+      @if (isPreviewMode() && correctAnswer() === false) {
+        <div class="absolute top-3 right-3">
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+            Respuesta Correcta
+          </span>
+        </div>
+      }
+
+      <div class="flex items-center justify-center gap-3 mb-2">
+        <div
+          class="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+          [class.bg-red-500]="selectedAnswer() === false"
+          [class.bg-gray-200]="selectedAnswer() !== false">
+          <svg class="w-5 h-5 transition-colors"
+               [class.text-white]="selectedAnswer() === false"
+               [class.text-gray-500]="selectedAnswer() !== false"
+               fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </div>
+      </div>
+
+      <div
+        class="text-2xl font-bold mb-1 text-center transition-colors"
+        [class.text-red-700]="selectedAnswer() === false"
+        [class.text-gray-700]="selectedAnswer() !== false">
+        FALSO
+      </div>
+      <p class="text-sm text-gray-600 text-center">Esta afirmación es incorrecta</p>
+    </button>
+
+  </div>
+</div>

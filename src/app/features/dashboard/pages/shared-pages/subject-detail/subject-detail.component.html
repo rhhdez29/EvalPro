@@ -71,11 +71,11 @@
         <app-exams-tab [subjectId]="id()"></app-exams-tab>
       }
 
-      <!--
       @case ('students') {
-        <app-students-tab [subjectId]="subject().id"></app-students-tab>
+        <students-tab [subjectId]="id()"></students-tab>
       }
 
+      <!--
       @case ('results') {
         <app-results-tab [subjectId]="subject().id"></app-results-tab>
       }

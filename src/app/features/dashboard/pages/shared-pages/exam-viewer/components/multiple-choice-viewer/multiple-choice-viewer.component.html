@@ -1,0 +1,37 @@
+<div class="space-y-3">
+  <p class="text-sm text-gray-600 mb-3">
+    {{ hasMultipleCorrect() ? 'Selecciona todas las que apliquen:' : 'Selecciona una respuesta:' }}
+  </p>
+
+  @for (option of options(); track $index) {
+    <label
+      [for]="'option-' + question().id + '-' + $index"
+      class="flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all"
+      [class.border-yellow-500]="isSelected($index)"
+      [class.bg-yellow-50]="isSelected($index)"
+      [class.border-gray-200]="!isSelected($index)"
+      [class.hover:border-gray-300]="!isSelected($index)"
+      [class.hover:bg-gray-50]="!isSelected($index)">
+
+      <input
+        [type]="hasMultipleCorrect() ? 'checkbox' : 'radio'"
+        [id]="'option-' + question().id + '-' + $index"
+        [name]="'question-' + question().id"
+        [checked]="isSelected($index)"
+        (change)="toggleOption($index)"
+        class="mt-1 w-5 h-5 text-yellow-600 border-gray-300 focus:ring-yellow-500 cursor-pointer"
+      />
+
+      <div class="flex-1 flex justify-between items-center">
+        <p class="text-gray-900">{{ option.text }}</p>
+
+        @if (isPreviewMode() && option.is_correct) {
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            Respuesta Correcta
+          </span>
+        }
+      </div>
+    </label>
+  }
+</div>

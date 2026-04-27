@@ -1,0 +1,131 @@
+<div>
+  <div class="mb-6">
+    <h2 class="text-xl font-bold text-gray-900">Gestión de Estudiantes</h2>
+    <p class="text-gray-600 text-sm mt-1">Asigna estudiantes a esta materia subiendo una lista o agregándolos individualmente</p>
+  </div>
+
+  <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+    <h3 class="font-semibold text-gray-900 mb-4">Asignación Masiva</h3>
+
+    <div
+      (drop)="handleDrop($event)"
+      (dragover)="handleDragOver($event)"
+      (dragleave)="handleDragLeave($event)"
+      class="border-2 border-dashed rounded-lg p-8 text-center transition-all"
+      [class.border-yellow-500]="isDragging()"
+      [class.bg-yellow-50]="isDragging()"
+      [class.border-green-500]="!isDragging() && uploadedFile()"
+      [class.bg-green-50]="!isDragging() && uploadedFile()"
+      [class.border-gray-300]="!isDragging() && !uploadedFile()"
+      [class.hover:border-yellow-400]="!isDragging() && !uploadedFile()"
+      [class.hover:bg-yellow-50]="!isDragging() && !uploadedFile()"
+      [class.hover:bg-opacity-30]="!isDragging() && !uploadedFile()"
+    >
+      <input
+        type="file"
+        id="student-file-upload"
+        class="hidden"
+        accept=".pdf,.xlsx,.csv"
+        (change)="handleFileChange($event)"
+      />
+
+      @if (uploadedFile()) {
+        <div class="flex flex-col items-center gap-3">
+          <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <div>
+            <div class="font-medium text-gray-900 text-lg">{{ uploadedFile()?.name }}</div>
+            <div class="text-sm text-gray-500 mt-1">
+              {{ (uploadedFile()!.size / 1024 / 1024).toFixed(2) }} MB
+            </div>
+          </div>
+          <div class="flex gap-3 mt-2">
+            <button
+              (click)="handleUpload()"
+              class="px-6 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium">
+              Procesar Archivo
+            </button>
+            <button
+              (click)="removeUploadedFile()"
+              class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+              Quitar
+            </button>
+          </div>
+        </div>
+      } @else {
+        <label for="student-file-upload" class="cursor-pointer">
+          <svg class="w-12 h-12 text-yellow-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+          <div class="font-medium text-gray-900 text-lg mb-2">
+            Arrastra y suelta la lista de estudiantes aquí
+          </div>
+          <div class="text-sm text-gray-500 mb-1">
+            o <span class="text-yellow-600 font-medium">explora</span> para subir
+          </div>
+          <div class="text-xs text-gray-400 mt-3">
+            Formatos soportados: PDF, Excel (.xlsx), CSV • Máx 10MB
+          </div>
+          <div class="text-xs text-gray-500 mt-2">
+            El archivo debe contener: Nombre, Correo, Matrícula
+          </div>
+        </label>
+      }
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl border border-gray-200 p-6">
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <h3 class="font-semibold text-gray-900">Estudiantes Inscritos</h3>
+        <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
+          {{ students().length }} estudiantes
+        </span>
+      </div>
+
+      <button class="flex items-center gap-2 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium text-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+        Añadir Individual
+      </button>
+    </div>
+
+    <div class="mb-4">
+      <div class="relative">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <input
+          type="text"
+          placeholder="Buscar estudiantes..."
+          [value]="searchQuery()"
+          (input)="updateSearchQuery($event)"
+          class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+        />
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      @for (student of filteredStudents(); track student.id) {
+        <div class="flex items-center justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            </div>
+            <div>
+              <div class="font-medium text-gray-900">{{ student.name }}</div>
+              <div class="text-sm text-gray-500">{{ student.email }}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-sm text-gray-600 font-mono">{{ student.enrollment }}</span>
+            <button
+              (click)="removeStudent(student.id)"
+              class="p-2 hover:bg-red-50 rounded-lg transition-colors group"
+              title="Eliminar estudiante">
+              <svg class="w-4 h-4 text-gray-400 group-hover:text-red-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+          </div>
+        </div>
+      } @empty {
+        <div class="text-center py-8 text-gray-500">
+          No se encontraron estudiantes con esos criterios.
+        </div>
+      }
+    </div>
+  </div>
+</div>

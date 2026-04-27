@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
 import { UserList } from '../models/UserList.interface';
 import { PaginationResult } from '../models/PaginationResult';
-import { map } from 'rxjs';
+import { catchError, map, throwError } from 'rxjs';
 import { TeacherValidation } from '../../../core/models/user.inteface';
 
 @Injectable({
@@ -13,6 +13,8 @@ export class UsersService {
   http = inject(HttpClient)
 
   apiUrl = 'http://127.0.0.1:8000/users/'
+
+  pendingTeachersCount = signal<number>(0);
 
   getUsers() {
     return this.http.get<PaginationResult<UserList>>(this.apiUrl)
@@ -46,7 +48,26 @@ export class UsersService {
       status: 'approved'
     }
 
-    return this.http.patch<TeacherValidation>(`${this.apiUrl}${userId}/review_teacher/`, body);
+    return this.http.patch<TeacherValidation>(`${this.apiUrl}${userId}/review_teacher/`, body)
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let error = 'Ocurrió un error inesperado al intentar aprobar la solicitud.';
+
+
+        if (err.error && err.error.error) {
+          error = err.error.error;
+        }
+        else if (err.status === 400 || err.status === 401) {
+          // A veces DRF manda los errores en un arreglo, o bajo la llave "detail" o "non_field_errors"
+          if (err.error.non_field_errors) {
+            error = err.error.non_field_errors[0];
+          } else {
+            error = 'Ocurrió un error inesperado al intentar aprobar la solicitud.';
+          }
+        }
+        return throwError(() => new Error(error));
+      })
+    )
   }
 
   rejectTeacher(userId: string) {
@@ -54,7 +75,30 @@ export class UsersService {
       status: 'rejected'
     }
 
-    return this.http.patch<TeacherValidation>(`${this.apiUrl}${userId}/review_teacher/`, body);
+    return this.http.patch<TeacherValidation>(`${this.apiUrl}${userId}/review_teacher/`, body)
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let error = 'Ocurrió un error inesperado al intentar rechazar la solicitud.';
+
+
+        if (err.error && err.error.error) {
+          error = err.error.error;
+        }
+        else if (err.status === 400 || err.status === 401) {
+          // A veces DRF manda los errores en un arreglo, o bajo la llave "detail" o "non_field_errors"
+          if (err.error.non_field_errors) {
+            error = err.error.non_field_errors[0];
+          } else {
+            error = 'Ocurrió un error inesperado al intentar rechazar la solicitud.';
+          }
+        }
+        return throwError(() => new Error(error));
+      })
+    )
+  }
+
+  updatePendingTeachersCount(newCount: number) {
+    this.pendingTeachersCount.set(newCount);
   }
 
 }

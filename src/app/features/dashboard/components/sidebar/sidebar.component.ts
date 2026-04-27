@@ -14,6 +14,7 @@ import {
 import { FacadeService } from '../../../../core/services/facade.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoadingModalComponent } from "../../../../shared/components/loading-modal/loading-modal.component";
+import { UsersService } from '../../services/users.service';
 
 // Interfaz para el menú
 export interface MenuItem {
@@ -21,12 +22,6 @@ export interface MenuItem {
   label: string;
   icon: any;
   badge?: number;
-}
-
-// Simulamos el AuthContext (En el futuro inyectarás tu AuthService)
-export interface MockUser {
-  name: string;
-  role: 'administrator' | 'teacher' | 'student';
 }
 
 @Component({
@@ -44,6 +39,7 @@ export class SidebarComponent {
 
   userRole = this.facadeService.userRole;
   userName = this.facadeService.userName;
+  userService = inject(UsersService);
 
   modalStatus = signal<'oculto' | 'cargando' | 'exito' | 'error'>('oculto');
   messageModal1 = signal<string>('');
@@ -55,7 +51,7 @@ export class SidebarComponent {
     switch (this.userRole()) {
       case 'administrador':
         return [
-          { path: 'admin/validation', label: 'Teacher Validation', icon: this.icons.UserCheck, badge: 3 },
+          { path: 'admin/validation', label: 'Teacher Validation', icon: this.icons.UserCheck, badge: this.userService.pendingTeachersCount() },
           { path: 'admin/subjects', label: 'Subject Management', icon: this.icons.BookOpen },
           { path: 'admin/users-list', label: 'Users', icon: this.icons.Users },
           { path: 'settings', label: 'Settings', icon: this.icons.Settings },
@@ -74,6 +70,18 @@ export class SidebarComponent {
         return [];
     }
   });
+
+
+  ngOnInit() {
+    this.userService.getTeacherRequests().subscribe({
+      next: (response) => {
+        this.userService.pendingTeachersCount.set(response.length);
+      },
+      error: (err) => {
+        this.userService.pendingTeachersCount.set(0)
+      }
+    })
+  }
 
   Logout() {
 

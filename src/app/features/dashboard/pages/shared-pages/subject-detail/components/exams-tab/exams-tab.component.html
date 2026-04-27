@@ -59,7 +59,7 @@
 
           <div class="flex items-center gap-2">
             <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer" title="View Details">
-              <lucide-icon [img]="icons.Eye" class="w-4 h-4 text-gray-600"></lucide-icon>
+              <lucide-icon [img]="icons.Eye" class="w-4 h-4 text-gray-600" (click)="openViewer(exam.id!)"></lucide-icon>
             </button>
             <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer" title="Edit Exam">
               <lucide-icon [img]="icons.Edit" (click)="openCreateExamModal(exam.id!)" class="w-4 h-4 text-gray-600"></lucide-icon>
@@ -105,3 +105,10 @@
     </div>
   }
 </div>
+
+<exam-viewer
+  [viewExam]="viewExam()"
+  [examData]="examToEdit()!"
+  [isPreviewMode]="isPreviewMode()"
+  (closeViewer)="closeViewer()"
+/>

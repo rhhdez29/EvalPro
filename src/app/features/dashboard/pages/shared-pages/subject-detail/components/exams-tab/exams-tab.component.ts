@@ -21,11 +21,12 @@ import { ExamBase, ExamDetail } from '../../../../../models/RESTExamResponse.int
 import { CreateExamFormComponent } from "../exam-builder/create-exam-form/create-exam-form.component";
 import { LoadingInformationComponent } from "../../../../../../../shared/components/loading-information/loading-information.component";
 import { DeleteModalComponent } from "../../../../../../../shared/components/delete-modal/delete-modal.component";
+import { ExamViewerComponent } from "../../../exam-viewer/exam-viewer.component";
 
 @Component({
   selector: 'app-exams-tab',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, CreateExamFormComponent, LoadingInformationComponent, DeleteModalComponent],
+  imports: [CommonModule, LucideAngularModule, CreateExamFormComponent, LoadingInformationComponent, DeleteModalComponent, ExamViewerComponent],
   templateUrl: './exams-tab.component.html'
 })
 export class ExamsTabComponent {
@@ -44,6 +45,8 @@ export class ExamsTabComponent {
   isModalDeleteOpen = signal(false);
   isEditExam = signal(false);
   examToEdit = signal<ExamDetail | null>(null);
+  isPreviewMode = signal(false);
+  viewExam = signal(false);
 
   isExamsEmpty = computed(() => {
     const data = this.examsResource.value()
@@ -118,8 +121,25 @@ export class ExamsTabComponent {
     this.examToEdit.set(null);
   }
 
-  handleSubmitExam() {
+  openViewer(id: number){
+    this.viewExam.set(true);
+    this.isPreviewMode.set(true);
 
+    this.examService.getExamByID(id).subscribe({
+      next: (exam) => {
+        this.examToEdit.set(exam as ExamDetail);
+        console.log(this.examToEdit());
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    })
+  }
+
+  closeViewer(){
+    this.viewExam.set(false);
+    this.isPreviewMode.set(false);
+    this.examToEdit.set(null);
   }
 
   openDeleteModal(id: number){

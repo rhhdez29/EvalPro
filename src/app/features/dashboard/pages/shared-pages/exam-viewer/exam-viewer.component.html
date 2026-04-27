@@ -1,0 +1,182 @@
+@if(viewExam()){
+
+
+  <div class="fixed inset-0 bg-gray-100 z-50 overflow-hidden flex flex-col">
+
+  @if (isPreviewMode()) {
+    <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 shadow-lg">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-lg border-2 border-white/30">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+            <span class="font-bold text-lg">MODO VISTA PREVIA</span>
+          </div>
+          <div class="border-l-2 border-white/30 pl-4">
+            <p class="text-sm opacity-90">Así es como los estudiantes verán este examen</p>
+            <p class="text-xs opacity-75">Las acciones aquí no se guardarán • Solo visualización</p>
+          </div>
+        </div>
+        <button (click)="closeViewer.emit()" class="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors border-2 border-white/30 font-medium">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          Salir de la Vista Previa
+        </button>
+      </div>
+    </div>
+  }
+
+  <div class="flex-1 overflow-y-auto">
+    <div class="max-w-4xl mx-auto py-8 px-6">
+
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-6">
+        <div class="flex items-start justify-between mb-6">
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              </div>
+              <div>
+                <h1 class="text-3xl font-bold text-gray-900">{{ examData().title }}</h1>
+                <p class="text-sm text-gray-500 mt-1">
+                  {{ examData().start_date | date:'longDate' }} a las {{ examData().start_date | date:'shortTime' }}
+                </p>
+              </div>
+            </div>
+            <p class="text-gray-600 mt-4 leading-relaxed">{{ examData().description }}</p>
+          </div>
+
+          @if (examData().duration_minutes > 0) {
+            <div class="ml-6 bg-yellow-50 border-2 border-yellow-200 rounded-lg px-6 py-4 text-center min-w-[140px]">
+              <div class="flex items-center justify-center gap-2 mb-1">
+                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-sm font-semibold text-gray-700">Tiempo Restante</span>
+              </div>
+              <div class="text-3xl font-bold text-yellow-600 font-mono">
+                {{ formatTime(timeRemaining()) }}
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 pt-6 border-t border-gray-200">
+          <div class="text-center">
+            <p class="text-sm text-gray-600 mb-1">Total de Preguntas</p>
+            <p class="text-2xl font-bold text-gray-900">{{ examData().questions.length || 0 }}</p>
+          </div>
+          <div class="text-center">
+            <p class="text-sm text-gray-600 mb-1">Puntos Totales</p>
+            <p class="text-2xl font-bold text-gray-900">{{ examData().total_score }}</p>
+          </div>
+          <div class="text-center">
+            <p class="text-sm text-gray-600 mb-1">Duración</p>
+            <p class="text-2xl font-bold text-gray-900">
+              {{ examData().duration_minutes > 0 ? examData().duration_minutes + ' min' : 'Sin límite' }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-start gap-3">
+        <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <div>
+          <p class="font-semibold text-blue-900 mb-1">Instrucciones</p>
+          <ul class="text-sm text-blue-800 space-y-1">
+            <li>• Responde todas las preguntas con atención.</li>
+            @if (examData().duration_minutes > 0) {
+              <li>• Cuando el tiempo se agote, el examen se enviará automáticamente.</li>
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        @for (question of examData().questions; track question.id; let i = $index) {
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+
+            <div class="flex items-start justify-between mb-4 pb-4 border-b border-gray-200">
+              <div class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-8 h-8 bg-yellow-100 text-yellow-700 rounded-full flex items-center justify-center font-bold text-sm">
+                  {{ i + 1 }}
+                </span>
+                <div class="flex-1">
+                  <p class="text-lg font-semibold text-gray-900 mb-1">{{ question.prompt }}</p>
+                  <div class="flex items-center gap-4 text-sm text-gray-600">
+                    <span class="font-medium text-yellow-700">{{ question.points }} puntos</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              @switch (question.question_type) {
+                @case ('MCQ') {
+                  <multiple-choice-viewer
+                    [question]="question"
+                    [isPreviewMode]="isPreviewMode()"
+                  ></multiple-choice-viewer>
+                }
+                @case ('TF') {
+                  <true-false-viewer
+                    [question]="question"
+                    [isPreviewMode]="isPreviewMode()"
+                  ></true-false-viewer>
+                }
+                @case ('CODE') {
+                  <code-editor-viewer
+                    [question]="question"
+                    [isPreviewMode]="isPreviewMode()">
+                  </code-editor-viewer>
+                }
+                @case ('MATCH') {
+                  <matching-viewer
+                    [question]="question"
+                    [isPreviewMode]="isPreviewMode()"
+                  ></matching-viewer>
+                }
+              }
+            </div>
+
+          </div>
+        }
+      </div>
+
+      <div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="font-semibold text-gray-900 mb-1">¿Listo para enviar?</p>
+            <p class="text-sm text-gray-600">Revisa tus respuestas antes de enviar. No podrás cambiarlas después.</p>
+          </div>
+          <button
+            (click)="onSubmitClick()"
+            [class]="isPreviewMode() ? 'bg-gray-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-700'"
+            class="px-8 py-3 text-white rounded-lg transition-colors font-medium">
+            {{ isPreviewMode() ? 'Modo Vista Previa' : 'Entregar Examen' }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="bg-white border-t border-gray-200 px-6 py-3">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-gray-600">
+          Progreso:
+          <span class="font-semibold text-gray-900">{{ answeredQuestionsCount() }}/{{ examData().questions.length || 0 }}</span>
+          preguntas respondidas
+        </span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="w-64 bg-gray-200 rounded-full h-2 overflow-hidden">
+          <div
+            class="bg-yellow-600 h-2 rounded-full transition-all duration-300"
+            [style.width.%]="progressPercentage()">
+          </div>
+        </div>
+        <span class="text-sm font-medium text-gray-700">{{ progressPercentage() }}%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+}
