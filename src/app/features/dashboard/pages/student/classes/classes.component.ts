@@ -9,6 +9,8 @@ import {
   Calendar,
   Clock
 } from 'lucide-angular';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { StudentService } from '../../../services/student.service';
 
 export interface Class {
   id: string;
@@ -29,46 +31,22 @@ export interface Class {
 export class ClassesComponent {
 
   private router = inject(Router);
-
+  private studentService = inject(StudentService);
   // Mapeo de iconos para el HTML
   readonly icons = { BookOpen, Users, Calendar, Clock };
 
   // ESTADO BASE
-  classes = signal<Class[]>([
-    {
-      id: '1',
-      name: 'Advanced Mathematics',
-      code: 'MATH-401',
-      teacher: 'Prof. Johnson',
-      schedule: 'Mon, Wed 10:00 AM',
-      nextExam: 'Feb 20, 2026',
-      color: 'bg-blue-500'
-    },
-    {
-      id: '2',
-      name: 'Computer Science Fundamentals',
-      code: 'CS-101',
-      teacher: 'Dr. Smith',
-      schedule: 'Tue, Thu 2:00 PM',
-      nextExam: 'Feb 18, 2026',
-      color: 'bg-purple-500'
-    },
-    {
-      id: '3',
-      name: 'Data Structures',
-      code: 'CS-202',
-      teacher: 'Prof. Williams',
-      schedule: 'Mon, Fri 11:00 AM',
-      color: 'bg-green-500'
-    },
-  ]);
+  classes = rxResource({
+    stream: () => this.studentService.getSubjects()
+  })
 
   // ESTADOS DERIVADOS (Optimizados para calcularse solos)
-  enrolledClassesCount = computed(() => this.classes().length);
-  upcomingExamsCount = computed(() => this.classes().filter(c => c.nextExam).length);
+  enrolledClassesCount = computed(() => this.classes.value()?.length);
+  // upcomingExamsCount = computed(() => this.classes.value()?.filter(c => c.nextExam).length);
 
   // MÉTODOS
   handleClassClick(classId: string) {
-    this.router.navigate([`/app/subjects/${classId}`]);
+    console.log(classId);
+
   }
 }

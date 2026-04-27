@@ -1,5 +1,7 @@
-import { Component, input, signal, computed } from '@angular/core';
+import { Component, input, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { SubjectService } from '../../../../../services/subject.service';
 
 export interface Student {
   id: string;
@@ -19,42 +21,30 @@ export class StudentsTabComponent {
   // Entrada
   subjectId = input.required<string>();
 
+  // Servicio
+  subjectService = inject(SubjectService);
+
+
   // Estado Local (Signals)
   uploadedFile = signal<File | null>(null);
   isDragging = signal<boolean>(false);
   searchQuery = signal<string>('');
 
   // Datos simulados (Aquí luego conectarías tu servicio HTTP para traer los reales)
-  students = signal<Student[]>([
-    {
-      id: '1',
-      name: 'John Doe',
-      email: 'john.doe@university.edu',
-      enrollment: 'STU-2024-001',
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      email: 'jane.smith@university.edu',
-      enrollment: 'STU-2024-002',
-    },
-    {
-      id: '3',
-      name: 'Mike Johnson',
-      email: 'mike.j@university.edu',
-      enrollment: 'STU-2024-003',
-    },
-  ]);
+  students = rxResource({
+    params: () => this.subjectId(),
+    stream: () => this.subjectService.getStudentsBySubject(this.subjectId())
+  })
 
   // Filtrado reactivo: Se recalcula automáticamente si cambia searchQuery o students
   filteredStudents = computed(() => {
     const query = this.searchQuery().toLowerCase();
-    if (!query) return this.students();
+    if (!query) return this.students.value();
 
-    return this.students().filter(student =>
+    return this.students.value()?.filter(student =>
       student.name.toLowerCase().includes(query) ||
       student.email.toLowerCase().includes(query) ||
-      student.enrollment.toLowerCase().includes(query)
+      student.date_enrolled.toLowerCase().includes(query)
     );
   });
 
@@ -113,6 +103,6 @@ export class StudentsTabComponent {
 
   removeStudent(studentId: string) {
     // TODO: Llamar al backend para eliminarlo de la materia
-    this.students.update(current => current.filter(s => s.id !== studentId));
+    console.log (this.students.value())
   }
 }

@@ -76,7 +76,7 @@
       <div class="flex items-center gap-3">
         <h3 class="font-semibold text-gray-900">Estudiantes Inscritos</h3>
         <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
-          {{ students().length }} estudiantes
+          {{ students.value()?.length }} estudiantes
         </span>
       </div>
 
@@ -112,9 +112,9 @@
             </div>
           </div>
           <div class="flex items-center gap-4">
-            <span class="text-sm text-gray-600 font-mono">{{ student.enrollment }}</span>
+            <span class="text-sm text-gray-600 font-mono">{{ student.date_enrolled | date: 'dd/MM/yyyy' }}</span>
             <button
-              (click)="removeStudent(student.id)"
+              (click)="removeStudent(student.id.toString())"
               class="p-2 hover:bg-red-50 rounded-lg transition-colors group"
               title="Eliminar estudiante">
               <svg class="w-4 h-4 text-gray-400 group-hover:text-red-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>

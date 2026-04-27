@@ -8,6 +8,7 @@ import { EditSubjectForm, Subject, } from '../models/subject.interface';
 
 
 import { PaginationResult } from '../models/PaginationResult';
+import { StudentListBySubject } from '../models/student-list-by-subject';
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +57,26 @@ export class SubjectService {
 
   deleteSubject(id: number) {
     return this.http.delete(`${this.apiUrl}${id}/`)
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let errorMsg = 'Ocurrio un error inesperado'
+
+        if(err.status === 403){
+          errorMsg = 'No tienes permiso para acceder a este recurso'
+        }
+
+        if(err.status === 404){
+          errorMsg = 'No se encontro el recurso'
+        }
+
+        return throwError(() => new Error(errorMsg));
+      })
+    )
+  }
+
+  // Obtener estudiantes de una materia
+  getStudentsBySubject(id: string): Observable<StudentListBySubject[]> {
+    return this.http.get<StudentListBySubject[]>(`${this.apiUrl}${id}/enrolled_students/`)
     .pipe(
       catchError((err: HttpErrorResponse) => {
         let errorMsg = 'Ocurrio un error inesperado'
