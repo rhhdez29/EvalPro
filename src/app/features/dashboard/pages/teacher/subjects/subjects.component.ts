@@ -23,6 +23,8 @@ import { CreateSubjectForm, EditSubjectForm, Subject } from '../../../models/sub
 import { LoadingModalComponent } from '../../../../../shared/components/loading-modal/loading-modal.component';
 import { LoadingInformationComponent } from "../../../../../shared/components/loading-information/loading-information.component";
 import { DeleteModalComponent } from "../../../../../shared/components/delete-modal/delete-modal.component";
+import { ModalState } from '../../../../../core/models/ModalState';
+
 @Component({
   selector: 'app-my-subjects',
   standalone: true,
@@ -43,9 +45,11 @@ export class SubjectsComponent {
   subjectToEdit = signal<EditSubjectForm | null>(null);
 
   // Modales
-  modalStatus = signal<'oculto' | 'cargando' | 'exito' | 'error'>('oculto');
-  messageModal1 = signal<string>('');
-  messageModal2 = signal<string>('');
+  modalState = signal<ModalState>({
+    status: 'oculto',
+    title: '',
+    subtitle: ''
+  });
 
   isSubjectsEmpty = computed(() => {
 
@@ -92,32 +96,47 @@ export class SubjectsComponent {
 
   createSubjectData(data: CreateSubjectForm){
 
-    this.modalStatus.set('cargando');
-    this.messageModal1.set('Cargando');
-    this.messageModal2.set('Estamos procesando tu solicitud...')
+    console.log('1. Botón presionado. Estado actual:', this.modalState());
+
+    this.modalState.set({
+      status: 'cargando',
+      title: 'Cargando',
+      subtitle: 'Estamos procesando tu solicitud...'
+    });
+
+    console.log('2. Señal actualizada a:', this.modalState());
 
     if(this.isEditModalOpen()){
       this.subjectsService.updateSubject(this.idSubject!, data).subscribe({
         next: () => {
           this.closeCreateSubjectModal();
-          this.modalStatus.set('exito');
-          this.messageModal1.set('Listo!');
-          this.messageModal2.set('Materia actualizada con éxito');
+          this.modalState.set({
+            status: 'exito',
+            title: 'Listo!',
+            subtitle: 'Materia actualizada con éxito'
+          });
           setTimeout(() => {
-            this.modalStatus.set('oculto');
+            this.modalState.set({
+              status: 'oculto',
+              title: '',
+              subtitle: ''
+            });
             this.subjectsResource.reload();
           }, 3000);
         },
         error: (err) => {
-          console.error(err);
-          this.modalStatus.set('error');
-          const mensajeError = err.error?.detail || 'Hubo un error en el servidor'
-
-          this.messageModal1.set('Uy, algo salió mal...');
-          this.messageModal2.set(mensajeError);
+          this.modalState.set({
+            status: 'error',
+            title: 'Uy, algo salió mal...',
+            subtitle: err.error?.detail || 'Hubo un error en el servidor'
+          });
 
           setTimeout(() => {
-            this.modalStatus.set('oculto');
+            this.modalState.set({
+              status: 'oculto',
+              title: '',
+              subtitle: ''
+            });
           }, 3000);
         }
       });
@@ -128,11 +147,17 @@ export class SubjectsComponent {
         // 1. Cerramos el modal
         this.closeCreateSubjectModal();
 
-        this.modalStatus.set('exito');
-        this.messageModal1.set('Listo!');
-        this.messageModal2.set('Materia creada con éxito');
+        this.modalState.set({
+          status: 'exito',
+          title: 'Listo!',
+          subtitle: 'Materia creada con éxito'
+        });
         setTimeout(() => {
-          this.modalStatus.set('oculto');
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
           //Le decimos al recurso de lectura que vuelva a pedir los datos a Django
           this.subjectsResource.reload();
 
@@ -142,14 +167,18 @@ export class SubjectsComponent {
       },
       error: (err) => {
         console.error(err);
-        this.modalStatus.set('error');
-        const mensajeError = err.error?.detail || 'Hubo un error en el servidor'
-
-        this.messageModal1.set('Uy, algo salió mal...');
-        this.messageModal2.set(mensajeError);
+        this.modalState.set({
+          status: 'error',
+          title: 'Uy, algo salió mal...',
+          subtitle: err.error?.detail || 'Hubo un error en el servidor'
+        });
 
         setTimeout(() => {
-          this.modalStatus.set('oculto');
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
         }, 3000);
       }
     });
@@ -162,14 +191,44 @@ export class SubjectsComponent {
   }
 
   deleteSubject(){
-    console.log('Eliminando materia: ', this.idSubject);
+
+    this.modalState.set({
+      status: 'cargando',
+      title: 'Eliminando',
+      subtitle: 'Estamos procesando tu solicitud...'
+    });
 
     this.subjectsService.deleteSubject(this.idSubject!).subscribe({
       next: () => {
-        this.subjectsResource.reload();
+        this.modalState.set({
+          status: 'exito',
+          title: 'Listo!',
+          subtitle: 'Materia eliminada con éxito'
+        });
+        setTimeout(() => {
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
+          this.subjectsResource.reload();
+        }, 3000);
       },
       error: (err) => {
         console.error(err);
+        this.modalState.set({
+          status: 'error',
+          title: 'Uy, algo salió mal...',
+          subtitle: err.error?.detail || 'Hubo un error en el servidor'
+        });
+
+        setTimeout(() => {
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
+        }, 3000);
       }
     })
 

@@ -21,6 +21,9 @@ import { ExamDetail, ExamForm, Question, QuestionForm, QuestionType } from '../.
 import { QuestionBuilderComponent } from "../question-builder/question-builder.component";
 import { OnlyNumbersDirective } from "../../../../../../../../shared/directives/only-numbers.directive";
 import { ExamService } from '../../../../../../services/exam.service';
+import { ModalState } from '../../../../../../../../core/models/ModalState';
+import { LoadingInformationComponent } from "../../../../../../../../shared/components/loading-information/loading-information.component";
+import { LoadingModalComponent } from "../../../../../../../../shared/components/loading-modal/loading-modal.component";
 
 @Component({
   selector: 'app-create-exam-form',
@@ -33,7 +36,9 @@ import { ExamService } from '../../../../../../services/exam.service';
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     QuestionBuilderComponent,
-    OnlyNumbersDirective
+    OnlyNumbersDirective,
+    LoadingInformationComponent,
+    LoadingModalComponent
 ],
   templateUrl: './create-exam-form.component.html'
 })
@@ -47,6 +52,12 @@ export class CreateExamFormComponent {
   isEditExam = input<boolean>(false);
   questionToEdit = signal<Question | null>(null);
   openQuestionBuilder = signal<boolean>(false);
+
+  modalState = signal<ModalState>({
+    status: 'oculto',
+    title: '',
+    subtitle: ''
+  });
 
 
   private fb = inject(NonNullableFormBuilder);
@@ -211,13 +222,44 @@ export class CreateExamFormComponent {
         questions: examFormValue.questions as Question[]
       }
 
+      this.modalState.set({
+        status: 'cargando',
+        title: 'Actualizando examen...',
+        subtitle: 'Por favor espere.'
+      });
+
       this.examService.updateExam(this.examData()?.id!, examUpdateData).subscribe({
         next: (response) => {
           console.log('Examen actualizado exitosamente: ', response);
-          this.closeDialog.emit();
+          this.modalState.set({
+            status: 'exito',
+            title: 'Examen actualizado exitosamente.',
+            subtitle: ''
+          });
+          setTimeout(() => {
+            this.modalState.set({
+              status: 'oculto',
+              title: '',
+              subtitle: ''
+            });
+            this.closeDialog.emit();
+          }, 3000);
+
         },
         error: (error) => {
           console.error('Error al actualizar el examen: ', error);
+          this.modalState.set({
+            status: 'error',
+            title: 'Error al actualizar el examen.',
+            subtitle: error.error?.detail || 'Hubo un error en el servidor'
+          });
+          setTimeout(() => {
+            this.modalState.set({
+              status: 'oculto',
+              title: '',
+              subtitle: ''
+            });
+          }, 3000);
         }
       })
 
@@ -235,13 +277,43 @@ export class CreateExamFormComponent {
 
       }
 
+      this.modalState.set({
+        status: 'cargando',
+        title: 'Creando examen...',
+        subtitle: 'Por favor espere.'
+      });
+
       this.examService.createExam(examData).subscribe({
         next: (response) => {
           console.log('Examen creado exitosamente: ', response);
-          this.closeDialog.emit();
+          this.modalState.set({
+            status: 'exito',
+            title: 'Examen creado exitosamente.',
+            subtitle: ''
+          });
+          setTimeout(() => {
+            this.modalState.set({
+              status: 'oculto',
+              title: '',
+              subtitle: ''
+            });
+            this.closeDialog.emit();
+          }, 3000);
         },
         error: (error) => {
           console.error('Error al crear el examen: ', error);
+          this.modalState.set({
+            status: 'error',
+            title: 'Error al crear el examen.',
+            subtitle: error.error?.detail || 'Hubo un error en el servidor'
+          });
+          setTimeout(() => {
+            this.modalState.set({
+              status: 'oculto',
+              title: '',
+              subtitle: ''
+            });
+          }, 3000);
         }
       })
 

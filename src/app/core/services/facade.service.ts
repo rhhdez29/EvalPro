@@ -59,8 +59,9 @@ export class FacadeService {
     }
     return this.http.post<any>(`${environment.url_api}/login/`,data)
     .pipe(
-      catchError ((err: HttpErrorResponse) => {
+      catchError((err: HttpErrorResponse) => {
         let error = 'Ocurrió un error inesperado al intentar iniciar sesión.';
+
         if (err.error && err.error.error) {
           error = err.error.error;
         }
@@ -69,7 +70,7 @@ export class FacadeService {
           if (err.error.non_field_errors) {
             error = err.error.non_field_errors[0];
           } else {
-            error = 'Correo o contraseña incorrectos.';
+            error = 'Ocurrió un error inesperado al intentar iniciar sesión.';
           }
         }
         return throwError(() => new Error(error));

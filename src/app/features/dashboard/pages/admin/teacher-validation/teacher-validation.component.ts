@@ -15,6 +15,7 @@ import { UsersService } from '../../../services/users.service';
 import { WarningModalComponent } from "../../../../../shared/components/warning-modal/warning-modal.component";
 import { LandingComponent } from "../../../../landing/pages/landing.component";
 import { LoadingModalComponent } from "../../../../../shared/components/loading-modal/loading-modal.component";
+import { ModalState } from '../../../../../core/models/ModalState';
 @Component({
   selector: 'app-teacher-validation',
   standalone: true,
@@ -30,11 +31,12 @@ export class TeacherValidationComponent {
   private usersService = inject(UsersService);
   id_teacher_selected = signal<string>('');
   isApproveModalOpen = signal(false);
-  loadingModal = signal <'oculto' | 'cargando' | 'exito' | 'error'>('oculto');
   isRejectModalOpen = signal(false);
-  message1 = signal<string>('');
-  message2 = signal<string>('');
-
+  modalState = signal<ModalState>({
+    status: 'oculto',
+    title: '',
+    subtitle: ''
+  });
 
 
   // ESTADOS DERIVADOS (Reemplaza los filter/length sueltos en el render)
@@ -79,16 +81,24 @@ export class TeacherValidationComponent {
   }
 
   approveTeacher() {
-    this.loadingModal.set('cargando');
-    this.message1.set('Cargando');
-    this.message2.set('Estamos procesando tu solicitud...')
+    this.modalState.set({
+      status: 'cargando',
+      title: 'Cargando',
+      subtitle: 'Estamos procesando tu solicitud...'
+    });
     this.usersService.approveTeacher(this.id_teacher_selected()).subscribe({
       next: () => {
-        this.loadingModal.set('exito');
-        this.message1.set('Solicitud aprobada');
-        this.message2.set('La solicitud ha sido aprobada exitosamente.');
+        this.modalState.set({
+          status: 'exito',
+          title: 'Maestro aprobado',
+          subtitle: 'El maestro ha sido aprobado exitosamente.'
+        });
         setTimeout(() => {
-          this.loadingModal.set('oculto');
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
           this.closeApproveModal();
           this.teacherRequest.reload();
         }, 3000);
@@ -96,11 +106,17 @@ export class TeacherValidationComponent {
       }
       ,
       error: (err) => {
-        this.loadingModal.set('error');
-        this.message1.set('Error');
-        this.message2.set('La solicitud no pudo ser procesada.');
+        this.modalState.set({
+          status: 'error',
+          title: 'Error',
+          subtitle: err.error?.detail || 'Hubo un error en el servidor'
+        });
         setTimeout(() => {
-          this.loadingModal.set('oculto');
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
           this.closeApproveModal();
           this.teacherRequest.reload();
         }, 3000);
@@ -110,18 +126,24 @@ export class TeacherValidationComponent {
 
   rejectTeacher() {
 
-    this.loadingModal.set('cargando');
-    this.message1.set('Cargando');
-    this.message2.set('Estamos procesando tu solicitud...')
-
+    this.modalState.set({
+      status: 'cargando',
+      title: 'Cargando',
+      subtitle: 'Estamos procesando tu solicitud...'
+    });
     this.usersService.rejectTeacher(this.id_teacher_selected()).subscribe({
       next: () => {
-        this.loadingModal.set('exito');
-        this.message1.set('Solicitud rechazada');
-        this.message2.set('La solicitud ha sido rechazada exitosamente.');
-
+        this.modalState.set({
+          status: 'exito',
+          title: 'Maestro rechazado',
+          subtitle: 'El maestro ha sido rechazado exitosamente.'
+        });
         setTimeout(() => {
-          this.loadingModal.set('oculto');
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
           this.closeRejectModal();
           this.teacherRequest.reload();
         }, 3000);
@@ -129,11 +151,17 @@ export class TeacherValidationComponent {
       }
       ,
       error: (err) => {
-        this.loadingModal.set('error');
-        this.message1.set('Error');
-        this.message2.set('La solicitud no pudo ser procesada.');
+        this.modalState.set({
+          status: 'error',
+          title: 'Error',
+          subtitle: err.error?.detail || 'Hubo un error en el servidor'
+        });
         setTimeout(() => {
-          this.loadingModal.set('oculto');
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
           this.closeRejectModal();
           this.teacherRequest.reload();
         }, 3000);

@@ -22,11 +22,13 @@ import { CreateExamFormComponent } from "../exam-builder/create-exam-form/create
 import { LoadingInformationComponent } from "../../../../../../../shared/components/loading-information/loading-information.component";
 import { DeleteModalComponent } from "../../../../../../../shared/components/delete-modal/delete-modal.component";
 import { ExamViewerComponent } from "../../../exam-viewer/exam-viewer.component";
+import { ModalState } from '../../../../../../../core/models/ModalState';
+import { LoadingModalComponent } from "../../../../../../../shared/components/loading-modal/loading-modal.component";
 
 @Component({
   selector: 'app-exams-tab',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, CreateExamFormComponent, LoadingInformationComponent, DeleteModalComponent, ExamViewerComponent],
+  imports: [CommonModule, LucideAngularModule, CreateExamFormComponent, LoadingInformationComponent, DeleteModalComponent, ExamViewerComponent, LoadingModalComponent],
   templateUrl: './exams-tab.component.html'
 })
 export class ExamsTabComponent {
@@ -47,6 +49,12 @@ export class ExamsTabComponent {
   examToEdit = signal<ExamDetail | null>(null);
   isPreviewMode = signal(false);
   viewExam = signal(false);
+
+  modalState = signal<ModalState>({
+    status: 'oculto',
+    title: '',
+    subtitle: ''
+  });
 
   isExamsEmpty = computed(() => {
     const data = this.examsResource.value()
@@ -118,6 +126,7 @@ export class ExamsTabComponent {
   closeCreateExamModal(){
     this.showCreateForm.set(false);
     this.isEditExam.set(false);
+    this.examsResource.reload();
     this.examToEdit.set(null);
   }
 
@@ -153,12 +162,28 @@ export class ExamsTabComponent {
   deleteExam(){
     console.log('Eliminando examen: ', this.idExam);
 
+    this.modalState.set({
+      status: 'cargando',
+      title: 'Eliminando examen...',
+      subtitle: 'Por favor espere.'
+    });
+
     this.examService.deleteExam(this.idExam!).subscribe({
       next: () => {
         this.examsResource.reload();
+        this.modalState.set({
+          status: 'exito',
+          title: 'Examen eliminado correctamente.',
+          subtitle: ''
+        });
       },
       error: (err) => {
         console.error(err);
+        this.modalState.set({
+          status: 'error',
+          title: 'Error al eliminar el examen.',
+          subtitle: err.error?.detail || 'Hubo un error en el servidor'
+        });
       }
     })
 

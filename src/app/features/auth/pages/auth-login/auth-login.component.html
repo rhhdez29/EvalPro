@@ -80,9 +80,9 @@
   </div>
 
   <loading-modal
-    [status]="modalStatus()"
-    [message1]="messageModal1()"
-    [message2]="messageModal2()"
+    [status]="modalState().status"
+    [message1]="modalState().title"
+    [message2]="modalState().subtitle"
   >
   </loading-modal>
 

@@ -112,3 +112,9 @@
   [isPreviewMode]="isPreviewMode()"
   (closeViewer)="closeViewer()"
 />
+
+<loading-modal
+    [status]="modalState().status"
+    [message1]="modalState().title"
+    [message2]="modalState().subtitle"
+/>

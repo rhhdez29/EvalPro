@@ -14,12 +14,14 @@ import { UsersService } from '../../../services/users.service';
 import { UserList } from '../../../models/UserList.interface';
 import { DeleteModalComponent } from "../../../../../shared/components/delete-modal/delete-modal.component";
 import { WarningModalComponent } from "../../../../../shared/components/warning-modal/warning-modal.component";
+import { ModalState } from '../../../../../core/models/ModalState';
+import { LoadingModalComponent } from "../../../../../shared/components/loading-modal/loading-modal.component";
 
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, FormsModule, DeleteModalComponent, WarningModalComponent],
+  imports: [CommonModule, LucideAngularModule, FormsModule, DeleteModalComponent, WarningModalComponent, LoadingModalComponent],
   templateUrl: './users-list.component.html'
 })
 export class UsersListComponent {
@@ -34,6 +36,12 @@ export class UsersListComponent {
   isWarningModalOpen = signal(false);
   userStatus = signal(false);
   userIdSelected = signal<string>('');
+
+  modalState = signal<ModalState>({
+    status: 'oculto',
+    title: '',
+    subtitle: ''
+  });
 
   private usersService = inject(UsersService)
 
@@ -89,25 +97,81 @@ export class UsersListComponent {
   }
 
   deleteUser() {
+    this.modalState.set({
+      status: 'cargando',
+      title: 'Cargando',
+      subtitle: 'Estamos procesando tu solicitud...'
+    });
     this.usersService.deleteUser(this.userIdSelected()).subscribe({
       next: (user) => {
-        this.users.reload()
+        this.modalState.set({
+          status: 'exito',
+          title: 'Listo!',
+          subtitle: 'Usuario eliminado con éxito'
+        });
+        setTimeout(() => {
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
+          this.users.reload()
+        }, 3000);
         console.log(user);
       },
       error: (error) => {
-        console.error(error);
+        this.modalState.set({
+          status: 'error',
+          title: 'Uy, algo salió mal...',
+          subtitle: error.error?.detail || 'Hubo un error en el servidor'
+        });
+        setTimeout(() => {
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
+        }, 3000);
       }
     })
     this.closeDeleteModal();
   }
 
   toggleUserStatus() {
+    this.modalState.set({
+      status: 'cargando',
+      title: 'Cargando',
+      subtitle: 'Estamos procesando tu solicitud...'
+    });
     this.usersService.toggleUserStatus(this.userIdSelected()).subscribe({
       next: (user) => {
-        this.users.reload()
+        this.modalState.set({
+          status: 'exito',
+          title: 'Listo!',
+          subtitle: 'Estado del usuario actualizado con éxito'
+        });
+        setTimeout(() => {
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
+          this.users.reload()
+        }, 3000);
       },
       error: (error) => {
-        console.error(error);
+        this.modalState.set({
+          status: 'error',
+          title: 'Uy, algo salió mal...',
+          subtitle: error.error?.detail || 'Hubo un error en el servidor'
+        });
+        setTimeout(() => {
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
+        }, 3000);
       }
     })
     this.closeWarningModal()

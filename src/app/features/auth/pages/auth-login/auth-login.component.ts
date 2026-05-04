@@ -14,6 +14,7 @@ import { error } from 'console';
 import { UserLoginData } from '../../../../core/models/user.inteface';
 import { FormUtilsService } from '../../../../shared/utils/form-utils.service';
 import { LoadingModalComponent } from '../../../../shared/components/loading-modal/loading-modal.component';
+import { ModalState } from '../../../../core/models/ModalState';
 
 @Component({
   selector: 'app-auth-login',
@@ -28,9 +29,7 @@ export class AuthLoginComponent {
   private fb = inject(FormBuilder);
   formUtils = inject(FormUtilsService);
 
-  modalStatus = signal<'oculto' | 'cargando' | 'exito' | 'error'>('oculto');
-  messageModal1 = signal<string>('');
-  messageModal2 = signal<string>('');
+  modalState = signal<ModalState>({status: 'oculto', title: '', subtitle: ''});
 
   // --- ICONS ---
   readonly icons = {
@@ -58,16 +57,12 @@ export class AuthLoginComponent {
 
     const userData = this.formUser.getRawValue();
 
-    this.modalStatus.set('cargando');
-    this.messageModal1.set('Cargando');
-    this.messageModal2.set('Estamos procesando tu solicitud...')
+    this.modalState.set({status: 'cargando', title: 'Cargando', subtitle: 'Estamos procesando tu solicitud...'});
 
     this.facadeService.login(userData.username, userData.password).subscribe({
       next: (response) => {
 
-        this.modalStatus.set('exito');
-        this.messageModal1.set('¡Inicio de sesion exitoso!');
-        this.messageModal2.set('Espere un momento...')
+        this.modalState.set({status: 'exito', title: '¡Inicio de sesion exitoso!', subtitle: 'Espere un momento...'});
 
         let userData: UserLoginData;
 
@@ -104,7 +99,7 @@ export class AuthLoginComponent {
         this.facadeService.saveUserData(userData, response.token);
 
         setTimeout(() => {
-          this.modalStatus.set('oculto');
+          this.modalState.set({status: 'oculto', title: '', subtitle: ''});
           if(response.roles[0]==='administrador'){
             this.router.navigate(['home/admin/validation']);
           }else if(response.roles[0]==='maestro'){
@@ -117,12 +112,10 @@ export class AuthLoginComponent {
       },
       error: (error: string) => {
 
-        this.modalStatus.set('error');
-        this.messageModal1.set('Uy, algo salió mal...');
-        this.messageModal2.set(error);
+        this.modalState.set({status: 'error', title: 'Uy, algo salió mal...', subtitle: error});
 
         setTimeout(() => {
-          this.modalStatus.set('oculto');
+          this.modalState.set({status: 'oculto', title: '', subtitle: ''});
           this.formUser.reset();
         }, 3000);
 

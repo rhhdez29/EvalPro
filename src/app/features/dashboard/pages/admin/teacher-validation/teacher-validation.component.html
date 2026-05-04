@@ -131,7 +131,7 @@
 />
 
 <loading-modal
-  [status]="loadingModal()"
-  [message1]="message1()"
-  [message2]="message2()"
+  [status]="modalState().status"
+  [message1]="modalState().title"
+  [message2]="modalState().subtitle"
 />

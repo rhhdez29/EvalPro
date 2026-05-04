@@ -22,13 +22,6 @@
   >
   </app-create-subject-form>
 
-  <loading-modal
-    [status]="modalStatus()"
-    [message1]="messageModal1()"
-    [message2]="messageModal2()"
-  >
-  </loading-modal>
-
   <div class="grid grid-cols-3 gap-6 mb-8">
 
     <div class="bg-white rounded-xl p-6 border border-gray-200">
@@ -166,5 +159,11 @@
     }
 
 </loading-information>
-
 </div>
+
+<loading-modal
+    [status]="modalState().status"
+    [message1]="modalState().title"
+    [message2]="modalState().subtitle"
+  >
+</loading-modal>
