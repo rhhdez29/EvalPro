@@ -47,6 +47,7 @@ export class ClassesComponent {
   // MÉTODOS
   handleClassClick(classId: string) {
     console.log(classId);
+    this.router.navigate([`home/subject/${classId}`]);
 
   }
 }

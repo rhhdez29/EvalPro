@@ -11,6 +11,7 @@ import { SubjectService } from '../../../services/subject.service';
 import { ExamsTabComponent } from "./components/exams-tab/exams-tab.component";
 import { LoadingInformationComponent } from "../../../../../shared/components/loading-information/loading-information.component";
 import { StudentsTabComponent } from "./components/students-tab/students-tab.component";
+import { PendingExamsTabComponent } from "./components/pending-exams-tab/pending-exams-tab.component";
 
 interface Tab {
   id: string;
@@ -24,7 +25,8 @@ interface Tab {
   imports: [
     ExamsTabComponent,
     LoadingInformationComponent,
-    StudentsTabComponent
+    StudentsTabComponent,
+    PendingExamsTabComponent
 ],
   templateUrl: './subject-detail.component.html'
 })
@@ -102,7 +104,7 @@ export class SubjectDetailComponent {
     } else if (role === 'administrador') {
       this.router.navigate(['home/admin/subjects']);
     } else {
-      this.router.navigate(['/app/subject-management']);
+      this.router.navigate(['home/student/classes']);
     }
   }
 

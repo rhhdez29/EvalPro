@@ -66,3 +66,14 @@ export interface ExamForm extends Omit<ExamDetail, 'id' | 'status'>{
 export interface QuestionForm extends Omit<Question, 'id' | 'exam'>{
 
 }
+
+export interface PendingExams {
+  id:        number;
+  title:     string;
+  dueDate:   string;
+  duration:  number; // en minutos
+  maxAttempts: number
+  questions: number;
+  attempts:  number;
+  status:    'available' | 'in-progress' | 'overdue';
+}

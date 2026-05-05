@@ -1,0 +1,135 @@
+<div>
+  <!-- Encabezado -->
+  <div class="mb-6">
+    <h2 class="text-xl font-bold text-gray-900">Exámenes Pendientes</h2>
+    <p class="text-gray-600 text-sm mt-1">Completa tus evaluaciones pendientes antes de la fecha límite.</p>
+  </div>
+
+  <!-- Alerta de Información -->
+  <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-start gap-3">
+    <!-- Icono AlertCircle -->
+    <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01"></path></svg>
+    <div>
+      <p class="text-sm text-blue-900 font-medium">Recordatorio Importante</p>
+      <p class="text-sm text-blue-700 mt-1">
+        Asegúrate de completar todos los exámenes antes de la fecha de vencimiento. Es posible que no se acepten entregas tardías.
+      </p>
+    </div>
+  </div>
+
+  <!-- Estadísticas -->
+  <div class="grid grid-cols-3 gap-4 mb-6">
+    <div class="bg-white rounded-xl p-4 border border-gray-200">
+      <p class="text-sm text-gray-600 mb-1">Disponibles</p>
+      <p class="text-2xl font-bold text-green-600">{{ availableCount() }}</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 border border-gray-200">
+      <p class="text-sm text-gray-600 mb-1">En Progreso</p>
+      <p class="text-2xl font-bold text-blue-600">{{ inProgressCount() }}</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 border border-gray-200">
+      <p class="text-sm text-gray-600 mb-1">Vencidos</p>
+      <p class="text-2xl font-bold text-red-600">{{ overdueCount() }}</p>
+    </div>
+  </div>
+
+  <!-- Lista de Exámenes -->
+  <div class="space-y-4">
+    @for (exam of exams.value(); track exam.id) {
+      <div
+        class="bg-white rounded-xl border-2 p-6 transition-all"
+        [class.border-red-300]="exam.status === 'overdue'"
+        [class.bg-red-50]="exam.status === 'overdue'"
+        [class.bg-opacity-30]="exam.status === 'overdue'"
+        [class.border-gray-200]="exam.status !== 'overdue'"
+        [class.hover:shadow-md]="exam.status !== 'overdue'">
+
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <h3 class="font-bold text-gray-900 text-lg">{{ exam.title }}</h3>
+
+              <!-- Badge de Estado Dinámico -->
+              <span class="px-3 py-1 rounded-full text-xs font-medium border"
+                    [class.bg-green-100]="exam.status === 'available'"
+                    [class.text-green-700]="exam.status === 'available'"
+                    [class.border-green-300]="exam.status === 'available'"
+                    [class.bg-blue-100]="exam.status === 'in-progress'"
+                    [class.text-blue-700]="exam.status === 'in-progress'"
+                    [class.border-blue-300]="exam.status === 'in-progress'"
+                    [class.bg-red-100]="exam.status === 'overdue'"
+                    [class.text-red-700]="exam.status === 'overdue'"
+                    [class.border-red-300]="exam.status === 'overdue'">
+                {{ getBadgeLabel(exam.status) }}
+              </span>
+            </div>
+
+            <div class="flex items-center gap-6 text-sm text-gray-600">
+              <div class="flex items-center gap-2">
+                <!-- Icono Calendar -->
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 2v4M8 2v4M3 10h18"></path></svg>
+                <span [class.text-red-600]="exam.status === 'overdue'" [class.font-medium]="exam.status === 'overdue'">
+                  {{ formatRelativeDate(exam.dueDate) }}
+                </span>
+              </div>
+              <div class="flex items-center gap-2">
+                <!-- Icono Clock -->
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2"></path></svg>
+                <span>{{ exam.duration }} minutos</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <!-- Icono FileText -->
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 2v6h6M16 13H8M16 17H8M10 9H8"></path></svg>
+                <span>{{ exam.questions }} preguntas</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col items-end gap-3">
+
+            <!-- Botones de Acción -->
+            @if (exam.status === 'in-progress') {
+              <button
+                (click)="handleContinueExam(exam.id.toString())"
+                class="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                Continuar Examen
+              </button>
+            } @else if (exam.status === 'available') {
+              <button
+                (click)="handleStartExam(exam.id.toString())"
+                class="flex items-center gap-2 px-6 py-2.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium">
+                <!-- Icono Play -->
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Empezar Examen
+              </button>
+            } @else {
+              <button
+                disabled
+                class="flex items-center gap-2 px-6 py-2.5 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed font-medium">
+                Vencido
+              </button>
+            }
+
+            <div class="text-sm text-gray-600">
+              Intentos: <span class="font-medium">{{ exam.attempts }}/{{ exam.maxAttempts }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detalles de Fecha Límite -->
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <div class="text-sm text-gray-600">
+            Vencimiento: <span class="font-medium text-gray-900">
+              {{ exam.dueDate | date: 'medium' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <!-- Mensaje si no hay exámenes en la señal -->
+      <div class="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-500">
+        No tienes exámenes pendientes en esta materia. ¡Buen trabajo!
+      </div>
+    }
+  </div>
+</div>

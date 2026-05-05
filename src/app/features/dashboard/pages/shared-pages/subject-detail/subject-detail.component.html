@@ -75,14 +75,14 @@
         <students-tab [subjectId]="id()"></students-tab>
       }
 
+      @case ('pending') {
+        <app-pending-exams-tab [subjectId]="id()"></app-pending-exams-tab>
+      }
       <!--
       @case ('results') {
         <app-results-tab [subjectId]="subject().id"></app-results-tab>
       }
 
-      @case ('pending') {
-        <app-pending-exams-tab [subjectId]="subject().id"></app-pending-exams-tab>
-      }
 
       @case ('grades') {
         <app-my-grades-tab [subjectId]="subject().id"></app-my-grades-tab>
