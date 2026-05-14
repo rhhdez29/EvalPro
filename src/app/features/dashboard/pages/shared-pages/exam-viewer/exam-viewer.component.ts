@@ -1,10 +1,13 @@
-import { Component, input, output, signal, OnInit, OnDestroy, computed } from '@angular/core';
+import { Component, input, output, signal, OnInit, OnDestroy, computed, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ExamDetail } from '../../../models/RESTExamResponse.interface';
 import { CodeEditorViewerComponent } from "./components/code-editor-viewer/code-editor-viewer.component";
 import { MatchingViewerComponent } from "./components/matching-viewer/matching-viewer.component";
 import { MultipleChoiceViewerComponent } from "./components/multiple-choice-viewer/multiple-choice-viewer.component";
 import { TrueFalseViewerComponent } from "./components/true-false-viewer/true-false-viewer.component";
+import { rxResource } from '@angular/core/rxjs-interop';
+import { ExamService } from '../../../services/exam.service';
+import { LoadingInformationComponent } from "../../../../../shared/components/loading-information/loading-information.component";
 
 // Asume que ya tienes tus componentes hijos creados en Angular
 // import { MultipleChoiceQuestionComponent } from '../questions/multiple-choice/multiple-choice.component';
@@ -13,13 +16,14 @@ import { TrueFalseViewerComponent } from "./components/true-false-viewer/true-fa
 @Component({
   selector: 'exam-viewer',
   standalone: true,
-  imports: [CommonModule, DatePipe, CodeEditorViewerComponent, MatchingViewerComponent, MultipleChoiceViewerComponent, TrueFalseViewerComponent], // Importamos DatePipe para formatear la fecha fácil
+  imports: [CommonModule, DatePipe, CodeEditorViewerComponent, MatchingViewerComponent, MultipleChoiceViewerComponent, TrueFalseViewerComponent, LoadingInformationComponent], // Importamos DatePipe para formatear la fecha fácil
   templateUrl: './exam-viewer.component.html'
 })
-export class ExamViewerComponent implements OnInit, OnDestroy {
+export class ExamViewerComponent implements OnDestroy {
   // 1. Entradas (Inputs)
-  examData = input.required<ExamDetail>();
-  viewExam = input.required<boolean>();
+  id = input.required<string>();
+
+  private examService = inject(ExamService);
 
   // LA MAGIA: Si es true, es el maestro. Si es false, es el alumno.
   isPreviewMode = input<boolean>(false);
@@ -32,6 +36,16 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
   timeRemaining = signal<number>(0);
   answeredQuestionsCount = signal<number>(0);
 
+  // 4. Recursos
+  exam = rxResource({
+    params: () => this.id(),
+    stream: ({params}) => {
+      return this.examService.getStudentExamById(Number(params))
+    }
+  })
+
+  examData = computed(() => this.exam.value()! as ExamDetail);
+
   // Calculado: Porcentaje de progreso
   progressPercentage = computed(() => {
     const total = this.examData().questions?.length || 1;
@@ -40,7 +54,7 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
 
   private timerInterval: any;
 
-  ngOnInit() {
+  ngAfterNextRender() {
     // Inicializamos el temporizador si el examen tiene duración
     const duration = this.examData().duration_minutes;
     if (duration > 0) {

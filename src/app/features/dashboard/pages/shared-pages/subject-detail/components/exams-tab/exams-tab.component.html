@@ -16,7 +16,7 @@
   <loading-information
     [isLoading]="examsResource.isLoading()"
     [error]="examsResource.error()"
-    [hasValue]="isExamsEmpty()"
+    [data]="examsResource.value()"
     [emptyMessage]="'No hay examenes para esta materia aun.'"
   >
   <app-delete-modal
@@ -105,13 +105,6 @@
     </div>
   }
 </div>
-
-<exam-viewer
-  [viewExam]="viewExam()"
-  [examData]="examToEdit()!"
-  [isPreviewMode]="isPreviewMode()"
-  (closeViewer)="closeViewer()"
-/>
 
 <loading-modal
     [status]="modalState().status"

@@ -26,6 +26,7 @@ export class UsersService {
   }
 
   getTeacherRequests() {
+
     return this.http.get<PaginationResult<TeacherValidation>>(`${this.apiUrl}pending_teachers/`)
     .pipe(
       map((response) => {

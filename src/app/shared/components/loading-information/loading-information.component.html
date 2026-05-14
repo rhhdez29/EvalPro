@@ -17,18 +17,18 @@
   </div>
 }
 
+@else if(isIdle()){
+}
 @else if(hasValue()){
+  <ng-content></ng-content>
+}@else{
   <div class="w-full p-6">
-    <div class="alert alert-info shadow-sm rounded-xl flex items-start  gap-3 bg-gray-100 border-gray-300 text-gray-900" role="alert">
-      <lucide-icon [img]="icons.AlertCircle" class="w-6 h-6 shrink-0 "></lucide-icon>
+    <div class="alert alert-info shadow-sm rounded-xl flex items-start gap-3 bg-gray-100 border-gray-300 text-gray-900" role="alert">
+      <lucide-icon [img]="icons.AlertCircle" class="w-6 h-6 shrink-0 text-blue-500"></lucide-icon>
       <div>
-        <h3 class="font-bold">Informacion no disponible</h3>
-        <div class="text-sm">{{emptyMessage()}}</div>
+        <h3 class="font-bold">Información no disponible</h3>
+        <div class="text-sm">{{ emptyMessage() }}</div>
       </div>
     </div>
   </div>
-}
-
-@else{
-  <ng-content></ng-content>
 }

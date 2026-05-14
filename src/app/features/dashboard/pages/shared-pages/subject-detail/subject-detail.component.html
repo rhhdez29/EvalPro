@@ -3,7 +3,7 @@
   <loading-information
     [isLoading]="subjectDetailResource.isLoading()"
     [error]="subjectDetailResource.error()"
-    [hasValue]="isSubjectDetailEmpty()"
+    [data]="subjectDetailResource.value()"
     [emptyMessage]="'No se pudo cargar la informacion de la materia.'"
     >
 

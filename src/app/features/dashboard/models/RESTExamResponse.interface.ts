@@ -1,4 +1,4 @@
-//Tipo de pregunta
+
 export type QuestionType = 'MCQ' | 'TF' | 'MATCH' | 'CODE';
 
 //Opciones de respuesta
@@ -76,4 +76,32 @@ export interface PendingExams {
   questions: number;
   attempts:  number;
   status:    'available' | 'in-progress' | 'overdue';
+}
+export interface ExamDetailStudent {
+  id:          number;
+  title:       string;
+  description: string;
+  questions:   Question[];
+}
+
+export interface ExamDetailStudent {
+  id:          number;
+  title:       string;
+  description: string;
+  questions:   Question[];
+}
+
+export interface QuestionStudent{
+  id?: number;
+  exam: number;
+  question_type: QuestionType;
+  prompt: string;
+  points: number | string;
+  order: number | null;
+  metadata: QuestionMetaData;
+  options: AnswerQuestionStudent[];
+}
+
+export interface AnswerQuestionStudent extends Omit<AnswerOption, 'partial_score' | 'is_correct'>{
+
 }

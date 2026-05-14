@@ -27,17 +27,21 @@ export class SubjectService {
     .pipe(
       map((response) => response.results),
       catchError((err: HttpErrorResponse) => {
-        let errorMsg = 'Ocurrio un error inesperado'
+        let error = 'Ocurrió un error inesperado al obtener las materias.';
 
-        if(err.status === 403){
-          errorMsg = 'No tienes permiso para acceder a este recurso'
+
+        if (err.error && err.error.error) {
+          error = err.error.error;
         }
-
-        if(err.status === 404){
-          errorMsg = 'No se encontro el recurso'
+        else if (err.status === 400 || err.status === 401) {
+          // A veces DRF manda los errores en un arreglo, o bajo la llave "detail" o "non_field_errors"
+          if (err.error.non_field_errors) {
+            error = err.error.non_field_errors[0];
+          } else {
+            error = 'Ocurrió un error inesperado al intentar eliminar la materia.';
+          }
         }
-
-        return throwError(() => new Error(errorMsg));
+        return throwError(() => new Error(error));
       })
     );
   }

@@ -64,7 +64,7 @@
   <loading-information
     [isLoading]="subjectsResource.isLoading()"
     [error]="subjectsResource.error()"
-    [hasValue]="isSubjectsEmpty()"
+    [data]="subjectsResource.value()"
     [emptyMessage]="'No hay materias registradas'"
   >
 

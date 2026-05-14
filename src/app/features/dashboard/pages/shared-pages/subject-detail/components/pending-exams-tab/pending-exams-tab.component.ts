@@ -2,6 +2,11 @@ import { Component, input, signal, computed, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { SubjectService } from '../../../../../services/subject.service';
+import { ExamDetail } from '../../../../../models/RESTExamResponse.interface';
+import { ExamService } from '../../../../../services/exam.service';
+import { ExamViewerComponent } from "../../../exam-viewer/exam-viewer.component";
+import { map } from 'rxjs';
+import { Router } from '@angular/router';
 
 export interface PendingExam {
   id: string;
@@ -26,11 +31,20 @@ export class PendingExamsTabComponent {
   subjectId = input.required<string>();
 
   private subjectService = inject(SubjectService);
+  private router = inject(Router);
 
   // Estado Local (Simulado por ahora)
   exams =  rxResource({
     params: () => this.subjectId(),
-    stream: () => this.subjectService.getStudentExams(this.subjectId())
+    stream: () => this.subjectService.getStudentExams(this.subjectId()).pipe(
+      map(response => {
+        if (!response) return [];
+
+        if(Array.isArray(response)) return response;
+
+        return[];
+      })
+    )
   })
 
   // Contadores calculados (Reactivos)
@@ -63,9 +77,10 @@ export class PendingExamsTabComponent {
 
   // --- Acciones ---
 
-  handleStartExam(examId: string) {
-    console.log('Iniciando examen:', examId);
-    // TODO: Navegar a la interfaz de toma de examen (Router)
+  startExam(examId: number) {
+
+    this.router.navigate([`/home/student/exam/${examId}`]);
+
   }
 
   handleContinueExam(examId: string) {

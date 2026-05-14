@@ -73,14 +73,17 @@ export class SidebarComponent {
 
 
   ngOnInit() {
-    this.userService.getTeacherRequests().subscribe({
-      next: (response) => {
-        this.userService.pendingTeachersCount.set(response.length);
-      },
-      error: (err) => {
-        this.userService.pendingTeachersCount.set(0)
-      }
-    })
+
+    if(this.userRole() === 'administrador'){
+      this.userService.getTeacherRequests().subscribe({
+        next: (response) => {
+          this.userService.pendingTeachersCount.set(response.length);
+        },
+        error: (err) => {
+          this.userService.pendingTeachersCount.set(0)
+        }
+      })
+    }
   }
 
   Logout() {

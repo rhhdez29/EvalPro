@@ -1,6 +1,9 @@
-@if(viewExam()){
-
-
+<loading-information
+  [isLoading]="exam.isLoading()"
+  [error]="exam.error()"
+  [data]="exam.value()"
+  [emptyMessage]="'No se cargo el examen o el id es invalido'"
+>
   <div class="fixed inset-0 bg-gray-100 z-50 overflow-hidden flex flex-col">
 
   @if (isPreviewMode()) {
@@ -179,4 +182,4 @@
   </div>
 </div>
 
-}
+</loading-information>

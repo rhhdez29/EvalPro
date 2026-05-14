@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
 
@@ -35,7 +36,7 @@ export const routes: Routes = [
       // --- ZONA DE ADMINISTRADOR ---
       {
         path: 'admin',
-        // Aquien un futuro pondremos canActivate: [roleGuard('admin')]
+        canActivate: [roleGuard(['administrador'])],
         children: [
           { path: 'validation', loadComponent: () => import('./features/dashboard/pages/admin/teacher-validation/teacher-validation.component').then(m => m.TeacherValidationComponent) },
           { path: 'subjects', loadComponent: () => import('./features/dashboard/pages/admin/subject-management/subject-management.component').then(m => m.SubjectManagementComponent) },
@@ -46,29 +47,37 @@ export const routes: Routes = [
       // --- ZONA DE PROFESOR ---
       {
         path: 'teacher',
+        canActivate: [roleGuard(['maestro'])],
         children: [
           { path: 'subjects', loadComponent: () => import('./features/dashboard/pages/teacher/subjects/subjects.component').then(m => m.SubjectsComponent) },
+          { path: 'exam/:id', loadComponent: () => import('./features/dashboard/pages/shared-pages/exam-viewer/exam-viewer.component').then(m => m.ExamViewerComponent) }
         ]
       },
 
       // --- ZONA DE ALUMNO ---
       {
         path: 'student',
+        canActivate: [roleGuard(['alumno'])],
         children: [
           { path: 'classes', loadComponent: () => import('./features/dashboard/pages/student/classes/classes.component').then(m => m.ClassesComponent) },
+          { path: 'exam/:id', loadComponent: () => import('./features/dashboard/pages/shared-pages/exam-viewer/exam-viewer.component').then(m => m.ExamViewerComponent) }
         ]
       },
 
       // --- ZONA COMPARTIDA (Shared) ---
       {
         path: 'settings',
+        canActivate: [roleGuard(['administrador', 'maestro', 'alumno'])],
         loadComponent: () => import('./features/dashboard/pages/shared-pages/settings/settings.component').then(m => m.SettingsComponent)
       },
       {
         path: 'subject/:id',
+        canActivate: [roleGuard(['administrador', 'maestro', 'alumno'])],
         loadComponent: () => import('./features/dashboard/pages/shared-pages/subject-detail/subject-detail.component').then(m => m.SubjectDetailComponent)
       }
     ]
   },
+
+  { path: '**', redirectTo: 'landing' },
 
 ];
