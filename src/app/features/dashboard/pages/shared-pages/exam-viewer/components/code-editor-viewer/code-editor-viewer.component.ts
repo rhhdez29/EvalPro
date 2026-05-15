@@ -42,7 +42,6 @@ export class CodeEditorViewerComponent {
   constructor() {
     effect(() => {
       const meta = this.codeMeta();
-      console.log(meta);
       if (meta && meta.starterCode) {
         this.code.set(meta.starterCode);
         this.answerChange.emit(meta.starterCode);

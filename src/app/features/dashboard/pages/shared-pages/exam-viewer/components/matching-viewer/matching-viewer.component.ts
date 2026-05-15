@@ -34,6 +34,7 @@ export class MatchingViewerComponent {
   constructor() {
     effect(() => {
       const p = this.pairs();
+      console.log(this.question());
       if (p.length > 0) {
         // Inicializar y barajar la columna derecha (Fisher-Yates)
         const items = p.map((pair: any, i: number) => ({ text: pair.right, originalIndex: i }));

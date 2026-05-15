@@ -8,6 +8,8 @@ import { TrueFalseViewerComponent } from "./components/true-false-viewer/true-fa
 import { rxResource } from '@angular/core/rxjs-interop';
 import { ExamService } from '../../../services/exam.service';
 import { LoadingInformationComponent } from "../../../../../shared/components/loading-information/loading-information.component";
+import { FacadeService } from '../../../../../core/services/facade.service';
+import { of } from 'rxjs';
 
 // Asume que ya tienes tus componentes hijos creados en Angular
 // import { MultipleChoiceQuestionComponent } from '../questions/multiple-choice/multiple-choice.component';
@@ -24,9 +26,10 @@ export class ExamViewerComponent implements OnDestroy {
   id = input.required<string>();
 
   private examService = inject(ExamService);
+  private facadeService = inject(FacadeService)
 
   // LA MAGIA: Si es true, es el maestro. Si es false, es el alumno.
-  isPreviewMode = input<boolean>(false);
+  isPreviewMode = signal<boolean>(false);
 
   // 2. Salidas (Outputs)
   closeViewer = output<void>();
@@ -40,7 +43,20 @@ export class ExamViewerComponent implements OnDestroy {
   exam = rxResource({
     params: () => this.id(),
     stream: ({params}) => {
-      return this.examService.getStudentExamById(Number(params))
+
+      const role = this.facadeService.userRole();
+
+      if(role === 'maestro' || role === 'administrador'){
+        this.isPreviewMode.set(true);
+        return this.examService.getExamByID(Number(params))
+      }
+
+      if (role === 'alumno') {
+        this.isPreviewMode.set(false);
+        return this.examService.getStudentExamById(Number(params))
+      }
+
+      return of(null)
     }
   })
 

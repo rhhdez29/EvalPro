@@ -24,11 +24,13 @@ import { DeleteModalComponent } from "../../../../../../../shared/components/del
 import { ExamViewerComponent } from "../../../exam-viewer/exam-viewer.component";
 import { ModalState } from '../../../../../../../core/models/ModalState';
 import { LoadingModalComponent } from "../../../../../../../shared/components/loading-modal/loading-modal.component";
+import { Router } from '@angular/router';
+import { FacadeService } from '../../../../../../../core/services/facade.service';
 
 @Component({
   selector: 'app-exams-tab',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, CreateExamFormComponent, LoadingInformationComponent, DeleteModalComponent, ExamViewerComponent, LoadingModalComponent],
+  imports: [CommonModule, LucideAngularModule, CreateExamFormComponent, LoadingInformationComponent, DeleteModalComponent, LoadingModalComponent],
   templateUrl: './exams-tab.component.html'
 })
 export class ExamsTabComponent {
@@ -40,6 +42,8 @@ export class ExamsTabComponent {
 
   private examService = inject(ExamService);
   private platformId = inject(PLATFORM_ID);
+  private router = inject(Router);
+  private facadeService = inject(FacadeService)
 
   // Estados
   showCreateForm = signal(false);
@@ -130,25 +134,23 @@ export class ExamsTabComponent {
     this.examToEdit.set(null);
   }
 
-  openViewer(id: number){
-    this.viewExam.set(true);
-    this.isPreviewMode.set(true);
+  openViewer(examId: number){
 
-    this.examService.getExamByID(id).subscribe({
-      next: (exam) => {
-        this.examToEdit.set(exam as ExamDetail);
-        console.log(this.examToEdit());
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    })
-  }
+    const role = this.facadeService.userRole();
+    let url = '';
 
-  closeViewer(){
-    this.viewExam.set(false);
-    this.isPreviewMode.set(false);
-    this.examToEdit.set(null);
+    switch(role){
+      case 'maestro':
+        url = `/home/teacher/exam/${examId}`;
+        break;
+      case 'administrador':
+        url = `/home/admin/exam/${examId}`;
+        break;
+    }
+
+    console.log(url);
+
+    this.router.navigate([url]);
   }
 
   openDeleteModal(id: number){
@@ -162,6 +164,8 @@ export class ExamsTabComponent {
   deleteExam(){
     console.log('Eliminando examen: ', this.idExam);
 
+    this.closeDeleteModal();
+
     this.modalState.set({
       status: 'cargando',
       title: 'Eliminando examen...',
@@ -170,23 +174,35 @@ export class ExamsTabComponent {
 
     this.examService.deleteExam(this.idExam!).subscribe({
       next: () => {
-        this.examsResource.reload();
         this.modalState.set({
           status: 'exito',
           title: 'Examen eliminado correctamente.',
           subtitle: ''
         });
+        setTimeout(() => {
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
+          this.examsResource.reload();
+        }, 3000);
       },
       error: (err) => {
         console.error(err);
         this.modalState.set({
           status: 'error',
           title: 'Error al eliminar el examen.',
-          subtitle: err.error?.detail || 'Hubo un error en el servidor'
+          subtitle: err
         });
+        setTimeout(() => {
+          this.modalState.set({
+            status: 'oculto',
+            title: '',
+            subtitle: ''
+          });
+        }, 3000);
       }
     })
-
-    this.closeDeleteModal();
   }
 }

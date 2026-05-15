@@ -21,14 +21,8 @@ export class TrueFalseViewerComponent {
   // Deducimos cuál es la respuesta correcta para el Modo Preview
   // Asumiendo que guardas las opciones como "Verdadero" o "True" en tu BD
   correctAnswer = computed<boolean | null>(() => {
-    const opts = this.question().options || [];
-    const correctOpt = opts.find((o: any) => o.is_correct);
-
-    if (correctOpt) {
-      const text = correctOpt.text.toLowerCase();
-      return text.includes('true') || text.includes('verdadero') || text === 'v';
-    }
-    return null; // Por si no lo encuentra
+    const correctOpt = this.question().metadata?.correctAnswer;
+    return correctOpt;
   });
 
   selectAnswer(value: boolean) {
