@@ -57,16 +57,63 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
-            <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer" title="View Details">
-              <lucide-icon [img]="icons.Eye" class="w-4 h-4 text-gray-600" (click)="openViewer(exam.id!)"></lucide-icon>
+          <div class="relative top-4 right-4 dropdown dropdown-end">
+            <button
+              tabindex="0"
+              role="button"
+              (click)="$event.stopPropagation()"
+              class="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+            >
+              <lucide-icon [img]="icons.MoreVertical" class="w-5 h-5"></lucide-icon>
             </button>
-            <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer" title="Edit Exam">
-              <lucide-icon [img]="icons.Edit" (click)="openCreateExamModal(exam.id!)" class="w-4 h-4 text-gray-600"></lucide-icon>
-            </button>
-            <button class="p-2 hover:bg-red-50 rounded-lg transition-colors cursor-pointer" title="Delete Exam">
-              <lucide-icon [img]="icons.Trash2" (click)="openDeleteModal(exam.id!)" class="w-4 h-4 text-red-600"></lucide-icon>
-            </button>
+
+            <ul
+              tabindex="0"
+              class="dropdown-content menu bg-white rounded-box z-[10] w-max p-2 shadow-xl mt-2 border border-gray-100"
+            >
+              <li>
+                <button
+
+                  class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 cursor-pointer flex items-center gap-2"
+                >
+                  <lucide-icon [img]="icons.Edit" class="w-4 h-4"></lucide-icon>
+                  Cambiar Status
+                </button>
+              </li>
+
+              <li>
+                <button
+                  (click)="openViewer(exam.id!)"
+                  class="text-green-700 hover:bg-green-50 hover:text-green-700 cursor-pointer flex items-center gap-2"
+                >
+                  <lucide-icon [img]="icons.Eye" class="w-4 h-4"></lucide-icon>
+                  Vista Previa
+                </button>
+              </li>
+
+              <li>
+                <button
+                  (click)="openCreateExamModal(exam.id!)"
+                  class="text-blue-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer flex items-center gap-2"
+                >
+                  <lucide-icon [img]="icons.Edit" class="w-4 h-4"></lucide-icon>
+                  Editar Examen
+                </button>
+              </li>
+
+              <div class="divider my-0"></div>
+
+              <li>
+                <button
+                  (click)="openDeleteModal(exam.id!)"
+                  class="text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer flex items-center gap-2"
+                >
+                  <lucide-icon [img]="icons.Trash2" class="w-4 h-4"></lucide-icon>
+                  Borrar Examen
+                </button>
+              </li>
+            </ul>
+
           </div>
         </div>
 

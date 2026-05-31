@@ -101,8 +101,8 @@ export class ExamsTabComponent {
     const styles = {
       draft: 'bg-gray-100 text-gray-700 border-gray-300',
       scheduled: 'bg-blue-100 text-blue-700 border-blue-300',
-      active: 'bg-green-100 text-green-700 border-green-300',
-      completed: 'bg-yellow-100 text-yellow-700 border-yellow-300',
+      published: 'bg-green-100 text-green-700 border-green-300',
+      closed: 'bg-red-100 text-red-700 border-red-300',
     };
     return styles[status];
   }

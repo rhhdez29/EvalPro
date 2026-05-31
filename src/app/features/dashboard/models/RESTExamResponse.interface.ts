@@ -43,7 +43,7 @@ export interface ExamBase{
   title: string;
   start_date: string;
   end_date: string;
-  status: 'draft' | 'scheduled' | 'active' | 'completed';
+  status: 'draft' | 'scheduled' | 'published' | 'closed';
   duration_minutes: number;
 }
 

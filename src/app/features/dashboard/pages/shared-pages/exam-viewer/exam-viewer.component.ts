@@ -1,5 +1,5 @@
 import { Component, input, output, signal, OnInit, OnDestroy, computed, inject } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe, Location } from '@angular/common';
 import { ExamDetail } from '../../../models/RESTExamResponse.interface';
 import { CodeEditorViewerComponent } from "./components/code-editor-viewer/code-editor-viewer.component";
 import { MatchingViewerComponent } from "./components/matching-viewer/matching-viewer.component";
@@ -27,6 +27,7 @@ export class ExamViewerComponent implements OnDestroy {
 
   private examService = inject(ExamService);
   private facadeService = inject(FacadeService)
+  private location = inject(Location);
 
   // LA MAGIA: Si es true, es el maestro. Si es false, es el alumno.
   isPreviewMode = signal<boolean>(false);
@@ -132,5 +133,11 @@ export class ExamViewerComponent implements OnDestroy {
       alert("¡El tiempo se ha agotado! Entregando examen automáticamente.");
       this.onSubmitClick();
     }
+  }
+
+  backPage(){
+
+    this.location.back();
+
   }
 }
