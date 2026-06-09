@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
 import { PaginationResult } from '../models/PaginationResult';
-import { ExamDetail, ExamForm, ExamSummary } from '../models/RESTExamResponse.interface';
+import { ExamBase, ExamDetail, ExamForm, ExamSummary } from '../models/RESTExamResponse.interface';
 import { catchError, map, throwError } from 'rxjs';
 
 @Injectable({
@@ -125,17 +125,58 @@ export class ExamService {
     return this.http.get(`${this.apiUrl}${id}/take_exam/`)
     .pipe(
       catchError((err: HttpErrorResponse) => {
-        let errorMsg = 'Ocurrio un error inesperado'
+        let error = 'Ocurrió un error inesperado al obtener el examen.';
 
-        if(err.status === 403){
-          errorMsg = 'No tienes permiso para acceder a este recurso'
+
+        if (err.error && err.error.error) {
+          error = err.error.error;
         }
-
-        if(err.status === 404){
-          errorMsg = 'No se encontro el recurso'
+        else if (err.status === 400 || err.status === 401) {
+          if (err.error.non_field_errors) {
+            error = err.error.non_field_errors[0];
+          } else {
+            error = 'Ocurrió un error inesperado al obtener el examen.';
+          }
         }
+        return throwError(() => new Error(error));
+      })
+    )
+  }
 
-        return throwError(() => new Error(errorMsg));
+  changeStatus(id: number, status: ExamBase['status']){
+    let body = {}
+
+    if(status === 'draft'){
+      body = {
+        status: 'scheduled'
+      }
+    }else if(status === 'scheduled'){
+      body = {
+        status: 'draft'
+      }
+    }
+
+    console.log('status en service ' + status);
+    console.log('body en service ' + body);
+
+    return this.http.patch(this.apiUrl + id + '/change_status/', body)
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let error = 'Ocurrió un error inesperado al cambiar el estado del examen.';
+
+
+        if (err.error && err.error.error) {
+          error = err.error.error;
+        }
+        else if (err.status === 400 || err.status === 401) {
+          // A veces DRF manda los errores en un arreglo, o bajo la llave "detail" o "non_field_errors"
+          if (err.error.non_field_errors) {
+            error = err.error.non_field_errors[0];
+          } else {
+            error = 'Ocurrió un error inesperado al cambiar el estado del examen.';
+          }
+        }
+        return throwError(() => new Error(error));
       })
     )
   }

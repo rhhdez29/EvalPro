@@ -72,9 +72,7 @@ export interface PendingExams {
   title:     string;
   dueDate:   string;
   duration:  number; // en minutos
-  maxAttempts: number
   questions: number;
-  attempts:  number;
   status:    'available' | 'in-progress' | 'overdue';
 }
 export interface ExamDetailStudent {

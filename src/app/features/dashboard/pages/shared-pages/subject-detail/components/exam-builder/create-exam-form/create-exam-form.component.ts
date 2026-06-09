@@ -37,7 +37,6 @@ import { LoadingModalComponent } from "../../../../../../../../shared/components
     OwlNativeDateTimeModule,
     QuestionBuilderComponent,
     OnlyNumbersDirective,
-    LoadingInformationComponent,
     LoadingModalComponent
 ],
   templateUrl: './create-exam-form.component.html'
@@ -82,6 +81,8 @@ export class CreateExamFormComponent {
     duration_minutes: [60, [Validators.required, this.formUtils.minValue(1), this.formUtils.maxValue(120)]],
     total_score: [100, [Validators.required, this.formUtils.minValue(10), this.formUtils.maxValue(100)]],
     questions: this.fb.array([])
+  }, {
+    validators: this.formUtils.examDatesValidator()
   })
 
   constructor(){
@@ -206,6 +207,12 @@ export class CreateExamFormComponent {
       alert('Debe agregar al menos una pregunta');
       return;
     }
+
+    if(this.totalQuestionsScore !== examFormValue.total_score){
+      alert(`La suma de los puntos de las preguntas no coincide con el total de puntos del examen`);
+      return;
+    }
+
 
     if(this.isEditExam()){
 

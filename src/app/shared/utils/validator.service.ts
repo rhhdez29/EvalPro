@@ -26,6 +26,10 @@ export class ValidatorService2 {
           return `El valor minimo es ${errors['minValue'].min}.`;
         case 'maxValue':
           return `El valor maximo es ${errors['maxValue'].max}.`;
+        case 'dateOrderInvalid':
+          return 'La fecha de fin debe ser mayor a la fecha de inicio.';
+        case 'insufficientDuration':
+          return 'La duracion debe ser mayor a 1 hora.';
       }
     }
     return null;

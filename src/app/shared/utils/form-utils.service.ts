@@ -81,4 +81,49 @@ export class FormUtilsService {
     return this.validator.getTextError(errors);
   }
 
+  hasGroupError(myForm: FormGroup): boolean {
+    return !!(myForm.errors && myForm.touched);
+  }
+
+  getGroupError(myForm: FormGroup): string | null {
+    // Si el formulario no tiene errores a nivel global, retornamos null
+    if (!myForm.errors) return null;
+
+    // Si sí tiene errores (ej. { dateOrderInvalid: true }),
+    // reutilizamos tu validador de texto mágico:
+    return this.validator.getTextError(myForm.errors);
+  }
+
+  examDatesValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const startDateVal = control.get('start_date')?.value;
+    const endDateVal = control.get('end_date')?.value;
+
+    // Si alguno de los campos está vacío, dejamos que Validators.required haga su trabajo
+    if (!startDateVal || !endDateVal) {
+      return null;
+    }
+
+    const start = new Date(startDateVal);
+    const end = new Date(endDateVal);
+
+    // Calculamos la diferencia de tiempo
+    const differenceInMs = end.getTime() - start.getTime();
+    const differenceInHours = differenceInMs / (1000 * 60 * 60);
+
+    // Condición 1: La fecha de fin es menor o igual a la de inicio
+    if (differenceInMs <= 0) {
+      return { dateOrderInvalid: true };
+    }
+
+    // Condición 2: La diferencia es menor a 1 hora (60 minutos)
+    if (differenceInHours < 1) {
+      return { insufficientDuration: true };
+    }
+
+    // Si pasa todas las reglas, el formulario es válido
+    return null;
+  };
+}
+
 }

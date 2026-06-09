@@ -205,4 +205,24 @@ export class ExamsTabComponent {
       }
     })
   }
+
+
+  changeStatus(id: number){
+    const data = this.examsResource.value();
+
+    if(!data) return;
+
+    const exam = data.find(e => e.id === id);
+
+    if(!exam) return;
+    this.examService.changeStatus(id, exam.status).subscribe({
+      next: () => {
+        this.examsResource.reload();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    })
+  }
+
 }
