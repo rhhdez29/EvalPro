@@ -51,20 +51,20 @@ export class SidebarComponent {
     switch (this.userRole()) {
       case 'administrador':
         return [
-          { path: 'admin/validation', label: 'Teacher Validation', icon: this.icons.UserCheck, badge: this.userService.pendingTeachersCount() },
-          { path: 'admin/subjects', label: 'Subject Management', icon: this.icons.BookOpen },
-          { path: 'admin/users-list', label: 'Users', icon: this.icons.Users },
-          { path: 'settings', label: 'Settings', icon: this.icons.Settings },
+          { path: 'admin/validation', label: 'Validación de Profesores', icon: this.icons.UserCheck, badge: this.userService.pendingTeachersCount() },
+          { path: 'admin/subjects', label: 'Gestión de Materias', icon: this.icons.BookOpen },
+          { path: 'admin/users-list', label: 'Usuarios', icon: this.icons.Users },
+          { path: 'settings', label: 'Configuración', icon: this.icons.Settings },
         ];
       case 'maestro':
         return [
-          { path: 'teacher/subjects', label: 'My Subjects', icon: this.icons.BookOpen },
-          { path: 'settings', label: 'Settings', icon: this.icons.Settings },
+          { path: 'teacher/subjects', label: 'Mis Materias', icon: this.icons.BookOpen },
+          { path: 'settings', label: 'Configuración', icon: this.icons.Settings },
         ];
       case 'alumno':
         return [
-          { path: 'student/classes', label: 'My Classes', icon: this.icons.BookOpen },
-          { path: 'settings', label: 'Settings', icon: this.icons.Settings },
+          { path: 'student/classes', label: 'Mis Clases', icon: this.icons.BookOpen },
+          { path: 'settings', label: 'Configuración', icon: this.icons.Settings },
         ];
       default:
         return [];

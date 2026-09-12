@@ -2,32 +2,32 @@
 
   <div class="flex items-center justify-between mb-8">
     <div>
-      <p class="text-gray-600 mt-1">Manage all system users and permissions</p>
+      <p class="text-gray-600 mt-1">Gestionar todos los usuarios y permisos del sistema</p>
     </div>
     <button
       (click)="handleAddUser()"
       class="flex items-center gap-2 px-4 py-2.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
     >
       <lucide-icon [img]="icons.UserPlus" class="w-5 h-5"></lucide-icon>
-      Add User
+      Agregar Usuario
     </button>
   </div>
 
   <div class="grid grid-cols-4 gap-6 mb-8">
     <div class="bg-white rounded-xl p-6 border border-gray-200">
-      <p class="text-sm text-gray-600 mb-1">Total Users</p>
+      <p class="text-sm text-gray-600 mb-1">Total de Usuarios</p>
       <p class="text-3xl font-bold text-gray-900">{{ totalUsers() }}</p>
     </div>
     <div class="bg-white rounded-xl p-6 border border-gray-200">
-      <p class="text-sm text-gray-600 mb-1">Administrators</p>
+      <p class="text-sm text-gray-600 mb-1">Administradores</p>
       <p class="text-3xl font-bold text-red-600">{{ adminCount() }}</p>
     </div>
     <div class="bg-white rounded-xl p-6 border border-gray-200">
-      <p class="text-sm text-gray-600 mb-1">Teachers</p>
+      <p class="text-sm text-gray-600 mb-1">Profesores</p>
       <p class="text-3xl font-bold text-blue-600">{{ teacherCount() }}</p>
     </div>
     <div class="bg-white rounded-xl p-6 border border-gray-200">
-      <p class="text-sm text-gray-600 mb-1">Students</p>
+      <p class="text-sm text-gray-600 mb-1">Estudiantes</p>
       <p class="text-3xl font-bold text-green-600">{{ studentCount() }}</p>
     </div>
   </div>
@@ -38,7 +38,7 @@
         <lucide-icon [img]="icons.Search" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
         <input
           type="text"
-          placeholder="Search users by name or email..."
+          placeholder="Buscar usuarios por nombre o correo electrónico..."
           [(ngModel)]="searchQuery"
           class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
         />
@@ -48,7 +48,7 @@
       [(ngModel)]="roleFilter"
       class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none bg-white min-w-[150px]"
     >
-      <option value="all">All Roles</option>
+      <option value="all">Todos los Roles</option>
       <option value="administrador">Administrador</option>
       <option value="maestro">Maestro</option>
       <option value="alumno">Alumno</option>
@@ -59,11 +59,11 @@
     <table class="w-full">
       <thead class="bg-gray-50 border-b border-gray-200">
         <tr>
-          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
-          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
-          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Role</th>
-          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
-          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
+          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Nombre</th>
+          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Correo Electrónico</th>
+          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Rol</th>
+          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Estado</th>
+          <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Acciones</th>
         </tr>
       </thead>
 
@@ -72,7 +72,7 @@
         @if (filteredUsers().length === 0) {
           <tr>
             <td colspan="6" class="px-6 py-8 text-center text-gray-500">
-              No users found matching your filters.
+              No se encontraron usuarios que coincidan con los filtros.
             </td>
           </tr>
         }

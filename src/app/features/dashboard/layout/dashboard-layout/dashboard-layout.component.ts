@@ -28,10 +28,10 @@ export class DashboardLayoutComponent {
   pageTitle = computed(() => {
     const url = this.currentUrl();
 
-    if (url.includes('validation')) return 'Teacher Validation';
-    if (url.includes('subjects')) return 'Subject Management';
-    if (url.includes('classes')) return 'My Classes';
-    if (url.includes('settings')) return 'Settings';
+    if (url.includes('validation')) return 'Validación de Profesores';
+    if (url.includes('subjects')) return 'Gestión de Materias';
+    if (url.includes('classes')) return 'Mis Clases';
+    if (url.includes('settings')) return 'Configuración';
 
     return 'Dashboard';
   });

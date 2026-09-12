@@ -51,14 +51,14 @@ export class SubjectDetailComponent {
 
     if (role === 'administrador' || role === 'maestro') {
       return [
-        { id: 'exams', label: 'Exams', icon: 'file-text' },
-        { id: 'students', label: 'Students', icon: 'users' },
-        { id: 'results', label: 'Results', icon: 'bar-chart-3' },
+        { id: 'exams', label: 'Exámenes', icon: 'file-text' },
+        { id: 'students', label: 'Estudiantes', icon: 'users' },
+        { id: 'results', label: 'Resultados', icon: 'bar-chart-3' },
       ];
     } else if (role === 'alumno') {
       return [
-        { id: 'pending', label: 'Pending Exams', icon: 'clock' },
-        { id: 'grades', label: 'My Grades', icon: 'check-circle' },
+        { id: 'pending', label: 'Exámenes Pendientes', icon: 'clock' },
+        { id: 'grades', label: 'Mis Calificaciones', icon: 'check-circle' },
       ];
     }
     return [];

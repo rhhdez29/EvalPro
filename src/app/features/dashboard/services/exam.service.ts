@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
 import { PaginationResult } from '../models/PaginationResult';
-import { ExamBase, ExamDetail, ExamForm, ExamSummary } from '../models/RESTExamResponse.interface';
+import { ExamBase, ExamDetail, ExamDetailStudent, ExamForm, ExamSummary } from '../models/RESTExamResponse.interface';
 import { catchError, map, throwError } from 'rxjs';
 
 @Injectable({
@@ -122,7 +122,7 @@ export class ExamService {
   }
 
   getStudentExamById(id: number){
-    return this.http.get(`${this.apiUrl}${id}/take_exam/`)
+    return this.http.get<ExamDetailStudent>(`${this.apiUrl}${id}/take_exam/`)
     .pipe(
       catchError((err: HttpErrorResponse) => {
         let error = 'Ocurrió un error inesperado al obtener el examen.';

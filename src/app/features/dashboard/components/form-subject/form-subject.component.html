@@ -9,13 +9,13 @@
         </div>
         @if(isEdit()){
           <div>
-            <h2 class="text-xl font-bold text-gray-900">Edit Subject</h2>
-            <p class="text-sm text-gray-600">Edit subject information</p>
+            <h2 class="text-xl font-bold text-gray-900">Editar Materia</h2>
+            <p class="text-sm text-gray-600">Edita la información de la materia</p>
           </div>
         }@else {
           <div>
-            <h2 class="text-xl font-bold text-gray-900">Create New Subject</h2>
-            <p class="text-sm text-gray-600">Add a new subject to your curriculum</p>
+            <h2 class="text-xl font-bold text-gray-900">Crear Nueva Materia</h2>
+            <p class="text-sm text-gray-600">Agrega una nueva materia a tu plan de estudios</p>
           </div>
         }
       </div>
@@ -32,12 +32,12 @@
 
       <div>
         <label for="name" class="block text-sm font-semibold text-gray-900 mb-2">
-          Subject Name <span class="text-red-500">*</span>
+          Nombre de la Materia <span class="text-red-500">*</span>
         </label>
         <input
           id="name"
           type="text"
-          placeholder="e.g., Advanced Mathematics"
+          placeholder="Ej., Matemáticas Avanzadas"
           class="w-full px-4 py-3 border rounded-lg transition-all focus:outline-none focus:ring-2  focus:ring-yellow-500 outline-none"
           formControlName="name"
           [class.border-red-500]="formUtils.isValidField(myForm, 'name')"
@@ -51,12 +51,12 @@
 
       <div>
         <label for="code" class="block text-sm font-semibold text-gray-900 mb-2">
-          Subject Code <span class="text-red-500">*</span>
+          Código de la Materia <span class="text-red-500">*</span>
         </label>
         <input
           id="code"
           type="text"
-          placeholder="e.g., MATH-401"
+          placeholder="Ej., MATH-401"
           class="w-full px-4 py-3 border rounded-lg transition-all focus:outline-none focus:ring-2 font-mono focus:ring-yellow-500 outline-none"
           formControlName="code"
           [class.border-red-500]="formUtils.isValidField(myForm, 'code')"
@@ -66,18 +66,18 @@
             {{ formUtils.getFieldError(myForm, 'code')}}
           </p>
         }@else {
-          <p class="mt-2 text-xs text-gray-500">Format: 2-4 letters, hyphen, 3 digits (e.g., CS-101)</p>
+          <p class="mt-2 text-xs text-gray-500">Formato: 2-4 letras, guión, 3 dígitos (Ej., CS-101)</p>
         }
       </div>
 
       <div>
         <label for="department" class="block text-sm font-semibold text-gray-900 mb-2">
-          Department <span class="text-red-500">*</span>
+          Departamento <span class="text-red-500">*</span>
         </label>
         <input
           id="department"
           type="text"
-          placeholder="e.g., Mathematics"
+          placeholder="Ej., Matemáticas"
           class="w-full px-4 py-3 border rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-yellow-500 outline-none"
           formControlName="department"
           [class.border-red-500]="formUtils.isValidField(myForm, 'department')"
@@ -90,7 +90,7 @@
       </div>
       <div>
         <label class="block text-sm font-semibold text-gray-900 mb-3">
-          Subject Color <span class="text-red-500">*</span>
+          Color de la Materia <span class="text-red-500">*</span>
         </label>
         <div class="grid grid-cols-5 gap-3">
           @for (color of colorOptions; track color.value) {
@@ -130,7 +130,7 @@
       </div>
 
       <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-        <p class="text-sm font-semibold text-gray-900 mb-3">Preview</p>
+        <p class="text-sm font-semibold text-gray-900 mb-3">Vista Previa</p>
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
 
           <div class="h-24 {{ getFieldValue('color') }} relative">
@@ -143,13 +143,13 @@
 
           <div class="p-5">
             <h3 class="font-bold text-gray-900 text-lg mb-1">
-              {{getFieldValue('name') || "Subject Name"}}
+              {{getFieldValue('name') || "Nombre de la Materia"}}
             </h3>
             <p class="text-sm text-gray-500 font-mono">
               {{getFieldValue('code') || "CODE-000"}}
             </p>
             <p class="text-sm text-gray-600 mt-2">
-              {{getFieldValue('department') || 'Department'}}
+              {{getFieldValue('department') || 'Departamento'}}
             </p>
           </div>
         </div>
@@ -161,13 +161,13 @@
           (click)="onClose()"
           class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium cursor-pointer"
         >
-          Cancel
+          Cancelar
         </button>
         <button
           type="submit"
           class="flex-1 px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {{ isEdit() ? 'Update Subject' : 'Create Subject' }}
+          {{ isEdit() ? 'Actualizar Materia' : 'Crear Materia' }}
         </button>
       </div>
 

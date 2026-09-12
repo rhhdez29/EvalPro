@@ -38,11 +38,11 @@
     @for (exam of exams.value(); track exam.id) {
       <div
         class="bg-white rounded-xl border-2 p-6 transition-all"
-        [class.border-red-300]="exam.status === 'overdue'"
-        [class.bg-red-50]="exam.status === 'overdue'"
-        [class.bg-opacity-30]="exam.status === 'overdue'"
-        [class.border-gray-200]="exam.status !== 'overdue'"
-        [class.hover:shadow-md]="exam.status !== 'overdue'">
+        [class.border-red-300]="exam.status === 'overdue' || exam.status === 'annulled'"
+        [class.bg-red-50]="exam.status === 'overdue' || exam.status === 'annulled'"
+        [class.bg-opacity-30]="exam.status === 'overdue' || exam.status === 'annulled'"
+        [class.border-gray-200]="exam.status !== 'overdue' && exam.status !== 'annulled'"
+        [class.hover:shadow-md]="exam.status !== 'overdue' && exam.status !== 'annulled'">
 
         <div class="flex items-start justify-between mb-4">
           <div class="flex-1">
@@ -57,9 +57,9 @@
                     [class.bg-blue-100]="exam.status === 'in-progress'"
                     [class.text-blue-700]="exam.status === 'in-progress'"
                     [class.border-blue-300]="exam.status === 'in-progress'"
-                    [class.bg-red-100]="exam.status === 'overdue'"
-                    [class.text-red-700]="exam.status === 'overdue'"
-                    [class.border-red-300]="exam.status === 'overdue'">
+                    [class.bg-red-100]="exam.status === 'overdue' || exam.status === 'annulled'"
+                    [class.text-red-700]="exam.status === 'overdue' || exam.status === 'annulled'"
+                    [class.border-red-300]="exam.status === 'overdue' || exam.status === 'annulled'">
                 {{ getBadgeLabel(exam.status) }}
               </span>
             </div>
@@ -102,6 +102,12 @@
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 Empezar Examen
               </button>
+            } @else if (exam.status === 'annulled') {
+              <button
+                disabled
+                class="flex items-center gap-2 px-6 py-2.5 bg-red-800 text-white rounded-lg cursor-not-allowed font-medium">
+                Anulado por fraude
+              </button>
             } @else {
               <button
                 disabled
@@ -111,7 +117,7 @@
             }
 
             <div class="text-sm text-gray-600">
-              Intentos: <span class="font-medium">{{ exam.attempts }}/{{ exam.maxAttempts }}</span>
+              Intentos: <span class="font-medium">0</span>
             </div>
           </div>
         </div>
@@ -133,5 +139,3 @@
     }
   </div>
 </div>
-
-/>

@@ -38,50 +38,50 @@ export class FeaturesListComponent {
   readonly features: Feature[] = [
     {
       icon: FileText,
-      title: 'Question Bank',
-      description: 'Build and manage a comprehensive library of questions across all subjects and difficulty levels.',
+      title: 'Banco de Preguntas',
+      description: 'Crea y gestiona una biblioteca completa de preguntas en todas las materias y niveles de dificultad.',
       color: 'yellow'
     },
     {
       icon: BarChart3,
-      title: 'Analytics & Insights',
-      description: 'Detailed performance analytics to identify strengths, weaknesses, and improvement areas.',
+      title: 'Analíticas e Insights',
+      description: 'Análisis de rendimiento detallado para identificar fortalezas, debilidades y áreas de mejora.',
       color: 'purple'
     },
     {
       icon: Users,
-      title: 'Student Management',
-      description: 'Organize students by class, batch, or custom groups with easy enrollment management.',
+      title: 'Gestión de Estudiantes',
+      description: 'Organiza a los estudiantes por clase, grupo o grupos personalizados con una fácil gestión de inscripciones.',
       color: 'green'
     },
     {
       icon: Calendar,
-      title: 'Scheduling System',
-      description: 'Schedule exams in advance with automatic notifications and calendar integration.',
+      title: 'Sistema de Programación',
+      description: 'Programa exámenes con anticipación con notificaciones automáticas e integración con el calendario.',
       color: 'orange'
     },
     {
       icon: BookOpen,
-      title: 'Auto-Grading',
-      description: 'Instant automated grading for objective questions saving hours of manual work.',
+      title: 'Calificación Automática',
+      description: 'Calificación automatizada instantánea para preguntas objetivas, ahorrando horas de trabajo manual.',
       color: 'red'
     },
     {
       icon: Award,
-      title: 'Certificates',
-      description: 'Generate and issue digital certificates automatically upon exam completion.',
+      title: 'Certificados',
+      description: 'Genera y emite certificados digitales automáticamente al completar el examen.',
       color: 'yellow'
     },
     {
       icon: Settings,
-      title: 'Customization',
-      description: 'Customize exam settings including time limits, question randomization, and scoring rules.',
+      title: 'Personalización',
+      description: 'Personaliza la configuración del examen, incluyendo límites de tiempo, aleatorización de preguntas y reglas de puntuación.',
       color: 'indigo'
     },
     {
       icon: Cloud,
-      title: 'Cloud Storage',
-      description: 'Secure cloud storage for all exam data with automatic backups and 99.9% uptime.',
+      title: 'Almacenamiento en la Nube',
+      description: 'Almacenamiento seguro en la nube para todos los datos de exámenes con copias de seguridad automáticas y 99.9% de tiempo de actividad.',
       color: 'cyan'
     }
   ];

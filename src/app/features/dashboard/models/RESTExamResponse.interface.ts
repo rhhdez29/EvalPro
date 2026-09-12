@@ -73,19 +73,17 @@ export interface PendingExams {
   dueDate:   string;
   duration:  number; // en minutos
   questions: number;
-  status:    'available' | 'in-progress' | 'overdue';
+  status:    'available' | 'in-progress' | 'overdue' | 'annulled';
 }
 export interface ExamDetailStudent {
   id:          number;
   title:       string;
   description: string;
-  questions:   Question[];
-}
-
-export interface ExamDetailStudent {
-  id:          number;
-  title:       string;
-  description: string;
+  server_start_time: string;
+  start_date:  string;
+  end_date:    string;
+  total_score: number;
+  duration_minutes: number;
   questions:   Question[];
 }
 

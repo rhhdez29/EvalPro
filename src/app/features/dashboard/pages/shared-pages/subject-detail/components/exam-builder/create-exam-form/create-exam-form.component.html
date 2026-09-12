@@ -7,8 +7,8 @@
           <lucide-icon [img]="icons.FileText" class="w-5 h-5 text-yellow-600"></lucide-icon>
         </div>
         <div>
-          <h2 class="text-xl font-bold text-gray-900">Create New Exam</h2>
-          <p class="text-sm text-gray-600">Build a comprehensive evaluation</p>
+          <h2 class="text-xl font-bold text-gray-900">Crear Nuevo Examen</h2>
+          <p class="text-sm text-gray-600">Construye una evaluación integral</p>
         </div>
       </div>
       <button
@@ -33,7 +33,7 @@
           [class.text-gray-600]="currentSection() !== 'metadata'"
           [class.hover:text-gray-900]="currentSection() !== 'metadata'"
         >
-          1. Exam Metadata
+          1. Información del Examen
         </button>
         <button
           type="button"
@@ -46,7 +46,7 @@
           [class.text-gray-600]="currentSection() !== 'questions'"
           [class.hover:text-gray-900]="currentSection() !== 'questions'"
         >
-          2. Question Builder
+          2. Creador de Preguntas
           @if (questionsFormArray.length > 0) {
             <span class="ml-2 bg-yellow-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
               {{ questionsFormArray.length }}
@@ -66,12 +66,12 @@
 
           <div>
             <label for="title" class="block text-sm font-semibold text-gray-900 mb-2">
-              Exam Title <span class="text-red-500">*</span>
+              Título del Examen <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
               formControlName="title"
-              placeholder="e.g., Midterm Exam - Calculus"
+              placeholder="Ej., Examen Parcial - Cálculo"
               class="w-full pl-4 pr-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
               [class.border-red-500]="formUtils.isValidField(examForm, 'title')"
               [class.focus:ring-red-500]="formUtils.isValidField(examForm, 'title')"
@@ -85,7 +85,7 @@
 
           <div>
             <label for="description" class="block text-sm font-semibold text-gray-900 mb-2">
-              Description <span class="text-red-500">*</span>
+              Descripción <span class="text-red-500">*</span>
             </label>
             <textarea
               formControlName="description"
@@ -93,7 +93,7 @@
               class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
               [class.border-red-500]="formUtils.isValidField(examForm, 'description')"
               [class.focus:ring-red-500]="formUtils.isValidField(examForm, 'description')"
-              placeholder="Provide a brief description of the exam content and objectives..."
+              placeholder="Proporciona una breve descripción del contenido y objetivos del examen..."
               rows="4"
 
             ></textarea>
@@ -107,12 +107,12 @@
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label for="startDateTime" class="block text-sm font-semibold text-gray-900 mb-2">
-                Start Date/Time <span class="text-red-500">*</span>
+                Fecha/Hora de Inicio <span class="text-red-500">*</span>
               </label>
               <input
                 [owlDateTime]="dt1"
                 [owlDateTimeTrigger]="dt1"
-                placeholder="Set star date"
+                placeholder="Establecer fecha de inicio"
                 formControlName="start_date"
                 readonly
                 class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
@@ -127,12 +127,12 @@
 
             <div>
               <label for="endDateTime" class="block text-sm font-semibold text-gray-900 mb-2">
-                End Date/Time <span class="text-red-500">*</span>
+                Fecha/Hora de Finalización <span class="text-red-500">*</span>
               </label>
               <input
                 [owlDateTime]="dt2"
                 [owlDateTimeTrigger]="dt2"
-                placeholder="Set end date"
+                placeholder="Establecer fecha de finalización"
                 formControlName="end_date"
                 readonly
                 class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
@@ -154,7 +154,7 @@
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label for="duration" class="block text-sm font-semibold text-gray-900 mb-2">
-                Total Duration (minutes) <span class="text-red-500">*</span>
+                Duración Total (minutos) <span class="text-red-500">*</span>
               </label>
               <input
                 formControlName="duration_minutes"
@@ -173,7 +173,7 @@
             </div>
             <div>
               <label for="totalScore" class="block text-sm font-semibold text-gray-900 mb-2">
-                Target Total Score <span class="text-red-500">*</span>
+                Puntaje Total Objetivo <span class="text-red-500">*</span>
               </label>
               <input
                 formControlName="total_score"
@@ -199,7 +199,7 @@
               (click)="setSection('questions')"
               class="px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
             >
-              Next: Add Questions
+              Siguiente: Añadir Preguntas
             </button>
           </div>
 
@@ -214,14 +214,14 @@
           <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
             <lucide-icon [img]="icons.AlertCircle" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5"></lucide-icon>
             <div class="flex-1">
-              <p class="text-sm font-medium text-blue-900">Score Distribution</p>
+              <p class="text-sm font-medium text-blue-900">Distribución de Puntajes</p>
               <p class="text-sm text-blue-700 mt-1">
-                Current total: <span class="font-bold">{{ examForm.get('total_score')?.value }}</span> points
-                | Target: <span class="font-bold">{{ examForm.get('total_score')?.value }}</span> points
+                Total actual: <span class="font-bold">{{ examForm.get('total_score')?.value }}</span> puntos
+                | Objetivo: <span class="font-bold">{{ examForm.get('total_score')?.value }}</span> puntos
                 <!-- diferencia entre el total de la suma de las preguntas y el total del examen -->
                 @if (totalQuestionsScore !== examForm.get('total_score')?.value) {
                   <span class="text-red-600 font-semibold ml-2">
-                    (Difference: {{ (examForm.get('total_score')?.value ?? 0) - totalQuestionsScore | number:'1.0-2' }})
+                    (Diferencia: {{ (examForm.get('total_score')?.value ?? 0) - totalQuestionsScore | number:'1.0-2' }})
                   </span>
                 }
               </p>
@@ -249,7 +249,7 @@
                       <div class="flex items-start justify-between mb-2">
                         <div>
                           <span class="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium mb-2">
-                            Question {{ question.value.order }}
+                            Pregunta {{ question.value.order }}
                           </span>
                           <h4 class="font-semibold text-gray-900">{{ question.value.prompt  | slice:0:70 }}...</h4>
                         </div>
@@ -275,7 +275,7 @@
                         </div>
                       </div>
 
-                      <p class="text-sm text-gray-600 capitalize">Type: {{ question.value.question_type }}</p>
+                      <p class="text-sm text-gray-600 capitalize">Tipo: {{ question.value.question_type }}</p>
                     </div>
                   </div>
                 </div>
@@ -289,7 +289,7 @@
             (click)="openQuestionBuilder.set(true)"
             >
             <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
-            Add New Question
+            Añadir Nueva Pregunta
           </button>
 
           <div class="space-y-2">
@@ -313,7 +313,7 @@
           (click)="onClose()"
           class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium cursor-pointer"
         >
-          Cancel
+          Cancelar
         </button>
 
         @if (currentSection() === 'questions') {
@@ -322,7 +322,7 @@
             (click)="setSection('metadata')"
             class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium cursor-pointer"
           >
-            Back to Metadata
+            Volver a Metadatos
           </button>
         }
 
@@ -331,7 +331,7 @@
           (click)="createExam()"
           class="flex-1 px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
         >
-          {{ isEditExam() ? 'Update Exam' : 'Create Exam' }}
+          {{ isEditExam() ? 'Actualizar Examen' : 'Crear Examen' }}
         </button>
       </div>
     </div>

@@ -1,7 +1,7 @@
 @if (isBuilding()) {
   <div class="border-2 border-yellow-500 rounded-lg bg-yellow-50/30 p-6">
     <div class="flex items-center justify-between mb-6">
-      <h3 class="text-lg font-bold text-gray-900">Build New Question</h3>
+      <h3 class="text-lg font-bold text-gray-900">Crear Nueva Pregunta</h3>
       <button
         type="button"
         (click)="handleCancel()"
@@ -13,7 +13,7 @@
 
     <div class="mb-6">
       <label class="block text-sm font-semibold text-gray-900 mb-3">
-        Question Type <span class="text-red-500">*</span>
+        Tipo de Pregunta <span class="text-red-500">*</span>
       </label>
       <div class="grid grid-cols-2 gap-3">
 
@@ -27,9 +27,9 @@
         >
           <div class="flex items-center gap-2 mb-1">
             <lucide-icon [img]="icons.Check" class="w-4 h-4"></lucide-icon>
-            <span class="font-semibold text-gray-900">Multiple Choice</span>
+            <span class="font-semibold text-gray-900">Opción Múltiple</span>
           </div>
-          <p class="text-xs text-gray-600">Select one or more correct answers</p>
+          <p class="text-xs text-gray-600">Selecciona una o más respuestas correctas</p>
         </button>
 
         <button
@@ -42,9 +42,9 @@
         >
           <div class="flex items-center gap-2 mb-1">
             <lucide-icon [img]="icons.Check" class="w-4 h-4"></lucide-icon>
-            <span class="font-semibold text-gray-900">True/False</span>
+            <span class="font-semibold text-gray-900">Verdadero/Falso</span>
           </div>
-          <p class="text-xs text-gray-600">Simple binary choice question</p>
+          <p class="text-xs text-gray-600">Pregunta simple de elección binaria</p>
         </button>
 
         <button
@@ -57,9 +57,9 @@
         >
           <div class="flex items-center gap-2 mb-1">
             <lucide-icon [img]="icons.Check" class="w-4 h-4"></lucide-icon>
-            <span class="font-semibold text-gray-900">Statement Matching</span>
+            <span class="font-semibold text-gray-900">Emparejamiento de Declaraciones</span>
           </div>
-          <p class="text-xs text-gray-600">Match pairs of related items</p>
+          <p class="text-xs text-gray-600">Empareja pares de elementos relacionados</p>
         </button>
 
         <button
@@ -72,9 +72,9 @@
         >
           <div class="flex items-center gap-2 mb-1">
             <lucide-icon [img]="icons.Code" class="w-4 h-4"></lucide-icon>
-            <span class="font-semibold text-gray-900">Code Editor</span>
+            <span class="font-semibold text-gray-900">Editor de Código</span>
           </div>
-          <p class="text-xs text-gray-600">Programming challenge with validation</p>
+          <p class="text-xs text-gray-600">Desafío de programación con validación</p>
         </button>
 
       </div>

@@ -15,7 +15,7 @@
         class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
       >
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-        <span class="text-sm font-medium">Back</span>
+        <span class="text-sm font-medium">Regresar</span>
       </button>
 
       <div class="flex items-center gap-4 mb-6">
@@ -31,16 +31,16 @@
       <div class="flex items-center gap-8 text-sm text-gray-600">
         <div class="flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-          <span>{{ subjectDetailResource.value()?.students_count }} students</span>
+          <span>{{ subjectDetailResource.value()?.students_count }} estudiantes</span>
         </div>
         <div class="flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          <span>{{ subjectDetailResource.value()?.exams_count }} exams</span>
+          <span>{{ subjectDetailResource.value()?.exams_count }} exámenes</span>
         </div>
 
         @if (facade.userRole() !== 'alumno') {
           <div class="flex items-center gap-2">
-            <span class="font-medium">Teacher:</span>
+            <span class="font-medium">Profesor:</span>
             <span>{{ subjectDetailResource.value()?.teacher_name }}</span>
           </div>
         }

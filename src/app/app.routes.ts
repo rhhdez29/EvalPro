@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { roleGuard } from './core/guards/role.guard';
+import { ExamGuard } from './core/guards/exam.guard';
 
 export const routes: Routes = [
 
@@ -61,7 +62,7 @@ export const routes: Routes = [
         canActivate: [roleGuard(['alumno'])],
         children: [
           { path: 'classes', loadComponent: () => import('./features/dashboard/pages/student/classes/classes.component').then(m => m.ClassesComponent) },
-          { path: 'exam/:id', loadComponent: () => import('./features/dashboard/pages/shared-pages/exam-viewer/exam-viewer2/exam-viewer2.component').then(m => m.ExamPreviewComponent) }
+          { path: 'exam/:id', canDeactivate: [ExamGuard], loadComponent: () => import('./features/dashboard/pages/shared-pages/exam-viewer/exam-viewer2/exam-viewer2.component').then(m => m.ExamPreviewComponent) }
         ]
       },
 

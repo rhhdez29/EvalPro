@@ -16,7 +16,7 @@ export interface PendingExam {
   questions: number;
   attempts: number;
   maxAttempts: number;
-  status: 'available' | 'in-progress' | 'overdue';
+  status: 'available' | 'in-progress' | 'overdue' | 'annulled';
 }
 
 @Component({
@@ -39,7 +39,7 @@ export class PendingExamsTabComponent {
     stream: () => this.subjectService.getStudentExams(this.subjectId()).pipe(
       map(response => {
         if (!response) return [];
-
+        console.log(response);
         if(Array.isArray(response)) return response;
 
         return[];
@@ -51,6 +51,7 @@ export class PendingExamsTabComponent {
   availableCount = computed(() => this.exams.value()?.filter(e => e.status === 'available').length || 0);
   inProgressCount = computed(() => this.exams.value()?.filter(e => e.status === 'in-progress').length || 0);
   overdueCount = computed(() => this.exams.value()?.filter(e => e.status === 'overdue').length || 0);
+  annulledCount = computed(() => this.exams.value()?.filter(e => e.status === 'annulled').length || 0);
 
   // --- Helpers para la Vista ---
 
@@ -58,7 +59,8 @@ export class PendingExamsTabComponent {
     const labels: Record<PendingExam['status'], string> = {
       'available': 'Disponible',
       'in-progress': 'En Progreso',
-      'overdue': 'Vencido'
+      'overdue': 'Vencido',
+      'annulled': 'Anulado'
     };
     return labels[status];
   }

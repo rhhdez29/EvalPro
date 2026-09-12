@@ -1,15 +1,15 @@
 <div>
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h2 class="text-xl font-bold text-gray-900">Exam Management</h2>
-      <p class="text-gray-600 text-sm mt-1">Create and manage evaluations for this subject</p>
+      <h2 class="text-xl font-bold text-gray-900">Gestión de Exámenes</h2>
+      <p class="text-gray-600 text-sm mt-1">Crear y gestionar evaluaciones para esta materia</p>
     </div>
     <button
       (click)="openCreateExamModal(null)"
       class="flex items-center gap-2 px-4 py-2.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
     >
       <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
-      Create Exam
+      Crear Examen
     </button>
   </div>
 
@@ -52,7 +52,7 @@
               </div>
               <div class="flex items-center gap-2">
                 <span class="font-medium">{{ exam.questions_count }}</span>
-                <span>questions</span>
+                <span>preguntas</span>
               </div>
             </div>
           </div>
@@ -120,7 +120,7 @@
 
         <div class="mt-4">
           <div class="flex items-center justify-between text-sm mb-2">
-            <span class="text-gray-600">Submissions</span>
+            <span class="text-gray-600">Entregas</span>
             <span class="font-medium text-gray-900">
               {{ 1 }}/{{ 5 }}
             </span>
