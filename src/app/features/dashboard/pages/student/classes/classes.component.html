@@ -22,7 +22,9 @@
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 mb-1">Próximos Exámenes</p>
-          <p class="text-3xl font-bold text-gray-900">por implementar</p>
+          <p class="text-3xl font-bold" [ngClass]="(studentData()?.upcoming_exams_count || 0) > 0 ? 'text-red-600' : 'text-gray-900'">
+            {{ studentData()?.upcoming_exams_count || 0 }}
+          </p>
         </div>
         <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
           <lucide-icon [img]="icons.Calendar" class="w-6 h-6 text-red-600"></lucide-icon>
@@ -34,7 +36,7 @@
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 mb-1">Semestre Activo</p>
-          <p class="text-3xl font-bold text-gray-900">6</p>
+          <p class="text-3xl font-bold text-gray-900">{{ studentData()?.semester }}</p>
         </div>
         <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
           <lucide-icon [img]="icons.Clock" class="w-6 h-6 text-blue-600"></lucide-icon>
@@ -71,22 +73,19 @@
                 </div>
               </div>
 
-              <!-- @if (classItem.nextExam) {
-                <div class="bg-red-50 px-3 py-1.5 rounded-lg border border-red-200">
-                  <p class="text-xs text-red-600 font-medium">Next Exam</p>
-                  <p class="text-sm text-red-700 font-semibold">{{ classItem.nextExam }}</p>
+              <!-- Badge del próximo examen -->
+              @if (classItem.next_exam_date) {
+                <div class="bg-red-50 px-3 py-1.5 rounded-lg border border-red-200 text-center flex flex-col justify-center">
+                  <p class="text-[10px] uppercase tracking-wide text-red-600 font-bold mb-0.5">Próximo examen</p>
+                  <p class="text-sm text-red-700 font-black">{{ classItem.next_exam_date | date:'MMM d, yyyy' }}</p>
                 </div>
-              } -->
+              }
             </div>
 
             <div class="flex items-center gap-6 mt-4 text-sm text-gray-600">
               <div class="flex items-center gap-2">
                 <lucide-icon [img]="icons.Users" class="w-4 h-4"></lucide-icon>
                 <span>{{ classItem.teacher_name }}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <lucide-icon [img]="icons.Clock" class="w-4 h-4"></lucide-icon>
-                <span>por implementar proximo examen</span>
               </div>
             </div>
 

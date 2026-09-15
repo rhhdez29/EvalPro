@@ -17,6 +17,7 @@ export interface Student extends user{
   career: string;
   semester: string;
   kardex: string;
+  upcoming_exams_count?: number;
 }
 
 export type UserLoginData = Teacher | Student;

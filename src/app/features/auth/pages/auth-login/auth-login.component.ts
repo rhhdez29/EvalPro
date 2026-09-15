@@ -90,7 +90,8 @@ export class AuthLoginComponent {
             id_student: response.id_student,
             career: response.career,
             semester: response.semester,
-            kardex: response.kardex
+            kardex: response.kardex,
+            upcoming_exams_count: response.upcoming_exams_count
           }
         }
 

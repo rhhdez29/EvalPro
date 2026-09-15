@@ -8,4 +8,5 @@ export interface RESTSubject {
   teacher_name:   string;
   students_count: number;
   exams_count:    number;
+  next_exam_date?: string | null;
 }

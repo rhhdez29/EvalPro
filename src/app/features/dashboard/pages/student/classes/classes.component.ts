@@ -11,6 +11,8 @@ import {
 } from 'lucide-angular';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { StudentService } from '../../../services/student.service';
+import { FacadeService } from '../../../../../core/services/facade.service';
+import { Student } from '../../../../../core/models/user.inteface';
 
 export interface Class {
   id: string;
@@ -32,10 +34,12 @@ export class ClassesComponent {
 
   private router = inject(Router);
   private studentService = inject(StudentService);
+  private facadeService = inject(FacadeService);
   // Mapeo de iconos para el HTML
   readonly icons = { BookOpen, Users, Calendar, Clock };
 
   // ESTADO BASE
+  studentData = computed(() => this.facadeService.currentUser() as Student);
   classes = rxResource({
     stream: () => this.studentService.getSubjects()
   })
