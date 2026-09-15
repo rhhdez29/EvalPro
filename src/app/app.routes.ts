@@ -42,7 +42,8 @@ export const routes: Routes = [
           { path: 'validation', loadComponent: () => import('./features/dashboard/pages/admin/teacher-validation/teacher-validation.component').then(m => m.TeacherValidationComponent) },
           { path: 'subjects', loadComponent: () => import('./features/dashboard/pages/admin/subject-management/subject-management.component').then(m => m.SubjectManagementComponent) },
           { path: 'users-list', loadComponent: () => import('./features/dashboard/pages/admin/users-list/users-list.component').then(m => m.UsersListComponent) },
-          { path: 'exam/:id', loadComponent: () => import('./features/dashboard/pages/shared-pages/exam-viewer/exam-viewer2/exam-viewer2.component').then(m => m.ExamPreviewComponent) }
+          { path: 'exam/:id', loadComponent: () => import('./features/dashboard/pages/shared-pages/exam-viewer/exam-viewer2/exam-viewer2.component').then(m => m.ExamPreviewComponent) },
+          { path: 'exam/:id/results', loadComponent: () => import('./features/dashboard/pages/teacher/exam-results/exam-results.component').then(m => m.ExamResultsComponent) }
         ]
       },
 
@@ -52,7 +53,8 @@ export const routes: Routes = [
         canActivate: [roleGuard(['maestro'])],
         children: [
           { path: 'subjects', loadComponent: () => import('./features/dashboard/pages/teacher/subjects/subjects.component').then(m => m.SubjectsComponent) },
-          { path: 'exam/:id', loadComponent: () => import('./features/dashboard/pages/shared-pages/exam-viewer/exam-viewer2/exam-viewer2.component').then(m => m.ExamPreviewComponent) }
+          { path: 'exam/:id', loadComponent: () => import('./features/dashboard/pages/shared-pages/exam-viewer/exam-viewer2/exam-viewer2.component').then(m => m.ExamPreviewComponent) },
+          { path: 'exam/:id/results', loadComponent: () => import('./features/dashboard/pages/teacher/exam-results/exam-results.component').then(m => m.ExamResultsComponent) }
         ]
       },
 

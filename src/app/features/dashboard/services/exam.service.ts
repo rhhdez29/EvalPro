@@ -181,4 +181,25 @@ export class ExamService {
     )
   }
 
+  getExamResults(examId: number) {
+    return this.http.get<any[]>(`${this.apiUrl}${examId}/results/`)
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let errorMsg = 'Ocurrió un error al cargar los resultados';
+        return throwError(() => new Error(errorMsg));
+      })
+    );
+  }
+
+  deleteStudentAttempt(examId: number, studentId: number) {
+    const params = new HttpParams().set('student_id', studentId.toString());
+    return this.http.delete(`${this.apiUrl}${examId}/reset_attempt/`, { params })
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let errorMsg = 'Ocurrió un error al eliminar el intento';
+        return throwError(() => new Error(errorMsg));
+      })
+    );
+  }
+
 }

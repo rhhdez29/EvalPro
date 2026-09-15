@@ -1,0 +1,83 @@
+<div class="p-6 max-w-6xl mx-auto h-full flex flex-col">
+  <div class="flex items-center gap-4 mb-6 shrink-0">
+    <button (click)="goBack()" class="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+      <lucide-icon [img]="icons.ArrowLeft" class="w-5 h-5"></lucide-icon>
+    </button>
+    <div>
+      <h2 class="text-2xl font-bold text-gray-900">Resultados del Examen</h2>
+      <p class="text-gray-600 text-sm mt-1">Revisa las calificaciones y administra los intentos de los alumnos</p>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex justify-center items-center py-12 shrink-0">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    </div>
+  } @else if (error()) {
+    <div class="bg-red-50 text-red-600 p-4 rounded-lg text-center shrink-0">
+      {{ error() }}
+    </div>
+  } @else {
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm flex-1 flex flex-col min-h-0">
+      <div class="overflow-y-auto overflow-x-auto flex-1">
+        <table class="w-full text-left text-sm text-gray-600 relative">
+          <thead class="bg-gray-50 text-gray-700 font-semibold border-b border-gray-200 sticky top-0 z-10 shadow-[0_1px_0_0_#e5e7eb]">
+            <tr>
+              <th class="px-6 py-4">Alumno</th>
+              <th class="px-6 py-4">Estado</th>
+              <th class="px-6 py-4">Calificación</th>
+              <th class="px-6 py-4 text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            @for (result of results(); track result.student_id) {
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 font-medium text-gray-900">{{ result.student_name }}</td>
+                <td class="px-6 py-4">
+                  <span class="px-3 py-1 rounded-full text-xs font-medium border {{ getStatusBadge(result.status).class }}">
+                    {{ getStatusBadge(result.status).label }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 font-semibold">
+                  {{ result.status === 'completed' ? result.score : '-' }}
+                </td>
+                <td class="px-6 py-4 text-right">
+                  @if (result.status === 'completed' || result.status === 'annulled_by_fraud' || result.status === 'annulled' || result.status === 'needs_grading') {
+                    <button 
+                      (click)="openDeleteModal(result.student_id, result.student_name)"
+                      class="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer inline-flex items-center gap-1"
+                      title="Eliminar Intento"
+                    >
+                      <lucide-icon [img]="icons.Trash2" class="w-4 h-4"></lucide-icon>
+                    </button>
+                  } @else {
+                    <span class="text-gray-400">-</span>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+                  No hay alumnos inscritos en esta materia.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>
+
+<app-delete-modal
+  [isOpen]="isDeleteModalOpen()"
+  (cancel)="closeDeleteModal()"
+  [message]="'¿Estás seguro de que deseas eliminar el intento de ' + studentNameDelete + '? Podrá volver a tomar el examen.'"
+  (confirm)="confirmDelete()"
+/>
+
+<loading-modal
+  [status]="modalState().status"
+  [message1]="modalState().title"
+  [message2]="modalState().subtitle"
+/>

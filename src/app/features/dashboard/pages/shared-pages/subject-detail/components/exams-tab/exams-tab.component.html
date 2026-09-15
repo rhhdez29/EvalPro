@@ -94,6 +94,16 @@
 
               <li>
                 <button
+                  (click)="openResults(exam.id!)"
+                  class="text-purple-700 hover:bg-purple-50 hover:text-purple-700 cursor-pointer flex items-center gap-2"
+                >
+                  <lucide-icon [img]="icons.List" class="w-4 h-4"></lucide-icon>
+                  Ver Resultados
+                </button>
+              </li>
+
+              <li>
+                <button
                   (click)="openCreateExamModal(exam.id!)"
                   class="text-blue-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer flex items-center gap-2"
                 >

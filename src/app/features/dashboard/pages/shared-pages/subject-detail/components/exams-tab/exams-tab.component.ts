@@ -11,7 +11,8 @@ import {
   MoreVertical,
   Edit,
   Trash2,
-  Eye
+  Eye,
+  List
 } from 'lucide-angular';
 
 import { ExamService } from '../../../../../services/exam.service';
@@ -81,7 +82,7 @@ export class ExamsTabComponent {
 
 
   // Iconos
-  readonly icons = { Plus, Calendar, Clock, MoreVertical, Edit, Trash2, Eye };
+  readonly icons = { Plus, Calendar, Clock, MoreVertical, Edit, Trash2, Eye, List };
 
   private idExam: number | null = null;
 
@@ -150,6 +151,17 @@ export class ExamsTabComponent {
 
     console.log(url);
 
+    this.router.navigate([url]);
+  }
+
+  openResults(examId: number) {
+    const role = this.facadeService.userRole();
+    let url = '';
+    if (role === 'maestro') {
+      url = `/home/teacher/exam/${examId}/results`;
+    } else if (role === 'administrador') {
+      url = `/home/admin/exam/${examId}/results`;
+    }
     this.router.navigate([url]);
   }
 
