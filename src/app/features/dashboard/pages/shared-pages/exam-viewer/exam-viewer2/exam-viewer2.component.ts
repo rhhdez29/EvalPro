@@ -89,7 +89,10 @@ export class ExamPreviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.securityService.startExamSecurity(this.id());
+    const role = this.facadeService.userRole();
+    if (role === 'alumno') {
+      this.securityService.startExamSecurity(this.id());
+    }
 
     this.voidSub = this.securityService.examVoided$.subscribe(() => {
       this.isVoided.set(true);
