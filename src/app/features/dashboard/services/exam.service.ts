@@ -143,6 +143,19 @@ export class ExamService {
     )
   }
 
+  submitStudentExam(id: number, payload: any) {
+    return this.http.post(`${this.apiUrl}${id}/submit/`, payload)
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let errorMsg = 'Ocurrió un error al enviar el examen';
+        if (err.error && err.error.error) {
+          errorMsg = err.error.error;
+        }
+        return throwError(() => new Error(errorMsg));
+      })
+    );
+  }
+
   changeStatus(id: number, status: ExamBase['status']){
     let body = {}
 

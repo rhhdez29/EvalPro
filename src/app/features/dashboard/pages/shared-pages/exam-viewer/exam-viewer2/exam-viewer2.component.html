@@ -163,16 +163,16 @@
           <div class="mt-4">
             @switch (currentQuestion().question_type) {
               @case ('MCQ') {
-                <multiple-choice-viewer [question]="currentQuestion()" [isPreviewMode]="isPreviewMode()" />
+                <multiple-choice-viewer [question]="currentQuestion()" [isPreviewMode]="isPreviewMode()" (answerChange)="onAnswerChange(currentQuestion().id!, $event)" />
               }
               @case ('TF') {
-                <true-false-viewer [question]="currentQuestion()" [isPreviewMode]="isPreviewMode()" />
+                <true-false-viewer [question]="currentQuestion()" [isPreviewMode]="isPreviewMode()" (answerChange)="onAnswerChange(currentQuestion().id!, $event)" />
               }
               @case ('MATCH') {
-                <matching-viewer [question]="currentQuestion()" [isPreviewMode]="isPreviewMode()" />
+                <matching-viewer [question]="currentQuestion()" [isPreviewMode]="isPreviewMode()" (answerChange)="onAnswerChange(currentQuestion().id!, $event)" />
               }
               @case ('CODE') {
-                <code-editor-viewer [question]="currentQuestion()" [isPreviewMode]="isPreviewMode()" />
+                <code-editor-viewer [question]="currentQuestion()" [isPreviewMode]="isPreviewMode()" (answerChange)="onAnswerChange(currentQuestion().id!, $event)" />
               }
             }
           </div>

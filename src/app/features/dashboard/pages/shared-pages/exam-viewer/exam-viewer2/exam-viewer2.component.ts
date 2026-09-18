@@ -50,6 +50,7 @@ export class ExamPreviewComponent implements OnInit, OnDestroy {
   timeRemaining = signal<string>('00:00');
   isTimeUp = signal<boolean>(false);
   isPreviewMode = signal<boolean>(false);
+  studentAnswers = signal<Map<number, any>>(new Map());
 
   timerInterval: any;
 
@@ -141,6 +142,14 @@ export class ExamPreviewComponent implements OnInit, OnDestroy {
     }
   }
 
+  onAnswerChange(questionId: number, answer: any) {
+    this.studentAnswers.update(currentMap => {
+      const newMap = new Map(currentMap);
+      newMap.set(questionId, answer);
+      return newMap;
+    });
+  }
+
   goToPrevious() {
     if (this.currentQuestionIndex() > 0) {
       this.currentQuestionIndex.update(i => i - 1);
@@ -160,7 +169,45 @@ export class ExamPreviewComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log(this.examData());
+    const answersPayload: any[] = [];
+    const questions = this.examData().questions;
+
+    this.studentAnswers().forEach((answer, questionId) => {
+      const q = questions.find((x: any) => x.id === questionId);
+      if (!q) return;
+
+      const answerObj: any = { question_id: questionId };
+
+      if (q.question_type === 'MCQ') {
+        const selectedIndices = answer as number[];
+        if (selectedIndices && selectedIndices.length > 0) {
+          answerObj.selected_option_id = q.options[selectedIndices[0]].id;
+        }
+      } else if (q.question_type === 'TF') {
+        answerObj.text_response = answer ? 'true' : 'false';
+      } else if (q.question_type === 'MATCH') {
+        answerObj.text_response = JSON.stringify(answer);
+      } else if (q.question_type === 'CODE') {
+        answerObj.text_response = answer;
+      }
+
+      answersPayload.push(answerObj);
+    });
+
+    const payload = { answers: answersPayload };
+
+    console.log(payload);
+
+
+    this.examService.submitStudentExam(Number(this.id()), payload).subscribe({
+      next: (res) => {
+        this.isExamFinished = true;
+        this.router.navigate(['/home/student/classes']);
+      },
+      error: (err) => {
+        alert("Error submitting exam: " + err.message);
+      }
+    });
 
   }
 
@@ -216,7 +263,7 @@ export class ExamPreviewComponent implements OnInit, OnDestroy {
 
   autoSubmit(): void {
     console.log("El tiempo se agotó. Enviando respuestas automáticamente...");
-    // this.examService.submitExam(...)
+    this.submitExam();
   }
 
   ngOnDestroy(): void {

@@ -19,7 +19,7 @@ interface RightItem {
 export class MatchingViewerComponent {
   question = input.required<Question>(); // O usa Question si ya solucionaste el import
   isPreviewMode = input<boolean>(false);
-  answerChange = output<Map<number, number>>();
+  answerChange = output<any[]>();
 
   // Señal segura para la metadata de matching
   matchMeta = computed(() => this.question().metadata as any); // Cambia "any" por "MatchMetaData" si la tienes
@@ -73,8 +73,14 @@ export class MatchingViewerComponent {
       this.matches.set(newMatches);
       this.selectedLeft.set(null);
 
-      // Emitimos el nuevo mapa al Padre
-      this.answerChange.emit(newMatches);
+      // Emitimos el arreglo de objetos al Padre
+      const result = Array.from(newMatches.entries()).map(([lIndex, rIndex]) => {
+        return {
+          left: this.pairs()[lIndex].left,
+          right: this.rightItems()[rIndex].text
+        };
+      });
+      this.answerChange.emit(result);
     }
   }
 
@@ -82,7 +88,7 @@ export class MatchingViewerComponent {
     const emptyMap = new Map();
     this.matches.set(emptyMap);
     this.selectedLeft.set(null);
-    this.answerChange.emit(emptyMap);
+    this.answerChange.emit([]);
   }
 
   // Funciones de ayuda para el HTML
