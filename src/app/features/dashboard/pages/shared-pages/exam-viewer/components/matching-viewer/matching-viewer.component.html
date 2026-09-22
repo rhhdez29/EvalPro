@@ -3,7 +3,7 @@
     Haz clic en un elemento de la columna izquierda, luego haz clic en su elemento correspondiente de la columna derecha:
   </p>
 
-  <div class="grid grid-cols-2 gap-6">
+  <div class="grid grid-cols-2 gap-6" [class.pointer-events-none]="isGradingMode()">
     <div class="space-y-3">
       <div class="text-sm font-semibold text-gray-700 mb-2">Declaraciones</div>
 
@@ -93,13 +93,14 @@
       <button
         type="button"
         (click)="clearAllMatches()"
+        [class.pointer-events-none]="isGradingMode()"
         class="mt-3 text-sm text-red-600 hover:text-red-700 font-medium">
         Borrar todas las selecciones
       </button>
     </div>
   }
 
-  @if (isPreviewMode()) {
+  @if (isPreviewMode() && !isGradingMode()) {
     <div class="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
       <p class="text-sm font-semibold text-green-700 mb-2">Respuestas correctas:</p>
       <div class="space-y-1">

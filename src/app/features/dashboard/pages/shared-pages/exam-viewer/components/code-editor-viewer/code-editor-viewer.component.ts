@@ -14,6 +14,8 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 export class CodeEditorViewerComponent {
   question = input.required<Question>(); // Usamos any aquí para evitar el choque estricto en el input general
   isPreviewMode = input<boolean>(false);
+  isGradingMode = input<boolean>(false);
+  studentAnswer = input<any>(null);
   answerChange = output<string>();
 
   code = signal<string>('');
@@ -35,20 +37,26 @@ export class CodeEditorViewerComponent {
       scrollBeyondLastLine: false,
       automaticLayout: true,
       tabSize: 2,
-      wordWrap: 'on'
+      wordWrap: 'on',
+      readOnly: this.isGradingMode()
     };
   });
 
   constructor() {
     effect(() => {
       const meta = this.codeMeta();
-      if (meta && meta.starterCode) {
+      const ans = this.studentAnswer();
+      
+      if (ans && ans.text_response !== undefined && ans.text_response !== null) {
+        this.code.set(ans.text_response);
+        this.answerChange.emit(ans.text_response);
+      } else if (meta && meta.starterCode) {
         this.code.set(meta.starterCode);
         this.answerChange.emit(meta.starterCode);
       } else {
         this.code.set('');
       }
-    });
+    }, { allowSignalWrites: true });
   }
 
   onCodeChange(newCode: string) {

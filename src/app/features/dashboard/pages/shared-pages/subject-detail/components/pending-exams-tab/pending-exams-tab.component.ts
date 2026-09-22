@@ -2,22 +2,11 @@ import { Component, input, signal, computed, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { SubjectService } from '../../../../../services/subject.service';
-import { ExamDetail } from '../../../../../models/RESTExamResponse.interface';
+import { ExamDetail, PendingExams} from '../../../../../models/RESTExamResponse.interface';
 import { ExamService } from '../../../../../services/exam.service';
 import { ExamViewerComponent } from "../../../exam-viewer/exam-viewer.component";
 import { map } from 'rxjs';
 import { Router } from '@angular/router';
-
-export interface PendingExam {
-  id: string;
-  title: string;
-  dueDate: string;
-  duration: number; // en minutos
-  questions: number;
-  attempts: number;
-  maxAttempts: number;
-  status: 'available' | 'in-progress' | 'overdue' | 'annulled';
-}
 
 @Component({
   selector: 'app-pending-exams-tab',
@@ -55,12 +44,14 @@ export class PendingExamsTabComponent {
 
   // --- Helpers para la Vista ---
 
-  getBadgeLabel(status: PendingExam['status']): string {
-    const labels: Record<PendingExam['status'], string> = {
+  getBadgeLabel(status: PendingExams['status']): string {
+    const labels: Record<PendingExams['status'], string> = {
       'available': 'Disponible',
       'in-progress': 'En Progreso',
       'overdue': 'Vencido',
-      'annulled': 'Anulado'
+      'annulled': 'Anulado',
+      'needs_grading': 'En Calificación',
+      'completed': 'Completado'
     };
     return labels[status];
   }

@@ -19,6 +19,8 @@ interface RightItem {
 export class MatchingViewerComponent {
   question = input.required<Question>(); // O usa Question si ya solucionaste el import
   isPreviewMode = input<boolean>(false);
+  isGradingMode = input<boolean>(false);
+  studentAnswer = input<any>(null);
   answerChange = output<any[]>();
 
   // Señal segura para la metadata de matching
@@ -43,8 +45,27 @@ export class MatchingViewerComponent {
           [items[i], items[j]] = [items[j], items[i]];
         }
         this.rightItems.set(items);
-        this.matches.set(new Map());
         this.selectedLeft.set(null);
+
+        const ans = this.studentAnswer();
+        if (ans && ans.text_response) {
+          try {
+            const savedAnswers = JSON.parse(ans.text_response);
+            const newMatches = new Map<number, number>();
+            savedAnswers.forEach((savedItem: any) => {
+              const leftIndex = this.pairs().findIndex((pair: any) => pair.left === savedItem.left);
+              const rightIndex = this.rightItems().findIndex((item: any) => item.text === savedItem.right);
+              if (leftIndex !== -1 && rightIndex !== -1) {
+                newMatches.set(leftIndex, rightIndex);
+              }
+            });
+            this.matches.set(newMatches);
+          } catch (e) {
+            this.matches.set(new Map());
+          }
+        } else {
+          this.matches.set(new Map());
+        }
       }
     }, { allowSignalWrites: true });
   }

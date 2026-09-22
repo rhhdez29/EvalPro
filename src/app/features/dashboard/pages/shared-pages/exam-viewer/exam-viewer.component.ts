@@ -1,60 +1,101 @@
-import { Component, input, output, signal, OnInit, OnDestroy, computed, inject } from '@angular/core';
-import { CommonModule, DatePipe, Location } from '@angular/common';
-import { ExamDetail } from '../../../models/RESTExamResponse.interface';
-import { CodeEditorViewerComponent } from "./components/code-editor-viewer/code-editor-viewer.component";
-import { MatchingViewerComponent } from "./components/matching-viewer/matching-viewer.component";
-import { MultipleChoiceViewerComponent } from "./components/multiple-choice-viewer/multiple-choice-viewer.component";
-import { TrueFalseViewerComponent } from "./components/true-false-viewer/true-false-viewer.component";
-import { rxResource } from '@angular/core/rxjs-interop';
-import { ExamService } from '../../../services/exam.service';
-import { LoadingInformationComponent } from "../../../../../shared/components/loading-information/loading-information.component";
-import { FacadeService } from '../../../../../core/services/facade.service';
-import { of } from 'rxjs';
+import { Component, input, output, signal, computed, effect, inject, OnInit, OnDestroy } from '@angular/core';
 
-// Asume que ya tienes tus componentes hijos creados en Angular
-// import { MultipleChoiceQuestionComponent } from '../questions/multiple-choice/multiple-choice.component';
-// etc...
+import { DatePipe, Location, NgClass } from '@angular/common';
+import { Router } from '@angular/router';
+// Importa tus componentes de preguntas aquí
+import { MultipleChoiceViewerComponent } from './components/multiple-choice-viewer/multiple-choice-viewer.component';
+import { TrueFalseViewerComponent } from './components/true-false-viewer/true-false-viewer.component';
+import { MatchingViewerComponent } from './components/matching-viewer/matching-viewer.component';
+import { CodeEditorViewerComponent } from './components/code-editor-viewer/code-editor-viewer.component';
+// Importa los iconos de Lucide (ajusta según tu librería)
+import { X, Clock, FileText, AlertCircle, Eye, ChevronLeft, ChevronRight, LucideAngularModule } from 'lucide-angular';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { map, of, tap, forkJoin } from 'rxjs';
+import { FacadeService } from '../../../../../core/services/facade.service';
+import { ExamService } from '../../../services/exam.service';
+import { ExamDetail } from '../../../models/RESTExamResponse.interface';
+import { ExamSecurityService } from '../../../../../core/services/exam-security.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'exam-viewer',
   standalone: true,
-  imports: [CommonModule, DatePipe, CodeEditorViewerComponent, MatchingViewerComponent, MultipleChoiceViewerComponent, TrueFalseViewerComponent, LoadingInformationComponent], // Importamos DatePipe para formatear la fecha fácil
+  imports: [
+    DatePipe,
+    MultipleChoiceViewerComponent,
+    TrueFalseViewerComponent,
+    MatchingViewerComponent,
+    CodeEditorViewerComponent,
+    LucideAngularModule,
+    NgClass
+],
   templateUrl: './exam-viewer.component.html'
 })
-export class ExamViewerComponent implements OnDestroy {
-  // 1. Entradas (Inputs)
+export class ExamViewerComponent implements OnInit, OnDestroy {
+  // Inputs y Outputs (Props en React)
   id = input.required<string>();
-
+  studentId = input<string>();
+  isGradingMode = computed(() => !!this.studentId());
+  studentAnswersData = signal<any[]>([]);
   private examService = inject(ExamService);
   private facadeService = inject(FacadeService)
   private location = inject(Location);
+  private securityService = inject(ExamSecurityService);
+  private router = inject(Router);
 
-  // LA MAGIA: Si es true, es el maestro. Si es false, es el alumno.
+  isVoided = signal<boolean>(false);
+  isExamFinished = false;
+  private voidSub!: Subscription;
+
+  // Iconos disponibles para la vista
+  icons = { X, Clock, FileText, AlertCircle, Eye, ChevronLeft, ChevronRight };
+
+  // Estados locales (State)
+  currentQuestionIndex = signal<number>(0);
+  timeRemaining = signal<string>('00:00');
+  isTimeUp = signal<boolean>(false);
   isPreviewMode = signal<boolean>(false);
+  studentAnswers = signal<Map<number, any>>(new Map());
 
-  // 2. Salidas (Outputs)
-  closeViewer = output<void>();
-  submitExam = output<any>(); // Emitirá las respuestas del alumno
+  timerInterval: any;
 
-  // 3. Estado (Signals)
-  timeRemaining = signal<number>(0);
-  answeredQuestionsCount = signal<number>(0);
-
-  // 4. Recursos
   exam = rxResource({
-    params: () => this.id(),
+    params: () => ({ id: this.id(), studentId: this.studentId() }),
     stream: ({params}) => {
 
       const role = this.facadeService.userRole();
 
+      if (params.studentId) {
+        this.isPreviewMode.set(true);
+        return forkJoin({
+          exam: this.examService.getExamByID(Number(params.id)),
+          attempt: this.examService.getExamAttemptForGrading(params.id, params.studentId)
+        }).pipe(
+          tap(res => {
+            if (res.attempt.answers) {
+              this.studentAnswersData.set(res.attempt.answers);
+            }
+          }),
+          map(res => res.exam)
+        );
+      }
+
       if(role === 'maestro' || role === 'administrador'){
         this.isPreviewMode.set(true);
-        return this.examService.getExamByID(Number(params))
+        return this.examService.getExamByID(Number(params.id))
       }
 
       if (role === 'alumno') {
         this.isPreviewMode.set(false);
-        return this.examService.getStudentExamById(Number(params))
+        return this.examService.getStudentExamById(Number(params.id)).pipe(
+          tap(response =>{
+            console.log(response);
+            if(response && response.server_start_time){
+              this.iniciarTemporizador(response.server_start_time, response.duration_minutes);
+            }
+          })
+        )
+
       }
 
       return of(null)
@@ -63,48 +104,47 @@ export class ExamViewerComponent implements OnDestroy {
 
   examData = computed(() => this.exam.value()! as ExamDetail);
 
-  // Calculado: Porcentaje de progreso
-  progressPercentage = computed(() => {
-    const total = this.examData().questions?.length || 1;
-    return Math.round((this.answeredQuestionsCount() / total) * 100);
+  constructor() {
+
+
+  }
+
+  ngOnInit() {
+    const role = this.facadeService.userRole();
+    if (role === 'alumno') {
+      this.securityService.startExamSecurity(this.id());
+    }
+
+    this.voidSub = this.securityService.examVoided$.subscribe(() => {
+      this.isVoided.set(true);
+    });
+  }
+
+  // Lógica computada (useMemo en React)
+
+  // 1. Ordenar preguntas estrictamente por la propiedad 'order'
+  sortedQuestions = computed(() => {
+    return [...this.examData().questions].sort((a: any, b: any) => a.order - b.order);
   });
 
-  private timerInterval: any;
+  // 2. Obtener la pregunta actual
+  currentQuestion = computed(() => {
+    return this.sortedQuestions()[this.currentQuestionIndex()];
+  });
 
-  ngAfterNextRender() {
-    // Inicializamos el temporizador si el examen tiene duración
-    const duration = this.examData().duration_minutes;
-    if (duration > 0) {
-      this.timeRemaining.set(duration * 60);
-      this.startTimer();
-    }
-  }
+  // 3. Total de preguntas
+  totalQuestions = computed(() => this.sortedQuestions().length);
 
-  ngOnDestroy() {
-    // Limpieza vital: detener el reloj si el componente se destruye
-    this.stopTimer();
-  }
+  // 4. Porcentaje de progreso (Evitamos cálculos complejos en el HTML)
+  progressPercentage = computed(() => {
+    return Math.round(((this.currentQuestionIndex() + 1) / this.totalQuestions()) * 100);
+  });
 
-  // --- Lógica del Reloj ---
-  private startTimer() {
-    this.timerInterval = setInterval(() => {
-      this.timeRemaining.update(time => {
-        if (time <= 1) {
-          this.stopTimer();
-          this.autoSubmit();
-          return 0;
-        }
-        return time - 1;
-      });
-    }, 1000);
-  }
+  progressWidth = computed(() => {
+    return ((this.currentQuestionIndex() + 1) / this.totalQuestions()) * 100;
+  });
 
-  private stopTimer() {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-    }
-  }
-
+  // Métodos
   formatTime(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -116,28 +156,162 @@ export class ExamViewerComponent implements OnDestroy {
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
   }
 
-  // --- Acciones ---
-  onSubmitClick() {
-    if (this.isPreviewMode()) {
-      alert("Estás en Modo Vista Previa. La entrega está deshabilitada.");
+  goToQuestion(index: number) {
+    if (index >= 0 && index < this.totalQuestions()) {
+      this.currentQuestionIndex.set(index);
+    }
+  }
+
+  onAnswerChange(questionId: number, answer: any) {
+    this.studentAnswers.update(currentMap => {
+      const newMap = new Map(currentMap);
+      newMap.set(questionId, answer);
+      return newMap;
+    });
+  }
+
+  goToPrevious() {
+    if (this.currentQuestionIndex() > 0) {
+      this.currentQuestionIndex.update(i => i - 1);
+    }
+
+  }
+
+  goToNext() {
+    if (this.currentQuestionIndex() < this.totalQuestions() - 1) {
+      this.currentQuestionIndex.update(i => i + 1);
+    }
+  }
+
+  submitExam() {
+    if(this.isPreviewMode()){
+      alert("This is a preview - submission is disabled");
       return;
     }
 
-    // Aquí recolectarías las respuestas y las emitirías
-    console.log("Enviando examen real...");
-    this.submitExam.emit({ /* respuestas del alumno */ });
+    const answersPayload: any[] = [];
+    const questions = this.examData().questions;
+
+    this.studentAnswers().forEach((answer, questionId) => {
+      const q = questions.find((x: any) => x.id === questionId);
+      if (!q) return;
+
+      const answerObj: any = { question_id: questionId };
+
+      if (q.question_type === 'MCQ') {
+        const selectedIndices = answer as number[];
+        if (selectedIndices && selectedIndices.length > 0) {
+          answerObj.selected_option_id = q.options[selectedIndices[0]].id;
+        }
+      } else if (q.question_type === 'TF') {
+        answerObj.text_response = answer ? 'true' : 'false';
+      } else if (q.question_type === 'MATCH') {
+        answerObj.text_response = JSON.stringify(answer);
+      } else if (q.question_type === 'CODE') {
+        answerObj.text_response = answer;
+      }
+
+      answersPayload.push(answerObj);
+    });
+
+    const payload = { answers: answersPayload };
+
+    console.log(payload);
+
+
+    this.examService.submitStudentExam(Number(this.id()), payload).subscribe({
+      next: (res) => {
+        this.isExamFinished = true;
+        this.router.navigate(['/home/student/classes']);
+      },
+      error: (err) => {
+        alert("Error submitting exam: " + err.message);
+      }
+    });
+
   }
 
-  private autoSubmit() {
-    if (!this.isPreviewMode()) {
-      alert("¡El tiempo se ha agotado! Entregando examen automáticamente.");
-      this.onSubmitClick();
-    }
+  getAnswerForQuestion(questionId: number) {
+    return this.studentAnswersData().find(a => a.question === questionId || a.question_id === questionId);
+  }
+
+  saveGrade(answerId: number, points: number) {
+    if (points < 0) return;
+    this.examService.gradeStudentAnswer(answerId, points).subscribe({
+        next: () => {
+          this.studentAnswersData.update(answers =>
+            answers.map(a => a.id === answerId ? { ...a, needs_manual_review: false, points_earned: points } : a)
+          );
+        },
+        error: (err) => alert('Error saving grade: ' + err.message)
+      });
+  }
+
+  // Utilidad para limpiar el tipo de pregunta en el UI (ej. multiple-choice -> multiple choice)
+  formatQuestionType(type: string): string {
+    return type?.replace('-', ' ') || '';
   }
 
   backPage(){
 
     this.location.back();
 
+  }
+
+  iniciarTemporizador(serverStartTimeIso: string, durationMinutes: number): void {
+
+    //Limpieza de seguridad: Destruir el reloj anterior si existe
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+
+    const startTime = new Date(serverStartTimeIso).getTime();
+    const endTime = startTime + (durationMinutes * 60 * 1000);
+
+    this.timerInterval = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = endTime - now;
+
+      console.log('now', now);
+      console.log('distance', distance);
+
+      if (distance <= 0) {
+        clearInterval(this.timerInterval);
+
+        // 🌟 Actualizamos el estado usando .set()
+        this.timeRemaining.set('00:00');
+        this.isTimeUp.set(true);
+
+        this.autoSubmit();
+        return;
+      }
+
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      const mDisplay = minutes < 10 ? '0' + minutes : minutes;
+      const sDisplay = seconds < 10 ? '0' + seconds : seconds;
+
+      // 🌟 Actualizamos el texto reactivo en la vista sin disparar Change Detection global
+      this.timeRemaining.set(`${mDisplay}:${sDisplay}`);
+    }, 1000);
+  }
+
+  autoSubmit(): void {
+    console.log("El tiempo se agotó. Enviando respuestas automáticamente...");
+    this.submitExam();
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.timerInterval);
+    this.securityService.stopExamSecurity();
+    if (this.voidSub) {
+      this.voidSub.unsubscribe();
+    }
+  }
+
+  exitVoidedExam() {
+    this.isExamFinished = true; // Permitir que el Guard nos deje salir
+    this.router.navigate(['/home/student/classes']);
   }
 }

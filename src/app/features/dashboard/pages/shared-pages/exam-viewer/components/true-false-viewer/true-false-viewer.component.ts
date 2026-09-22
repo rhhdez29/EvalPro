@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed } from '@angular/core';
+import { Component, input, output, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,6 +11,8 @@ export class TrueFalseViewerComponent {
   // Entradas
   question = input.required<any>();
   isPreviewMode = input<boolean>(false);
+  isGradingMode = input<boolean>(false);
+  studentAnswer = input<any>(null);
 
   // Salida
   answerChange = output<boolean>();
@@ -24,6 +26,15 @@ export class TrueFalseViewerComponent {
     const correctOpt = this.question().metadata?.correctAnswer;
     return correctOpt;
   });
+
+  constructor() {
+    effect(() => {
+      const ans = this.studentAnswer();
+      if (ans && ans.text_response !== undefined && ans.text_response !== null) {
+        this.selectedAnswer.set(ans.text_response === 'true');
+      }
+    }, { allowSignalWrites: true });
+  }
 
   selectAnswer(value: boolean) {
     this.selectedAnswer.set(value);

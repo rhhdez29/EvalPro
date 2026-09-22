@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { LucideAngularModule, ArrowLeft, Trash2 } from 'lucide-angular';
 import { ExamService } from '../../../services/exam.service';
 import { DeleteModalComponent } from '../../../../../shared/components/delete-modal/delete-modal.component';
@@ -10,7 +10,7 @@ import { ModalState } from '../../../../../core/models/ModalState';
 @Component({
   selector: 'app-exam-results',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, DeleteModalComponent, LoadingModalComponent],
+  imports: [CommonModule, LucideAngularModule, DeleteModalComponent, LoadingModalComponent, RouterLink],
   templateUrl: './exam-results.component.html'
 })
 export class ExamResultsComponent implements OnInit {

@@ -1,60 +1,73 @@
-<loading-information
-  [isLoading]="exam.isLoading()"
-  [error]="exam.error()"
-  [data]="exam.value()"
-  [emptyMessage]="'No se cargo el examen o el id es invalido'"
->
-  <div class="fixed inset-0 bg-gray-100 z-50 overflow-hidden flex flex-col">
-
-  @if (isPreviewMode()) {
-    <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 shadow-lg">
-      <div class="max-w-7xl mx-auto flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <div class="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-lg border-2 border-white/30">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-            <span class="font-bold text-lg">MODO VISTA PREVIA</span>
-          </div>
-          <div class="border-l-2 border-white/30 pl-4">
-            <p class="text-sm opacity-90">Así es como los estudiantes verán este examen</p>
-            <p class="text-xs opacity-75">Las acciones aquí no se guardarán • Solo visualización</p>
-          </div>
-        </div>
-        <button (click)="backPage()" class="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors border-2 border-white/30 font-medium">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-          Salir de la Vista Previa
-        </button>
-      </div>
+@if (isVoided()) {
+  <div class="fixed inset-0 bg-red-600 z-[999999] flex justify-center items-center select-none bg-opacity-95">
+    <div class="bg-white p-12 rounded-lg text-center shadow-[0_10px_30px_rgba(0,0,0,0.7)] max-w-2xl w-[90%] border-4 border-red-800">
+      <div class="text-7xl mb-4">🚨</div>
+      <h2 class="text-red-700 text-4xl mb-4 uppercase font-bold">Examen Anulado</h2>
+      <p class="text-xl text-gray-800 mb-4 leading-relaxed">Hemos detectado que has abandonado la vista del examen (cambio de pestaña, minimización o apertura de otra aplicación).</p>
+      <p class="text-xl text-gray-800 mb-8 leading-relaxed">Bajo nuestra política de <strong>cero tolerancia</strong>, tu intento de examen ha sido cancelado y registrado de forma irreversible.</p>
+      <button (click)="exitVoidedExam()" class="bg-red-700 hover:bg-red-800 text-white text-lg font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105 active:scale-95">Entendido, salir del examen</button>
     </div>
+  </div>
+}
+
+<div class="fixed inset-0 bg-gray-100 z-50 overflow-hidden flex flex-col">
+  @if (isPreviewMode() && !isGradingMode()) {
+    <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 shadow-lg">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-lg border-2 border-white/30">
+          <lucide-icon [img]="icons.Eye" class="w-5 h-5"></lucide-icon>
+          <span class="font-bold text-lg">PREVIEW MODE</span>
+        </div>
+        <div class="border-l-2 border-white/30 pl-4">
+          <p class="text-sm opacity-90">You are viewing how students will see this exam</p>
+          <p class="text-xs opacity-75">No actions taken here will be saved • This is a visual preview only</p>
+        </div>
+      </div>
+      <button
+        (click)="backPage()"
+        class="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors border-2 border-white/30 font-medium"
+      >
+        <lucide-icon [img]="icons.X" class="w-5 h-5"></lucide-icon>
+        Exit Preview
+      </button>
+    </div>
+  </div>
   }
 
   <div class="flex-1 overflow-y-auto">
-    <div class="max-w-4xl mx    -auto py-8 px-6">
+    <div class="max-w-4xl mx-auto py-8 px-6">
 
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-6">
         <div class="flex items-start justify-between mb-6">
           <div class="flex-1">
             <div class="flex items-center gap-3 mb-2">
               <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <lucide-icon [img]="icons.FileText" class="w-6 h-6 text-yellow-600"></lucide-icon>
               </div>
               <div>
-                <h1 class="text-3xl font-bold text-gray-900">{{ examData().title }}</h1>
+                <h1 class="text-3xl font-bold text-gray-900">
+                  {{ examData().title }}
+                </h1>
                 <p class="text-sm text-gray-500 mt-1">
                   {{ examData().start_date | date:'longDate' }} a las {{ examData().start_date | date:'shortTime' }}
                 </p>
               </div>
             </div>
-            <p class="text-gray-600 mt-4 leading-relaxed">{{ examData().description }}</p>
+
+            <p class="text-gray-600 mt-4 leading-relaxed">
+              {{ examData().description }}
+            </p>
           </div>
 
-          @if (examData().duration_minutes > 0) {
+          @if (true) {
             <div class="ml-6 bg-yellow-50 border-2 border-yellow-200 rounded-lg px-6 py-4 text-center min-w-[140px]">
               <div class="flex items-center justify-center gap-2 mb-1">
-                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <span class="text-sm font-semibold text-gray-700">Tiempo Restante</span>
+                <lucide-icon [img]="icons.Clock" class="w-5 h-5 text-yellow-600"></lucide-icon>
+                <span class="text-sm font-semibold text-gray-700">Time Remaining</span>
               </div>
               <div class="text-3xl font-bold text-yellow-600 font-mono">
-                {{ formatTime(timeRemaining()) }}
+                {{ timeRemaining() }}
               </div>
             </div>
           }
@@ -62,98 +75,191 @@
 
         <div class="grid grid-cols-3 gap-4 pt-6 border-t border-gray-200">
           <div class="text-center">
-            <p class="text-sm text-gray-600 mb-1">Total de Preguntas</p>
-            <p class="text-2xl font-bold text-gray-900">{{ examData().questions.length || 0 }}</p>
+            <p class="text-sm text-gray-600 mb-1">Total Questions</p>
+            <p class="text-2xl font-bold text-gray-900">{{ totalQuestions() }}</p>
           </div>
           <div class="text-center">
-            <p class="text-sm text-gray-600 mb-1">Puntos Totales</p>
+            <p class="text-sm text-gray-600 mb-1">Total Points</p>
             <p class="text-2xl font-bold text-gray-900">{{ examData().total_score }}</p>
           </div>
           <div class="text-center">
-            <p class="text-sm text-gray-600 mb-1">Duración</p>
+            <p class="text-sm text-gray-600 mb-1">Duration</p>
             <p class="text-2xl font-bold text-gray-900">
-              {{ examData().duration_minutes > 0 ? examData().duration_minutes + ' min' : 'Sin límite' }}
+              {{examData().duration_minutes + ' min'}}
             </p>
           </div>
         </div>
       </div>
 
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-semibold text-gray-900">Question Navigator</h3>
+          <span class="text-sm text-gray-600">
+            Question {{ currentQuestionIndex() + 1 }} of {{ totalQuestions() }}
+          </span>
+        </div>
+        <div class="flex flex-wrap gap-2">
+
+          @for (question of sortedQuestions(); track question.id || $index; let i = $index) {
+            <button
+              (click)="goToQuestion(i)"
+              class="w-10 h-10 rounded-lg font-semibold transition-all"
+              [class.bg-yellow-600]="i === currentQuestionIndex()"
+              [class.text-white]="i === currentQuestionIndex()"
+              [class.shadow-md]="i === currentQuestionIndex()"
+              [class.scale-110]="i === currentQuestionIndex()"
+              [class.bg-gray-100]="i !== currentQuestionIndex()"
+              [class.text-gray-700]="i !== currentQuestionIndex()"
+              [class.hover:bg-gray-200]="i !== currentQuestionIndex()"
+            >
+              {{ i + 1 }}
+            </button>
+          }
+
+        </div>
+      </div>
+
       <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-start gap-3">
-        <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <lucide-icon [img]="icons.AlertCircle" class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"></lucide-icon>
         <div>
-          <p class="font-semibold text-blue-900 mb-1">Instrucciones</p>
+          <p class="font-semibold text-blue-900 mb-1">Instructions</p>
           <ul class="text-sm text-blue-800 space-y-1">
-            <li>• Responde todas las preguntas con atención.</li>
-            @if (examData().duration_minutes > 0) {
-              <li>• Cuando el tiempo se agote, el examen se enviará automáticamente.</li>
+            <li>• Answer all questions to the best of your ability</li>
+            <li>• Use the question navigator or Next/Previous buttons to move between questions</li>
+            <li>• Make sure to save your progress regularly</li>
+            @if (true) {
+              <li>• Once time runs out, the exam will be automatically submitted</li>
             }
+            <li>• Review all your answers before final submission</li>
           </ul>
         </div>
       </div>
 
-      <div class="space-y-6">
-        @for (question of examData().questions; track question.id; let i = $index) {
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      @if (currentQuestion()) {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
 
-            <div class="flex items-start justify-between mb-4 pb-4 border-b border-gray-200">
-              <div class="flex items-start gap-3">
-                <span class="flex-shrink-0 w-8 h-8 bg-yellow-100 text-yellow-700 rounded-full flex items-center justify-center font-bold text-sm">
-                  {{ i + 1 }}
-                </span>
-                <div class="flex-1">
-                  <p class="text-lg font-semibold text-gray-900 mb-1">{{ question.prompt }}</p>
-                  <div class="flex items-center gap-4 text-sm text-gray-600">
-                    <span class="font-medium text-yellow-700">{{ question.points }} puntos</span>
-                  </div>
+          <div class="flex items-start justify-between mb-4 pb-4 border-b border-gray-200">
+            <div class="flex items-start gap-3">
+              <span class="flex-shrink-0 w-8 h-8 bg-yellow-100 text-yellow-700 rounded-full flex items-center justify-center font-bold text-sm">
+                {{ currentQuestionIndex() + 1 }}
+              </span>
+              <div class="flex-1">
+                <p class="text-lg font-semibold text-gray-900 mb-1">
+                  {{ currentQuestion().prompt }}
+                </p>
+                <div class="flex items-center gap-4 text-sm text-gray-600">
+                  <span class="capitalize">
+                    {{ formatQuestionType(currentQuestion().question_type) }}
+                  </span>
+                  <span>•</span>
+                  <span class="font-medium text-yellow-700">
+                    {{ currentQuestion().points }} points
+                  </span>
                 </div>
               </div>
             </div>
-
-            <div class="mt-4">
-              @switch (question.question_type) {
-                @case ('MCQ') {
-                  <multiple-choice-viewer
-                    [question]="question"
-                    [isPreviewMode]="isPreviewMode()"
-                  ></multiple-choice-viewer>
-                }
-                @case ('TF') {
-                  <true-false-viewer
-                    [question]="question"
-                    [isPreviewMode]="isPreviewMode()"
-                  ></true-false-viewer>
-                }
-                @case ('CODE') {
-                  <code-editor-viewer
-                    [question]="question"
-                    [isPreviewMode]="isPreviewMode()">
-                  </code-editor-viewer>
-                }
-                @case ('MATCH') {
-                  <matching-viewer
-                    [question]="question"
-                    [isPreviewMode]="isPreviewMode()"
-                  ></matching-viewer>
-                }
-              }
-            </div>
-
           </div>
-        }
+
+          <div class="mt-4">
+            @switch (currentQuestion().question_type) {
+              @case ('MCQ') {
+                <multiple-choice-viewer [question]="currentQuestion()" [isPreviewMode]="isPreviewMode()" [isGradingMode]="isGradingMode()" [studentAnswer]="getAnswerForQuestion(currentQuestion().id!)" (answerChange)="onAnswerChange(currentQuestion().id!, $event)" />
+              }
+              @case ('TF') {
+                <true-false-viewer [question]="currentQuestion()" [isPreviewMode]="isPreviewMode()" [isGradingMode]="isGradingMode()" [studentAnswer]="getAnswerForQuestion(currentQuestion().id!)" (answerChange)="onAnswerChange(currentQuestion().id!, $event)" />
+              }
+              @case ('MATCH') {
+                <matching-viewer [question]="currentQuestion()" [isPreviewMode]="isPreviewMode()" [isGradingMode]="isGradingMode()" [studentAnswer]="getAnswerForQuestion(currentQuestion().id!)" (answerChange)="onAnswerChange(currentQuestion().id!, $event)" />
+              }
+              @case ('CODE') {
+                <code-editor-viewer [question]="currentQuestion()" [isPreviewMode]="isPreviewMode()" [isGradingMode]="isGradingMode()" [studentAnswer]="getAnswerForQuestion(currentQuestion().id!)" (answerChange)="onAnswerChange(currentQuestion().id!, $event)" />
+              }
+            }
+          </div>
+
+          @if (isGradingMode() && currentQuestion().question_type === 'CODE') {
+            <div class="mt-6 p-4 rounded-lg border-2 border-dashed" [ngClass]="getAnswerForQuestion(currentQuestion().id!)?.needs_manual_review ? 'border-yellow-400 bg-yellow-50' : 'border-green-400 bg-green-50'">
+              <h4 class="font-bold text-gray-800 mb-3">Evaluación del Profesor</h4>
+              <div class="flex items-center gap-3">
+                @if (getAnswerForQuestion(currentQuestion().id!)?.needs_manual_review) {
+                  <span class="text-sm font-semibold text-yellow-700 bg-yellow-200 px-3 py-1 rounded-full">Requiere Revisión</span>
+                } @else {
+                  <span class="text-sm font-semibold text-green-700 bg-green-200 px-3 py-1 rounded-full">Calificado</span>
+                }
+                <input type="number" min="0" [max]="currentQuestion().points" [value]="getAnswerForQuestion(currentQuestion().id!)?.points_earned || 0" #gradeInput class="border border-gray-300 rounded px-3 py-1 w-24" placeholder="Pts">
+                <button (click)="saveGrade(getAnswerForQuestion(currentQuestion().id!).id, +gradeInput.value)" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1.5 rounded-lg transition-colors font-medium">Guardar Calificación</button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <div class="mt-6 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between">
+          <button
+            (click)="goToPrevious()"
+            [disabled]="currentQuestionIndex() === 0"
+            class="flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all"
+            [class.bg-gray-100]="currentQuestionIndex() === 0"
+            [class.text-gray-400]="currentQuestionIndex() === 0"
+            [class.cursor-not-allowed]="currentQuestionIndex() === 0"
+            [class.bg-gray-200]="currentQuestionIndex() !== 0"
+            [class.text-gray-700]="currentQuestionIndex() !== 0"
+            [class.hover:bg-gray-300]="currentQuestionIndex() !== 0"
+          >
+            <lucide-icon [img]="icons.ChevronLeft" class="w-5 h-5"></lucide-icon>
+            Previous
+          </button>
+
+          <div class="text-center">
+            <p class="text-sm text-gray-600 mb-1">Current Question</p>
+            <p class="text-lg font-bold text-gray-900">
+              {{ currentQuestionIndex() + 1 }} / {{ totalQuestions() }}
+            </p>
+          </div>
+
+          <button
+            (click)="goToNext()"
+            [disabled]="currentQuestionIndex() === totalQuestions() - 1"
+            class="flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all"
+            [class.bg-gray-100]="currentQuestionIndex() === totalQuestions() - 1"
+            [class.text-gray-400]="currentQuestionIndex() === totalQuestions() - 1"
+            [class.cursor-not-allowed]="currentQuestionIndex() === totalQuestions() - 1"
+            [class.bg-yellow-600]="currentQuestionIndex() !== totalQuestions() - 1"
+            [class.text-white]="currentQuestionIndex() !== totalQuestions() - 1"
+            [class.hover:bg-yellow-700]="currentQuestionIndex() !== totalQuestions() - 1"
+          >
+            Next
+            <lucide-icon [img]="icons.ChevronRight" class="w-5 h-5"></lucide-icon>
+          </button>
+        </div>
       </div>
 
       <div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <div class="flex items-center justify-between">
           <div>
-            <p class="font-semibold text-gray-900 mb-1">¿Listo para enviar?</p>
-            <p class="text-sm text-gray-600">Revisa tus respuestas antes de enviar. No podrás cambiarlas después.</p>
+            <p class="font-semibold text-gray-900 mb-1">
+              {{ isGradingMode() ? '¿Terminaste de calificar?' : 'Ready to submit?' }}
+            </p>
+            <p class="text-sm text-gray-600">
+              {{ isGradingMode() ? 'Puedes volver a los resultados. Las calificaciones se guardan automáticamente.' : 'Please review your answers before submitting. You cannot change answers after submission.' }}
+            </p>
           </div>
-          <button
-            (click)="onSubmitClick()"
-            [class]="isPreviewMode() ? 'bg-gray-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-700'"
-            class="px-8 py-3 text-white rounded-lg transition-colors font-medium">
-            {{ isPreviewMode() ? 'Modo Vista Previa' : 'Entregar Examen' }}
-          </button>
+          @if (isGradingMode()) {
+            <button
+              (click)="backPage()"
+              class="px-8 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
+            >
+              Volver a Resultados
+            </button>
+          } @else {
+            <button
+              (click)="submitExam()"
+              class="px-8 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium"
+            >
+              Submit Exam
+            </button>
+          }
         </div>
       </div>
 
@@ -164,22 +270,23 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-4">
         <span class="text-sm text-gray-600">
-          Progreso:
-          <span class="font-semibold text-gray-900">{{ answeredQuestionsCount() }}/{{ examData().questions.length || 0 }}</span>
-          preguntas respondidas
+          Viewing Question:
+          <span class="font-semibold text-gray-900">
+            {{ currentQuestionIndex() + 1 }}/{{ totalQuestions() }}
+          </span>
         </span>
       </div>
       <div class="flex items-center gap-3">
-        <div class="w-64 bg-gray-200 rounded-full h-2 overflow-hidden">
+        <div class="w-64 bg-gray-200 rounded-full h-2">
           <div
             class="bg-yellow-600 h-2 rounded-full transition-all duration-300"
-            [style.width.%]="progressPercentage()">
-          </div>
+            [style.width.%]="progressWidth()"
+          ></div>
         </div>
-        <span class="text-sm font-medium text-gray-700">{{ progressPercentage() }}%</span>
+        <span class="text-sm font-medium text-gray-700">
+          {{ progressPercentage() }}%
+        </span>
       </div>
     </div>
   </div>
 </div>
-
-</loading-information>

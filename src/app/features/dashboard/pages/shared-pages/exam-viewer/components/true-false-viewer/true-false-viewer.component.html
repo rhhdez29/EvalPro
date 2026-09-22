@@ -7,13 +7,14 @@
       type="button"
       (click)="selectAnswer(true)"
       class="relative p-6 border-2 rounded-lg transition-all text-left"
+      [class.pointer-events-none]="isGradingMode()"
       [class.border-green-500]="selectedAnswer() === true"
       [class.bg-green-50]="selectedAnswer() === true"
       [class.border-gray-200]="selectedAnswer() !== true"
-      [class.hover:border-gray-300]="selectedAnswer() !== true"
-      [class.hover:bg-gray-50]="selectedAnswer() !== true">
+      [class.hover:border-gray-300]="selectedAnswer() !== true && !isGradingMode()"
+      [class.hover:bg-gray-50]="selectedAnswer() !== true && !isGradingMode()">
 
-      @if (isPreviewMode() && correctAnswer() === true) {
+      @if (isPreviewMode() && !isGradingMode() && correctAnswer() === true) {
         <div class="absolute top-3 right-3">
           <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
             Respuesta Correcta
@@ -48,13 +49,14 @@
       type="button"
       (click)="selectAnswer(false)"
       class="relative p-6 border-2 rounded-lg transition-all text-left"
+      [class.pointer-events-none]="isGradingMode()"
       [class.border-red-500]="selectedAnswer() === false"
       [class.bg-red-50]="selectedAnswer() === false"
       [class.border-gray-200]="selectedAnswer() !== false"
-      [class.hover:border-gray-300]="selectedAnswer() !== false"
-      [class.hover:bg-gray-50]="selectedAnswer() !== false">
+      [class.hover:border-gray-300]="selectedAnswer() !== false && !isGradingMode()"
+      [class.hover:bg-gray-50]="selectedAnswer() !== false && !isGradingMode()">
 
-      @if (isPreviewMode() && correctAnswer() === false) {
+      @if (isPreviewMode() && !isGradingMode() && correctAnswer() === false) {
         <div class="absolute top-3 right-3">
           <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
             Respuesta Correcta

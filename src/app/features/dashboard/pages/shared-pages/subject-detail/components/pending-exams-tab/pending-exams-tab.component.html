@@ -102,11 +102,23 @@
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 Empezar Examen
               </button>
+            } @else if (exam.status === 'needs_grading') {
+              <button
+                disabled
+                class="flex items-center gap-2 px-6 py-2.5 bg-yellow-500 text-white rounded-lg cursor-not-allowed font-medium">
+                Calificando examen
+              </button>
             } @else if (exam.status === 'annulled') {
               <button
                 disabled
                 class="flex items-center gap-2 px-6 py-2.5 bg-red-800 text-white rounded-lg cursor-not-allowed font-medium">
                 Anulado por fraude
+              </button>
+            } @else if (exam.status === 'completed') {
+              <button
+                disabled
+                class="flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-lg cursor-not-allowed font-medium">
+                Completado
               </button>
             } @else {
               <button

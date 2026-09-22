@@ -215,4 +215,29 @@ export class ExamService {
     );
   }
 
+  getExamAttemptForGrading(examId: number | string, studentId: string) {
+    const params = new HttpParams().set('student_id', studentId);
+    return this.http.get<any>(`${this.apiUrl}${examId}/my_result/`, { params })
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let errorMsg = 'Ocurrió un error al obtener el intento para calificar';
+        return throwError(() => new Error(errorMsg));
+      })
+    );
+  }
+
+  gradeStudentAnswer(answerId: number, pointsEarned: number) {
+    const payload = { points_earned: pointsEarned };
+    return this.http.patch(`${environment.url_api}/student-answers/${answerId}/grade/`, payload)
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let errorMsg = 'Ocurrió un error al guardar la calificación';
+        if (err.error && err.error.error) {
+          errorMsg = err.error.error;
+        }
+        return throwError(() => new Error(errorMsg));
+      })
+    );
+  }
+
 }

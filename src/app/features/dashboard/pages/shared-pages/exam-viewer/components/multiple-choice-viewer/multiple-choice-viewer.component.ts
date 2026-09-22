@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed } from '@angular/core';
+import { Component, input, output, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,6 +11,8 @@ export class MultipleChoiceViewerComponent {
   // Entradas
   question = input.required<any>(); // Cambia a <Question> si tienes la interfaz a la mano
   isPreviewMode = input<boolean>(false);
+  isGradingMode = input<boolean>(false);
+  studentAnswer = input<any>(null);
 
   // Salida (Emitiremos un arreglo con los índices seleccionados)
   answerChange = output<number[]>();
@@ -25,6 +27,20 @@ export class MultipleChoiceViewerComponent {
 
   // Estado local
   selectedOptions = signal<Set<number>>(new Set());
+
+  constructor() {
+    effect(() => {
+      const answer = this.studentAnswer();
+      if (answer && answer.selected_option_id) {
+        const index = this.options().findIndex((o: any) => o.id === answer.selected_option_id);
+        if (index !== -1) {
+          const s = new Set<number>();
+          s.add(index);
+          this.selectedOptions.set(s);
+        }
+      }
+    }, { allowSignalWrites: true });
+  }
 
   toggleOption(index: number) {
     this.selectedOptions.update(currentSet => {

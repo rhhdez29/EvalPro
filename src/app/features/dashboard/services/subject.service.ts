@@ -154,4 +154,17 @@ export class SubjectService {
       })
     )
   }
+
+  getStudentGrades(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}${id}/student_grades/`)
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let error = 'Ocurrió un error al obtener las calificaciones.';
+        if (err.error && err.error.error) {
+          error = err.error.error;
+        }
+        return throwError(() => new Error(error));
+      })
+    )
+  }
 }

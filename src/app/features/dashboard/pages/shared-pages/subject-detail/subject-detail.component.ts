@@ -12,6 +12,7 @@ import { ExamsTabComponent } from "./components/exams-tab/exams-tab.component";
 import { LoadingInformationComponent } from "../../../../../shared/components/loading-information/loading-information.component";
 import { StudentsTabComponent } from "./components/students-tab/students-tab.component";
 import { PendingExamsTabComponent } from "./components/pending-exams-tab/pending-exams-tab.component";
+import { MyGradesTabComponent } from "./components/my-grades-tab/my-grades-tab.component";
 
 interface Tab {
   id: string;
@@ -26,7 +27,8 @@ interface Tab {
     ExamsTabComponent,
     LoadingInformationComponent,
     StudentsTabComponent,
-    PendingExamsTabComponent
+    PendingExamsTabComponent,
+    MyGradesTabComponent
 ],
   templateUrl: './subject-detail.component.html'
 })

@@ -32,14 +32,34 @@
           <tbody class="divide-y divide-gray-200">
             @for (result of results(); track result.student_id) {
               <tr class="hover:bg-gray-50 transition-colors">
-                <td class="px-6 py-4 font-medium text-gray-900">{{ result.student_name }}</td>
+                <td class="px-6 py-4 font-medium text-gray-900">
+                  @if (result.status === 'needs_grading' || result.status === 'completed' || result.status === 'annulled' || result.status === 'annulled_by_fraud') {
+                    <a [routerLink]="['/home/teacher/exam', examId, 'grade', result.student_id]" class="text-blue-600 hover:underline cursor-pointer">{{ result.student_name }}</a>
+                  } @else {
+                    {{ result.student_name }}
+                  }
+                </td>
                 <td class="px-6 py-4">
                   <span class="px-3 py-1 rounded-full text-xs font-medium border {{ getStatusBadge(result.status).class }}">
                     {{ getStatusBadge(result.status).label }}
                   </span>
                 </td>
                 <td class="px-6 py-4 font-semibold">
-                  {{ result.status === 'completed' ? result.score : '-' }}
+                  @if (result.status === 'needs_grading') {
+                    <span [routerLink]="['/home/teacher/exam', examId, 'grade', result.student_id]" class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-md text-xs font-bold border border-yellow-300 flex items-center w-fit cursor-pointer hover:bg-yellow-200">
+                      Revisar
+                    </span>
+                  } @else if (result.status === 'completed') {
+                    <span [routerLink]="['/home/teacher/exam', examId, 'grade', result.student_id]" class="cursor-pointer hover:underline text-blue-600 font-bold" title="Ver o modificar calificación">
+                      {{ result.score }}
+                    </span>
+                  } @else if (result.status === 'annulled' || result.status === 'annulled_by_fraud') {
+                    <span [routerLink]="['/home/teacher/exam', examId, 'grade', result.student_id]" class="cursor-pointer hover:underline text-red-600 font-bold" title="Ver examen anulado">
+                      0.00
+                    </span>
+                  } @else {
+                    -
+                  }
                 </td>
                 <td class="px-6 py-4 text-right">
                   @if (result.status === 'completed' || result.status === 'annulled_by_fraud' || result.status === 'annulled' || result.status === 'needs_grading') {
