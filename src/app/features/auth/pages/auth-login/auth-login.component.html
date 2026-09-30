@@ -1,10 +1,10 @@
- <form (ngSubmit)="login()" [formGroup]="formUser">
+<form (ngSubmit)="login()" [formGroup]="formUser">
   <div class="space-y-2">
     <label class="text-sm font-medium text-gray-700">
       Correo Electrónico
     </label>
     <div class="relative">
-      <lucide-icon [img]="icons.Mail" class="absolute left-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
+      <lucide-icon [img]="icons.Mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
       <input
         type="username"
         placeholder="estudiante@alumno.buap.mx"
@@ -16,7 +16,7 @@
       <lucide-icon
         [hidden]="!formUser.controls['username'].touched"
         [img]="formUtils.isValidField(formUser,'username') ? icons.CircleX :icons.CheckCircle"
-        class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 "
+        class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5"
         [ngClass]="formUtils.isValidField(formUser,'username') ? 'text-red-500': 'text-green-500'"
       >
       </lucide-icon>
@@ -31,10 +31,10 @@
   <div class="space-y-2 mt-4">
     <label class="text-sm font-medium text-gray-700">Contraseña</label>
     <div class="relative">
-      <lucide-icon [img]="icons.Lock" class="absolute left-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
+      <lucide-icon [img]="icons.Lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
       <input type="password"
         placeholder="••••••••"
-        class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+        class="w-full pl-11 pr-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
         required
         formControlName="password"
         [class.border-red-500]="formUtils.isValidField(formUser,'password')"
@@ -42,7 +42,7 @@
       />
       <button
         type="button"
-        class="absolute right-6 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
         (click)="togglePassword()"
       >
         <lucide-icon
@@ -58,7 +58,7 @@
     }
   </div>
 
-  <div class="flex items-center justify-between text-sm animate-in fade-in duration-300 mt-5">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm animate-in fade-in duration-300 mt-5">
     <label class="flex items-center gap-2 cursor-pointer">
       <input type="checkbox" class="w-4 h-4 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500" />
       <span class="text-gray-600">Recordarme</span>
@@ -68,7 +68,7 @@
 
   <button
     type="submit"
-    class="w-full py-3.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-semibold mt-6 cursor-pointer"
+    class="w-full py-3 sm:py-3.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-semibold mt-6 cursor-pointer"
   >
     Iniciar Sesión
     <lucide-icon [img]="icons.ArrowRight" class="w-5 h-5"></lucide-icon>

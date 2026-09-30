@@ -1,33 +1,32 @@
-<div class="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-orange-50 flex items-center justify-center p-8 relative overflow-hidden">
+<div class="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-orange-50 flex items-center justify-center p-3 sm:p-6 md:p-8 relative overflow-hidden">
 
   <div class="absolute inset-0 opacity-5 pointer-events-none">
-    <div class="absolute top-0 left-0 w-96 h-96 bg-yellow-500 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-0 right-0 w-96 h-96 bg-orange-500 rounded-full blur-3xl"></div>
+    <div class="absolute top-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-yellow-500 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-orange-500 rounded-full blur-3xl"></div>
   </div>
 
-  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl border border-gray-100 overflow-hidden">
+  <div class="relative bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-2xl border border-gray-100 overflow-hidden">
 
     <button class="">
-      <a routerLink="/" class="flex items-center gap-2 cursor-pointer no-underline absolute top-4 left-4">
+      <a routerLink="/" class="flex items-center gap-2 cursor-pointer no-underline absolute top-3 left-3 sm:top-4 sm:left-4 z-20">
         <lucide-icon
           [img]="ChevronLeft"
-          class="w-10 h-10 text-yellow-600 hover:bg-gray-100 transition rounded-lg">
+          class="w-8 h-8 sm:w-10 sm:h-10 text-yellow-600 hover:bg-gray-100 transition rounded-lg">
         </lucide-icon>
       </a>
     </button>
 
-    <div class="text-center pt-10 pb-6">
+    <div class="text-center pt-10 sm:pt-12 pb-4 sm:pb-6 px-4">
       <div class="flex items-center justify-center gap-2 mb-2">
-        <lucide-icon [img]="GraduationCap" class="w-10 h-10 text-yellow-600"></lucide-icon>
-        <span class="text-2xl font-bold text-gray-900">EvalPro</span>
+        <lucide-icon [img]="GraduationCap" class="w-8 h-8 sm:w-10 sm:h-10 text-yellow-600"></lucide-icon>
+        <span class="text-xl sm:text-2xl font-bold text-gray-900">EvalPro</span>
       </div>
-      <p class="text-gray-600 text-sm">
+      <p class="text-gray-600 text-xs sm:text-sm">
         {{ isLoginTab() ? 'Bienvenido de nuevo. Por favor ingresa tus datos.' : 'Crea tu cuenta para comenzar.' }}
       </p>
     </div>
 
-
-    <div class="px-10 mb-8">
+    <div class="px-4 sm:px-8 md:px-10 mb-6 sm:mb-8">
       <div class="bg-gray-100 rounded-xl p-1 flex relative">
 
         <div
@@ -38,7 +37,7 @@
 
         <a
           routerLink="/auth/login"
-          class="flex-1 py-2.5 text-center text-sm font-semibold rounded-lg transition-colors relative z-10 cursor-pointer no-underline focus:outline-none"
+          class="flex-1 py-2 sm:py-2.5 text-center text-xs sm:text-sm font-semibold rounded-lg transition-colors relative z-10 cursor-pointer no-underline focus:outline-none"
           [class.text-yellow-600]="isLoginTab()"
           [class.text-gray-600]="!isLoginTab()">
           Iniciar Sesión
@@ -46,7 +45,7 @@
 
         <a
           routerLink="/auth/register"
-          class="flex-1 py-2.5 text-center text-sm font-semibold rounded-lg transition-colors relative z-10 cursor-pointer no-underline focus:outline-none"
+          class="flex-1 py-2 sm:py-2.5 text-center text-xs sm:text-sm font-semibold rounded-lg transition-colors relative z-10 cursor-pointer no-underline focus:outline-none"
           [class.text-yellow-600]="!isLoginTab()"
           [class.text-gray-600]="isLoginTab()">
           Registrarse
@@ -54,7 +53,7 @@
       </div>
     </div>
 
-    <div class="px-10 pb-10">
+    <div class="px-4 sm:px-8 md:px-10 pb-6 sm:pb-10">
       <router-outlet></router-outlet>
     </div>
 
