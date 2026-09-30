@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from './../../../../environments/environments';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { RESTSubject } from '../models/RESTSubjectResponse.interface';
 import { EditSubjectForm, Subject, } from '../models/subject.interface';
 // import { SubjectMapper } from '../../../shared/mappers/subject-mapper';
@@ -22,10 +22,9 @@ export class SubjectService {
 
 
   // Obtener todas las materias
-  getSubjects (): Observable<RESTSubject[]> {
-    return this.http.get<PaginationResult<RESTSubject>>(this.apiUrl)
+  getSubjects(page: number = 1): Observable<PaginationResult<RESTSubject>> {
+    return this.http.get<PaginationResult<RESTSubject>>(`${this.apiUrl}?page=${page}`)
     .pipe(
-      map((response) => response.results),
       catchError((err: HttpErrorResponse) => {
         let error = 'Ocurrió un error inesperado al obtener las materias.';
 
@@ -113,8 +112,8 @@ export class SubjectService {
   }
 
   // Obtener estudiantes de una materia
-  getStudentsBySubject(id: string): Observable<StudentListBySubject[]> {
-    return this.http.get<StudentListBySubject[]>(`${this.apiUrl}${id}/enrolled_students/`)
+  getStudentsBySubject(id: string, page: number = 1) {
+    return this.http.get<PaginationResult<StudentListBySubject>>(`${this.apiUrl}${id}/enrolled_students/?page=${page}`)
     .pipe(
       catchError((err: HttpErrorResponse) => {
         let errorMsg = 'Ocurrio un error inesperado'

@@ -64,7 +64,7 @@
   <loading-information
     [isLoading]="subjectsResource.isLoading()"
     [error]="subjectsResource.error()"
-    [data]="subjectsResource.value()"
+    [data]="subjects()"
     [emptyMessage]="'No hay materias registradas'"
   >
 
@@ -79,7 +79,7 @@
 
     <div class="grid grid-cols-3 gap-6">
 
-    @for (subject of subjectsResource.value(); track subject.id) {
+    @for (subject of subjects(); track subject.id) {
       <div
         (click)="handleSubjectClick(subject.id.toString())"
         class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer group"
@@ -157,6 +157,15 @@
     }
     </div>
     }
+
+    <!-- Paginación -->
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [hasNext]="hasNext()"
+      [hasPrevious]="hasPrevious()"
+      (pageChange)="onPageChange($event)"
+    />
 
 </loading-information>
 </div>

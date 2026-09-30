@@ -160,6 +160,16 @@
         }
       </tbody>
     </table>
+
+    <!-- Paginación -->
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [hasNext]="hasNext()"
+      [hasPrevious]="hasPrevious()"
+      (pageChange)="onPageChange($event)"
+    />
+
   </div>
 </div>
 

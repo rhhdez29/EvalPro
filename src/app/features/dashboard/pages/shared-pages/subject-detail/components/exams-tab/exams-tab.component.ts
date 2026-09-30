@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, PLATFORM_ID, signal } from '@angular/core';
+import { Component, computed, inject, input, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
@@ -16,44 +16,53 @@ import {
 } from 'lucide-angular';
 
 import { ExamService } from '../../../../../services/exam.service';
-
 import { ExamBase, ExamDetail } from '../../../../../models/RESTExamResponse.interface';
 
 import { CreateExamFormComponent } from "../exam-builder/create-exam-form/create-exam-form.component";
 import { LoadingInformationComponent } from "../../../../../../../shared/components/loading-information/loading-information.component";
 import { DeleteModalComponent } from "../../../../../../../shared/components/delete-modal/delete-modal.component";
-import { ExamViewerComponent } from "../../../exam-viewer/exam-viewer.component";
 import { ModalState } from '../../../../../../../core/models/ModalState';
 import { LoadingModalComponent } from "../../../../../../../shared/components/loading-modal/loading-modal.component";
+import { PaginationComponent } from '../../../../../../../shared/components/pagination/pagination.component';
 import { Router } from '@angular/router';
 import { FacadeService } from '../../../../../../../core/services/facade.service';
+
+const PAGE_SIZE = 10;
 
 @Component({
   selector: 'app-exams-tab',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, CreateExamFormComponent, LoadingInformationComponent, DeleteModalComponent, LoadingModalComponent],
+  imports: [
+    CommonModule,
+    LucideAngularModule,
+    CreateExamFormComponent,
+    LoadingInformationComponent,
+    DeleteModalComponent,
+    LoadingModalComponent,
+    PaginationComponent,
+  ],
   templateUrl: './exams-tab.component.html'
 })
 export class ExamsTabComponent {
 
-  // Nuevo Input basado en Signal (Sustituye a @Input)
-  // Al ser 'required', Angular te exigirá pasarlo desde el HTML padre
   subjectId = input.required<string>();
 
+  private examService  = inject(ExamService);
+  private platformId   = inject(PLATFORM_ID);
+  private router       = inject(Router);
+  private facadeService = inject(FacadeService);
 
-  private examService = inject(ExamService);
-  private platformId = inject(PLATFORM_ID);
-  private router = inject(Router);
-  private facadeService = inject(FacadeService)
+  // Paginación
+  currentPage = signal(1);
 
   // Estados
-  showCreateForm = signal(false);
-  isModalOpen = signal(false);
+  showCreateForm   = signal(false);
+  isModalOpen      = signal(false);
   isModalDeleteOpen = signal(false);
-  isEditExam = signal(false);
-  examToEdit = signal<ExamDetail | null>(null);
-  isPreviewMode = signal(false);
-  viewExam = signal(false);
+  isEditExam       = signal(false);
+  examToEdit       = signal<ExamDetail | null>(null);
+  isPreviewMode    = signal(false);
+  viewExam         = signal(false);
 
   modalState = signal<ModalState>({
     status: 'oculto',
@@ -61,40 +70,38 @@ export class ExamsTabComponent {
     subtitle: ''
   });
 
-  isExamsEmpty = computed(() => {
-    const data = this.examsResource.value()
-
-    if(!data || !Array.isArray(data)) return false;
-
-    return data.length === 0;
-
-  })
-
+  // rxResource reactivo a subjectId + currentPage
   examsResource = rxResource({
-    params: () => this.subjectId(),
-    stream: () => {
-      if(isPlatformBrowser(this.platformId)){
-        return this.examService.getExamsBySubject(this.subjectId())
+    params: () => ({ subjectId: this.subjectId(), page: this.currentPage() }),
+    stream: ({ params }) => {
+      if (isPlatformBrowser(this.platformId)) {
+        return this.examService.getExamsBySubject(params.subjectId, params.page);
       }
-      return of([])
+      return of({ count: 0, next: null, previous: null, results: [] });
     },
   });
 
+  // Paginación computed
+  totalCount  = computed(() => this.examsResource.value()?.count ?? 0);
+  totalPages  = computed(() => Math.max(1, Math.ceil(this.totalCount() / PAGE_SIZE)));
+  hasNext     = computed(() => !!this.examsResource.value()?.next);
+  hasPrevious = computed(() => !!this.examsResource.value()?.previous);
+
+  isExamsEmpty = computed(() => {
+    const data = this.examsResource.value();
+    if (!data) return false;
+    return data.results.length === 0;
+  });
 
   // Iconos
   readonly icons = { Plus, Calendar, Clock, MoreVertical, Edit, Trash2, Eye, List };
 
   private idExam: number | null = null;
-
   messageDelete = '¿Estas seguro de que deseas eliminar este examen? Esta acción no se puede deshacer.';
 
-  constructor(){
-
-  }
-
-  ngAfterNextRender(){
-    this.examsResource.reload();
-    console.log(this.examsResource.value());
+  // --- PAGINACIÓN ---
+  onPageChange(page: number): void {
+    this.currentPage.set(page);
   }
 
   // En Angular evitamos devolver JSX/HTML desde el TS. Solo devolvemos las clases CSS.
@@ -110,47 +117,35 @@ export class ExamsTabComponent {
 
   openCreateExamModal(id: number | null) {
     this.idExam = id;
-
     this.showCreateForm.set(true);
 
-    if(id){
+    if (id) {
       this.isEditExam.set(true);
-
       this.examService.getExamByID(id).subscribe({
         next: (exam) => {
           this.examToEdit.set(exam as ExamDetail);
-          console.log(this.examToEdit());
         },
         error: (err) => {
           console.error(err);
         }
-      })
+      });
     }
   }
 
-  closeCreateExamModal(){
+  closeCreateExamModal() {
     this.showCreateForm.set(false);
     this.isEditExam.set(false);
-    this.examsResource.reload();
     this.examToEdit.set(null);
+    this.currentPage.set(1); // Reset a página 1 al cerrar el formulario
   }
 
-  openViewer(examId: number){
-
+  openViewer(examId: number) {
     const role = this.facadeService.userRole();
     let url = '';
-
-    switch(role){
-      case 'maestro':
-        url = `/home/teacher/exam/${examId}`;
-        break;
-      case 'administrador':
-        url = `/home/admin/exam/${examId}`;
-        break;
+    switch (role) {
+      case 'maestro':      url = `/home/teacher/exam/${examId}`; break;
+      case 'administrador': url = `/home/admin/exam/${examId}`; break;
     }
-
-    console.log(url);
-
     this.router.navigate([url]);
   }
 
@@ -165,19 +160,17 @@ export class ExamsTabComponent {
     this.router.navigate([url]);
   }
 
-  openDeleteModal(id: number){
+  openDeleteModal(id: number) {
     this.idExam = id;
     this.isModalDeleteOpen.set(true);
   }
 
-  closeDeleteModal(){
+  closeDeleteModal() {
     this.isModalDeleteOpen.set(false);
   }
-  deleteExam(){
-    console.log('Eliminando examen: ', this.idExam);
 
+  deleteExam() {
     this.closeDeleteModal();
-
     this.modalState.set({
       status: 'cargando',
       title: 'Eliminando examen...',
@@ -186,55 +179,35 @@ export class ExamsTabComponent {
 
     this.examService.deleteExam(this.idExam!).subscribe({
       next: () => {
-        this.modalState.set({
-          status: 'exito',
-          title: 'Examen eliminado correctamente.',
-          subtitle: ''
-        });
+        this.modalState.set({ status: 'exito', title: 'Examen eliminado correctamente.', subtitle: '' });
         setTimeout(() => {
-          this.modalState.set({
-            status: 'oculto',
-            title: '',
-            subtitle: ''
-          });
-          this.examsResource.reload();
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
+          this.currentPage.set(1); // Reset a página 1 tras eliminar
         }, 3000);
       },
       error: (err) => {
-        console.error(err);
-        this.modalState.set({
-          status: 'error',
-          title: 'Error al eliminar el examen.',
-          subtitle: err
-        });
+        this.modalState.set({ status: 'error', title: 'Error al eliminar el examen.', subtitle: err });
         setTimeout(() => {
-          this.modalState.set({
-            status: 'oculto',
-            title: '',
-            subtitle: ''
-          });
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
         }, 3000);
       }
-    })
+    });
   }
 
-
-  changeStatus(id: number){
+  changeStatus(id: number) {
     const data = this.examsResource.value();
+    if (!data) return;
 
-    if(!data) return;
+    const exam = data.results.find(e => e.id === id);
+    if (!exam) return;
 
-    const exam = data.find(e => e.id === id);
-
-    if(!exam) return;
     this.examService.changeStatus(id, exam.status).subscribe({
       next: () => {
-        this.examsResource.reload();
+        this.currentPage.set(1); // Re-fetch desde página 1 tras cambiar estado
       },
       error: (err) => {
         console.error(err);
       }
-    })
+    });
   }
-
 }

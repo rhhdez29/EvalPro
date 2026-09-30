@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
 import { PaginationResult } from '../models/PaginationResult';
 import { ExamBase, ExamDetail, ExamDetailStudent, ExamForm, ExamSummary } from '../models/RESTExamResponse.interface';
-import { catchError, map, throwError } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +13,11 @@ export class ExamService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.url_api}/exams/`
 
-  getExamsBySubject(subjectId: number|string){
+  getExamsBySubject(subjectId: number|string, page: number = 1){
     console.log(subjectId)
-    const param = new HttpParams().set('subject', subjectId.toString());
+    const param = new HttpParams().set('subject', subjectId.toString()).set('page', page.toString());
     return this.http.get<PaginationResult<ExamSummary>>(this.apiUrl, {params: param})
     .pipe(
-      map(res => res.results),
       catchError((err: HttpErrorResponse) => {
         let errorMsg = 'Ocurrio un error inesperado'
 

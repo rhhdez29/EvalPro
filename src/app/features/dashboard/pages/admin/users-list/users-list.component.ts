@@ -1,6 +1,6 @@
 import { Component, signal, computed, inject, afterNextRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Necesario para ngModel
+import { FormsModule } from '@angular/forms';
 import {
   LucideAngularModule,
   Search,
@@ -16,12 +16,22 @@ import { DeleteModalComponent } from "../../../../../shared/components/delete-mo
 import { WarningModalComponent } from "../../../../../shared/components/warning-modal/warning-modal.component";
 import { ModalState } from '../../../../../core/models/ModalState';
 import { LoadingModalComponent } from "../../../../../shared/components/loading-modal/loading-modal.component";
+import { PaginationComponent } from "../../../../../shared/components/pagination/pagination.component";
 
+const PAGE_SIZE = 10;
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, FormsModule, DeleteModalComponent, WarningModalComponent, LoadingModalComponent],
+  imports: [
+    CommonModule,
+    LucideAngularModule,
+    FormsModule,
+    DeleteModalComponent,
+    WarningModalComponent,
+    LoadingModalComponent,
+    PaginationComponent,
+  ],
   templateUrl: './users-list.component.html'
 })
 export class UsersListComponent {
@@ -30,12 +40,13 @@ export class UsersListComponent {
   readonly icons = { Search, UserPlus, MoreVertical, Edit, Trash2 };
 
   // --- ESTADOS BASE (Signals) ---
-  searchQuery = signal('');
-  roleFilter = signal<string>('all');
-  isDeleteModalOpen = signal(false);
+  currentPage      = signal(1);
+  searchQuery      = signal('');
+  roleFilter       = signal<string>('all');
+  isDeleteModalOpen  = signal(false);
   isWarningModalOpen = signal(false);
-  userStatus = signal(false);
-  userIdSelected = signal<string>('');
+  userStatus       = signal(false);
+  userIdSelected   = signal<string>('');
 
   modalState = signal<ModalState>({
     status: 'oculto',
@@ -43,33 +54,41 @@ export class UsersListComponent {
     subtitle: ''
   });
 
-  private usersService = inject(UsersService)
+  private usersService = inject(UsersService);
 
-  // Filtro Combinado: Texto + Select de Rol
+  // --- RX RESOURCE reactivo a currentPage ---
+  users = rxResource({
+    params: () => this.currentPage(),
+    stream: ({ params: page }) => this.usersService.getUsers(page),
+  });
+
+  // --- ESTADOS DERIVADOS ---
+
+  // Filtro local dentro de la página actual
   filteredUsers = computed(() => {
-    const query = this.searchQuery().toLowerCase();
+    const query  = this.searchQuery().toLowerCase();
     const filter = this.roleFilter();
+    const results = this.users.value()?.results ?? [];
 
-    return this.users.value()!.filter(user => {
+    return results.filter(user => {
       const matchesSearch = user.complete_name.toLowerCase().includes(query) ||
                             user.email.toLowerCase().includes(query);
-      const matchesRole = filter === 'all' || user.role === filter;
-
+      const matchesRole   = filter === 'all' || user.role === filter;
       return matchesSearch && matchesRole;
     });
   });
 
-  // Estadísticas para las tarjetas superiores
-  totalUsers = computed(() => this.users.value()?.length || 0);
-  adminCount = computed(() => this.users.value()?.filter(u => u.role === 'administrador').length || 0);
-  teacherCount = computed(() => this.users.value()?.filter(u => u.role === 'maestro').length || 0);
-  studentCount = computed(() => this.users.value()?.filter(u => u.role === 'alumno').length || 0);
+  // Paginación
+  totalCount  = computed(() => this.users.value()?.count ?? 0);
+  totalPages  = computed(() => Math.max(1, Math.ceil(this.totalCount() / PAGE_SIZE)));
+  hasNext     = computed(() => !!this.users.value()?.next);
+  hasPrevious = computed(() => !!this.users.value()?.previous);
 
-  users = rxResource({
-    stream: () => this.usersService.getUsers(),
-  })
-  // --- MÉTODOS DE UI ---
-
+  // Estadísticas (de la página actual)
+  totalUsers   = computed(() => this.users.value()?.count ?? 0);
+  adminCount   = computed(() => this.users.value()?.results?.filter(u => u.role === 'administrador').length ?? 0);
+  teacherCount = computed(() => this.users.value()?.results?.filter(u => u.role === 'maestro').length ?? 0);
+  studentCount = computed(() => this.users.value()?.results?.filter(u => u.role === 'alumno').length ?? 0);
 
   constructor() {
     afterNextRender(() => {
@@ -77,8 +96,12 @@ export class UsersListComponent {
     });
   }
 
-  // En Angular evitamos devolver JSX/HTML desde el TS.
-  // Evaluamos las clases CSS directamente, y el HTML dibuja la etiqueta.
+  // --- PAGINACIÓN ---
+  onPageChange(page: number): void {
+    this.currentPage.set(page);
+  }
+
+  // --- MÉTODOS DE UI ---
   getRoleBadgeClass(role: UserList['role']): string {
     const styles = {
       administrador: 'bg-red-100 text-red-700 border-red-300',
@@ -110,12 +133,8 @@ export class UsersListComponent {
           subtitle: 'Usuario eliminado con éxito'
         });
         setTimeout(() => {
-          this.modalState.set({
-            status: 'oculto',
-            title: '',
-            subtitle: ''
-          });
-          this.users.reload()
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
+          this.currentPage.set(1); // Volver a página 1 tras una acción
         }, 3000);
         console.log(user);
       },
@@ -126,14 +145,10 @@ export class UsersListComponent {
           subtitle: error.error?.detail || 'Hubo un error en el servidor'
         });
         setTimeout(() => {
-          this.modalState.set({
-            status: 'oculto',
-            title: '',
-            subtitle: ''
-          });
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
         }, 3000);
       }
-    })
+    });
     this.closeDeleteModal();
   }
 
@@ -151,12 +166,8 @@ export class UsersListComponent {
           subtitle: 'Estado del usuario actualizado con éxito'
         });
         setTimeout(() => {
-          this.modalState.set({
-            status: 'oculto',
-            title: '',
-            subtitle: ''
-          });
-          this.users.reload()
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
+          this.currentPage.set(1); // Volver a página 1 tras una acción
         }, 3000);
       },
       error: (error) => {
@@ -166,15 +177,11 @@ export class UsersListComponent {
           subtitle: error.error?.detail || 'Hubo un error en el servidor'
         });
         setTimeout(() => {
-          this.modalState.set({
-            status: 'oculto',
-            title: '',
-            subtitle: ''
-          });
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
         }, 3000);
       }
-    })
-    this.closeWarningModal()
+    });
+    this.closeWarningModal();
   }
 
   openDeleteModal(userId: string) {

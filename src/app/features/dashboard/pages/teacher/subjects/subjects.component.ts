@@ -1,8 +1,8 @@
-import { Component, signal, computed, inject, PLATFORM_ID, afterNextRender } from '@angular/core';
+import { Component, signal, computed, inject, PLATFORM_ID, afterNextRender, linkedSignal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { of, tap } from 'rxjs';
+import { of } from 'rxjs';
 
 import {
   LucideAngularModule,
@@ -24,11 +24,22 @@ import { LoadingModalComponent } from '../../../../../shared/components/loading-
 import { LoadingInformationComponent } from "../../../../../shared/components/loading-information/loading-information.component";
 import { DeleteModalComponent } from "../../../../../shared/components/delete-modal/delete-modal.component";
 import { ModalState } from '../../../../../core/models/ModalState';
+import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
+
+const PAGE_SIZE = 10;
 
 @Component({
   selector: 'app-my-subjects',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, FormSubjectComponent, LoadingModalComponent, LoadingInformationComponent, DeleteModalComponent],
+  imports: [
+    CommonModule,
+    LucideAngularModule,
+    FormSubjectComponent,
+    LoadingModalComponent,
+    LoadingInformationComponent,
+    DeleteModalComponent,
+    PaginationComponent,
+  ],
   templateUrl: './subjects.component.html'
 })
 export class SubjectsComponent {
@@ -37,12 +48,12 @@ export class SubjectsComponent {
   private subjectsService = inject(SubjectService);
   private platformId = inject(PLATFORM_ID);
 
-  resfreshTrigger = signal(0);
-  isLoading = signal(false);
-  isModalOpen = signal(false);
+  currentPage      = signal(1);
+  isLoading        = signal(false);
+  isModalOpen      = signal(false);
   isModalDeleteOpen = signal(false);
-  isEditModalOpen = signal(false);
-  subjectToEdit = signal<EditSubjectForm | null>(null);
+  isEditModalOpen  = signal(false);
+  subjectToEdit    = signal<EditSubjectForm | null>(null);
 
   // Modales
   modalState = signal<ModalState>({
@@ -51,26 +62,29 @@ export class SubjectsComponent {
     subtitle: ''
   });
 
-  isSubjectsEmpty = computed(() => {
-
-    const data = this.subjectsResource.value();
-
-    if(!data || !Array.isArray(data)) return false;
-
-    return data.length === 0;
-
-  })
-
-  // rxResource se encarga de hacer la petición GET al inicializar el componente
+  // rxResource reactivo a currentPage
   subjectsResource = rxResource({
-    params: () => this.resfreshTrigger(),
-    stream: () => {
-      // Evitamos hacer la petición en el servidor (SSR) porque no tenemos la cookie ahí
+    params: () => this.currentPage(),
+    stream: ({ params: page }) => {
       if (isPlatformBrowser(this.platformId)) {
-        return this.subjectsService.getSubjects();
+        return this.subjectsService.getSubjects(page);
       }
-      return of([]); // Retornamos vacío temporalmente en el servidor
+      return of({ count: 0, next: null, previous: null, results: [] });
     },
+  });
+
+  subjects = linkedSignal(() => this.subjectsResource.value()?.results ?? []);
+
+  // Paginación
+  totalCount  = computed(() => this.subjectsResource.value()?.count ?? 0);
+  totalPages  = computed(() => Math.max(1, Math.ceil(this.totalCount() / PAGE_SIZE)));
+  hasNext     = computed(() => !!this.subjectsResource.value()?.next);
+  hasPrevious = computed(() => !!this.subjectsResource.value()?.previous);
+
+  isSubjectsEmpty = computed(() => {
+    const data = this.subjectsResource.value();
+    if (!data) return false;
+    return data.results.length === 0;
   });
 
   // Mapeo de iconos para el HTML
@@ -79,34 +93,30 @@ export class SubjectsComponent {
   messageDelete = '¿Estas seguro de que deseas eliminar esta materia? Esta acción no se puede deshacer.';
   private idSubject: number | null = null;
 
-
   constructor() {
-    // Si estamos en el navegador, recargamos la data (ya que en SSR evitamos el HTTP)
     afterNextRender(() => {
       this.subjectsResource.reload();
     });
-
   }
+
+  // --- PAGINACIÓN ---
+  onPageChange(page: number): void {
+    this.currentPage.set(page);
+  }
+
   // --- MÉTODOS ---
-
-
   handleSubjectClick(subjectId: string) {
     this.router.navigate([`home/subject/${subjectId}`]);
   }
 
-  createSubjectData(data: CreateSubjectForm){
-
-    console.log('1. Botón presionado. Estado actual:', this.modalState());
-
+  createSubjectData(data: CreateSubjectForm) {
     this.modalState.set({
       status: 'cargando',
       title: 'Cargando',
       subtitle: 'Estamos procesando tu solicitud...'
     });
 
-    console.log('2. Señal actualizada a:', this.modalState());
-
-    if(this.isEditModalOpen()){
+    if (this.isEditModalOpen()) {
       this.subjectsService.updateSubject(this.idSubject!, data).subscribe({
         next: () => {
           this.closeCreateSubjectModal();
@@ -116,11 +126,7 @@ export class SubjectsComponent {
             subtitle: 'Materia actualizada con éxito'
           });
           setTimeout(() => {
-            this.modalState.set({
-              status: 'oculto',
-              title: '',
-              subtitle: ''
-            });
+            this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
             this.subjectsResource.reload();
           }, 3000);
         },
@@ -130,68 +136,44 @@ export class SubjectsComponent {
             title: 'Uy, algo salió mal...',
             subtitle: err.error?.detail || 'Hubo un error en el servidor'
           });
-
           setTimeout(() => {
-            this.modalState.set({
-              status: 'oculto',
-              title: '',
-              subtitle: ''
-            });
+            this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
           }, 3000);
         }
       });
-    }else{
-
+    } else {
       this.subjectsService.createSubject(data).subscribe({
         next: () => {
-        // 1. Cerramos el modal
-        this.closeCreateSubjectModal();
-
-        this.modalState.set({
-          status: 'exito',
-          title: 'Listo!',
-          subtitle: 'Materia creada con éxito'
-        });
-        setTimeout(() => {
+          this.closeCreateSubjectModal();
           this.modalState.set({
-            status: 'oculto',
-            title: '',
-            subtitle: ''
+            status: 'exito',
+            title: 'Listo!',
+            subtitle: 'Materia creada con éxito'
           });
-          //Le decimos al recurso de lectura que vuelva a pedir los datos a Django
-          this.subjectsResource.reload();
-
-        }, 3000);
-
-
-      },
-      error: (err) => {
-        console.error(err);
-        this.modalState.set({
-          status: 'error',
-          title: 'Uy, algo salió mal...',
-          subtitle: err.error?.detail || 'Hubo un error en el servidor'
-        });
-
-        setTimeout(() => {
+          setTimeout(() => {
+            this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
+            this.subjectsResource.reload();
+          }, 3000);
+        },
+        error: (err) => {
           this.modalState.set({
-            status: 'oculto',
-            title: '',
-            subtitle: ''
+            status: 'error',
+            title: 'Uy, algo salió mal...',
+            subtitle: err.error?.detail || 'Hubo un error en el servidor'
           });
-        }, 3000);
-      }
-    });
-  }
+          setTimeout(() => {
+            this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
+          }, 3000);
+        }
+      });
+    }
   }
 
-  // Angular necesita recibir el $event explícitamente para detener la propagación
   handleMoreOptions(event: Event, subjectId: string) {
-    event.stopPropagation(); // Evita que se dispare el click de la tarjeta (handleSubjectClick)
+    event.stopPropagation();
   }
 
-  deleteSubject(){
-
+  deleteSubject() {
     this.modalState.set({
       status: 'cargando',
       title: 'Eliminando',
@@ -206,74 +188,58 @@ export class SubjectsComponent {
           subtitle: 'Materia eliminada con éxito'
         });
         setTimeout(() => {
-          this.modalState.set({
-            status: 'oculto',
-            title: '',
-            subtitle: ''
-          });
-          this.subjectsResource.reload();
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
+          this.currentPage.set(1); // Reset a página 1
         }, 3000);
       },
       error: (err) => {
-        console.error(err);
         this.modalState.set({
           status: 'error',
           title: 'Uy, algo salió mal...',
           subtitle: err.error?.detail || 'Hubo un error en el servidor'
         });
-
         setTimeout(() => {
-          this.modalState.set({
-            status: 'oculto',
-            title: '',
-            subtitle: ''
-          });
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
         }, 3000);
       }
-    })
+    });
 
     this.closeDeleteModal();
-
   }
 
-  openCreateSubjectModal(event: Event | null, id: number | null, subject: EditSubjectForm | null){
-
-    if(event){
-      event.stopPropagation();
-    }
-
+  openCreateSubjectModal(event: Event | null, id: number | null, subject: EditSubjectForm | null) {
+    if (event) event.stopPropagation();
     this.isModalOpen.set(true);
-    if(id){
+    if (id) {
       this.idSubject = id;
       this.isEditModalOpen.set(true);
       this.subjectToEdit.set(subject);
-    }else{
+    } else {
       this.isEditModalOpen.set(false);
       this.subjectToEdit.set(null);
     }
   }
 
-  closeCreateSubjectModal(){
+  closeCreateSubjectModal() {
     this.isModalOpen.set(false);
     this.isEditModalOpen.set(false);
     this.subjectToEdit.set(null);
   }
 
-  openEditModal(event: Event, id: number, subject: EditSubjectForm){
+  openEditModal(event: Event, id: number, subject: EditSubjectForm) {
     event.stopPropagation();
     this.idSubject = id;
     this.isEditModalOpen.set(true);
     this.subjectToEdit.set(subject);
   }
 
-  openDeleteModal(event: Event, id: number){
+  openDeleteModal(event: Event, id: number) {
     event.stopPropagation();
     this.idSubject = id;
     this.isModalDeleteOpen.set(true);
-
   }
 
-  closeDeleteModal(){
+  closeDeleteModal() {
     this.isModalDeleteOpen.set(false);
   }
 }

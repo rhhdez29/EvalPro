@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environments';
 import { Subject } from '../models/subject.interface';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, throwError } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 import { PaginationResult } from '../models/PaginationResult';
 import { RESTSubject } from '../models/RESTSubjectResponse.interface';
 import { StudentListBySubject } from '../models/student-list-by-subject';
@@ -18,14 +18,8 @@ export class StudentService {
 
   http = inject(HttpClient);
 
-  getSubjects(){
-    return this.http.get<PaginationResult<RESTSubject>>(`${this.apiUrl}subjects/`)
-    .pipe(
-      map(response => {
-        console.log(response.results)
-        return response.results
-      })
-    )
+  getSubjects(page: number = 1){
+    return this.http.get<PaginationResult<RESTSubject>>(`${this.apiUrl}subjects/?page=${page}`)
   }
 
   searchStudentByEmail(email: string){

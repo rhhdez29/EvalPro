@@ -6,6 +6,7 @@ import { AddStudentModalComponent } from "./components/add-student-modal/add-stu
 import { StudentListBySubject } from '../../../../../models/student-list-by-subject';
 import { LoadingInformationComponent } from "../../../../../../../shared/components/loading-information/loading-information.component";
 import { LoadingModalComponent } from "../../../../../../../shared/components/loading-modal/loading-modal.component";
+import { PaginationComponent } from '../../../../../../../shared/components/pagination/pagination.component';
 
 export interface Student {
   id: string;
@@ -15,10 +16,12 @@ export interface Student {
   avatar?: string;
 }
 
+const PAGE_SIZE = 10;
+
 @Component({
   selector: 'students-tab',
   standalone: true,
-  imports: [CommonModule, AddStudentModalComponent, LoadingModalComponent],
+  imports: [CommonModule, AddStudentModalComponent, LoadingModalComponent, PaginationComponent],
   templateUrl: './students-tab.component.html'
 })
 export class StudentsTabComponent {
@@ -28,36 +31,49 @@ export class StudentsTabComponent {
   // Servicio
   subjectService = inject(SubjectService);
 
+  // Paginación
+  currentPage = signal(1);
 
   // Estado Local (Signals)
-  uploadedFile = signal<File | null>(null);
-  isDragging = signal<boolean>(false);
-  searchQuery = signal<string>('');
+  uploadedFile  = signal<File | null>(null);
+  isDragging    = signal<boolean>(false);
+  searchQuery   = signal<string>('');
   isAddStudentModalOpen = signal<boolean>(false);
   loadingStatus = signal<'oculto' | 'cargando' | 'exito' | 'error'>('oculto');
   loadingMessage1 = signal<string>('');
   loadingMessage2 = signal<string>('');
 
-
+  // rxResource reactivo a subjectId + currentPage
   students = rxResource({
-    params: () => this.subjectId(),
-    stream: () => this.subjectService.getStudentsBySubject(this.subjectId())
-  })
+    params: () => ({ subjectId: this.subjectId(), page: this.currentPage() }),
+    stream: ({ params }) => this.subjectService.getStudentsBySubject(params.subjectId, params.page)
+  });
 
-  // Filtrado reactivo: Se recalcula automáticamente si cambia searchQuery o students
+  // Paginación computed
+  totalCount  = computed(() => this.students.value()?.count ?? 0);
+  totalPages  = computed(() => Math.max(1, Math.ceil(this.totalCount() / PAGE_SIZE)));
+  hasNext     = computed(() => !!this.students.value()?.next);
+  hasPrevious = computed(() => !!this.students.value()?.previous);
+
+  // Filtrado reactivo dentro de la página actual
   filteredStudents = computed(() => {
     const query = this.searchQuery().toLowerCase();
-    if (!query) return this.students.value();
+    const results = this.students.value()?.results ?? [];
+    if (!query) return results;
 
-    return this.students.value()?.filter(student =>
+    return results.filter(student =>
       student.name.toLowerCase().includes(query) ||
       student.email.toLowerCase().includes(query) ||
       student.date_enrolled.toLowerCase().includes(query)
     );
   });
 
-  // --- Funciones para arrastrar y soltar archivos ---
+  // --- Paginación ---
+  onPageChange(page: number): void {
+    this.currentPage.set(page);
+  }
 
+  // --- Funciones para arrastrar y soltar archivos ---
   handleDragOver(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
@@ -74,7 +90,6 @@ export class StudentsTabComponent {
     event.preventDefault();
     event.stopPropagation();
     this.isDragging.set(false);
-
     if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
       this.uploadedFile.set(event.dataTransfer.files[0]);
     }
@@ -88,14 +103,8 @@ export class StudentsTabComponent {
   }
 
   // --- Acciones ---
-
-  openModal() {
-    this.isAddStudentModalOpen.set(true);
-  }
-
-  closeModal() {
-    this.isAddStudentModalOpen.set(false);
-  }
+  openModal() { this.isAddStudentModalOpen.set(true); }
+  closeModal() { this.isAddStudentModalOpen.set(false); }
 
   addStudent(student: StudentListBySubject) {
     this.closeModal();
@@ -107,10 +116,10 @@ export class StudentsTabComponent {
       next: () => {
         this.loadingStatus.set('exito');
         this.loadingMessage1.set('Estudiante agregado');
-        this.students.reload();
+        this.currentPage.set(1); // Reset a página 1 tras agregar
 
         setTimeout(() => {
-          this.loadingStatus.set('oculto')
+          this.loadingStatus.set('oculto');
           this.loadingMessage1.set('');
           this.loadingMessage2.set('');
         }, 3000);
@@ -121,28 +130,23 @@ export class StudentsTabComponent {
         this.loadingMessage2.set(error.message);
 
         setTimeout(() => {
-          this.loadingStatus.set('oculto')
+          this.loadingStatus.set('oculto');
           this.loadingMessage1.set('');
           this.loadingMessage2.set('');
         }, 3000);
       }
-    })
+    });
   }
 
   handleUpload() {
     const file = this.uploadedFile();
     if (file) {
       console.log('Procesando archivo:', file.name);
-      // TODO: Mandar el archivo a Django para extraer estudiantes
-
-      // Limpiamos el archivo después de procesar
       this.uploadedFile.set(null);
     }
   }
 
-  removeUploadedFile() {
-    this.uploadedFile.set(null);
-  }
+  removeUploadedFile() { this.uploadedFile.set(null); }
 
   updateSearchQuery(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -150,7 +154,6 @@ export class StudentsTabComponent {
   }
 
   removeStudent(studentId: string) {
-    // TODO: Llamar al backend para eliminarlo de la materia
-    console.log (this.students.value())
+    console.log(this.students.value());
   }
 }

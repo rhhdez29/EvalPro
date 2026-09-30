@@ -47,7 +47,7 @@
 
   <div class="space-y-4">
 
-    @for (classItem of classes.value(); track classItem.id) {
+    @for (classItem of classes.value()?.results; track classItem.id) {
       <div
         (click)="handleClassClick(classItem.id.toString())"
         class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer group"
@@ -95,4 +95,14 @@
     }
 
   </div>
+
+  <!-- Paginación -->
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    [hasNext]="hasNext()"
+    [hasPrevious]="hasPrevious()"
+    (pageChange)="onPageChange($event)"
+  />
+
 </div>

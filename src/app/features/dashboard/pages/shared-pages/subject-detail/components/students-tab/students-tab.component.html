@@ -76,7 +76,7 @@
       <div class="flex items-center gap-3">
         <h3 class="font-semibold text-gray-900">Estudiantes Inscritos</h3>
         <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
-          {{ students.value()?.length }} estudiantes
+          {{ totalCount() }} estudiantes
         </span>
       </div>
 
@@ -135,6 +135,16 @@
       }
     }
     </div>
+
+    <!-- Paginación -->
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [hasNext]="hasNext()"
+      [hasPrevious]="hasPrevious()"
+      (pageChange)="onPageChange($event)"
+    />
+
   </div>
 </div>
 

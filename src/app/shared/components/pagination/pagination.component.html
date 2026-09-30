@@ -1,0 +1,28 @@
+<div class="flex items-center justify-center gap-3 py-4 border-t border-gray-200 bg-white">
+
+  <!-- Botón Anterior -->
+  <button
+    class="btn btn-sm btn-outline"
+    [disabled]="!hasPrevious()"
+    (click)="goToPrevious()"
+  >
+    « Anterior
+  </button>
+
+  <!-- Indicador de página -->
+  <span class="text-sm text-gray-600 font-medium px-2">
+    Página <span class="font-bold text-gray-900">{{ currentPage() }}</span>
+    de
+    <span class="font-bold text-gray-900">{{ totalPages() }}</span>
+  </span>
+
+  <!-- Botón Siguiente -->
+  <button
+    class="btn btn-sm btn-outline"
+    [disabled]="!hasNext()"
+    (click)="goToNext()"
+  >
+    Siguiente »
+  </button>
+
+</div>

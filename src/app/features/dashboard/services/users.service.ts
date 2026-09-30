@@ -16,13 +16,8 @@ export class UsersService {
 
   pendingTeachersCount = signal<number>(0);
 
-  getUsers() {
-    return this.http.get<PaginationResult<UserList>>(this.apiUrl)
-    .pipe(
-      map((response) => {
-        return response.results
-      })
-    )
+  getUsers(page: number = 1) {
+    return this.http.get<PaginationResult<UserList>>(`${this.apiUrl}?page=${page}`);
   }
 
   getTeacherRequests() {
