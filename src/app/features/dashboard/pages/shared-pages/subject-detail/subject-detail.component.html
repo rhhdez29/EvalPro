@@ -5,30 +5,30 @@
     [error]="subjectDetailResource.error()"
     [data]="subjectDetailResource.value()"
     [emptyMessage]="'No se pudo cargar la informacion de la materia.'"
-    >
+  >
 
   <div class="bg-white border-b border-gray-200">
-    <div class="px-8 py-6">
+    <div class="px-4 sm:px-6 md:px-8 py-4 sm:py-6">
 
       <button
         (click)="handleBack()"
-        class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+        class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors w-fit cursor-pointer"
       >
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
         <span class="text-sm font-medium">Regresar</span>
       </button>
 
-      <div class="flex items-center gap-4 mb-6">
-        <div class="w-16 h-16 {{ subjectDetailResource.value()?.color }} rounded-xl flex items-center justify-center">
-          <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+        <div class="w-14 h-14 sm:w-16 sm:h-16 {{ subjectDetailResource.value()?.color }} rounded-xl flex items-center justify-center shrink-0">
+          <svg class="w-7 h-7 sm:w-8 sm:h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         </div>
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">{{ subjectDetailResource.value()?.name }}</h1>
-          <p class="text-gray-600">{{ subjectDetailResource.value()?.code }}</p>
+          <h1 class="text-xl sm:text-2xl font-bold text-gray-900">{{ subjectDetailResource.value()?.name }}</h1>
+          <p class="text-sm sm:text-base text-gray-600">{{ subjectDetailResource.value()?.code }}</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-8 text-sm text-gray-600">
+      <div class="flex flex-wrap items-center gap-4 sm:gap-8 text-xs sm:text-sm text-gray-600">
         <div class="flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
           <span>{{ subjectDetailResource.value()?.students_count }} estudiantes</span>
@@ -46,25 +46,29 @@
         }
       </div>
 
-      <div class="mt-6 flex gap-1 border-b border-gray-200">
-        @for (tab of tabs(); track tab.id) {
-          <button
-            (click)="setActiveTab(tab.id)"
-            class="flex items-center gap-2 px-6 py-3 font-medium transition-colors relative"
-            [class.text-yellow-600]="activeTabId() === tab.id"
-            [class.border-b-2]="activeTabId() === tab.id"
-            [class.border-yellow-600]="activeTabId() === tab.id"
-            [class.text-gray-600]="activeTabId() !== tab.id"
-            [class.hover:text-gray-900]="activeTabId() !== tab.id"
-          >
-            <span>{{ tab.label }}</span>
-          </button>
-        }
+      <!-- Navegación de Pestañas con scroll horizontal táctil para móviles -->
+      <div class="mt-6 border-b border-gray-200">
+        <div class="flex overflow-x-auto whitespace-nowrap scrollbar-hide gap-1">
+          @for (tab of tabs(); track tab.id) {
+            <button
+              (click)="setActiveTab(tab.id)"
+              class="flex items-center gap-2 px-4 sm:px-6 py-3 font-medium transition-colors relative cursor-pointer shrink-0 text-sm sm:text-base"
+              [class.text-yellow-600]="activeTabId() === tab.id"
+              [class.border-b-2]="activeTabId() === tab.id"
+              [class.border-yellow-600]="activeTabId() === tab.id"
+              [class.text-gray-600]="activeTabId() !== tab.id"
+              [class.hover:text-gray-900]="activeTabId() !== tab.id"
+            >
+              <span>{{ tab.label }}</span>
+            </button>
+          }
+        </div>
       </div>
+
     </div>
   </div>
 
-  <div class="p-8">
+  <div class="p-4 sm:p-6 md:p-8">
     @switch (activeTabId()) {
 
       @case ('exams') {
@@ -86,6 +90,5 @@
   </div>
 
   </loading-information>
-
 
 </div>

@@ -1,12 +1,12 @@
-<div class="p-8">
+<div class="p-4 sm:p-6 md:p-8">
 
-  <div class="flex items-center justify-between mb-8">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
     <div>
-      <p class="text-gray-600 mt-1">Gestionar y monitorear tus clases</p>
+      <p class="text-gray-600 mt-1 text-sm sm:text-base">Gestionar y monitorear tus clases</p>
     </div>
     <button
       (click)="openCreateSubjectModal(null, null, null)"
-      class="flex items-center gap-2 px-4 py-2.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
+      class="flex items-center justify-center gap-2 px-4 py-2.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer w-full sm:w-auto"
     >
       <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
       Crear Materia
@@ -22,39 +22,40 @@
   >
   </app-create-subject-form>
 
-  <div class="grid grid-cols-3 gap-6 mb-8">
+  <!-- Tarjetas de Estadísticas superiores -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 sm:mb-8">
 
-    <div class="bg-white rounded-xl p-6 border border-gray-200">
+    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200 w-full">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 mb-1">Total de Materias</p>
-          <p class="text-3xl font-bold text-gray-900">{{ 0 }}</p>
+          <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ 0 }}</p>
         </div>
-        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center shrink-0">
           <lucide-icon [img]="icons.BookOpen" class="w-6 h-6 text-yellow-600"></lucide-icon>
         </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-xl p-6 border border-gray-200">
+    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200 w-full">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 mb-1">Total de Estudiantes</p>
-          <p class="text-3xl font-bold text-gray-900">{{ 1 }}</p>
+          <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ 1 }}</p>
         </div>
-        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
           <lucide-icon [img]="icons.Users" class="w-6 h-6 text-blue-600"></lucide-icon>
         </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-xl p-6 border border-gray-200">
+    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200 w-full">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 mb-1">Total de Exámenes</p>
-          <p class="text-3xl font-bold text-gray-900">{{ 1 }}</p>
+          <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ 1 }}</p>
         </div>
-        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
           <lucide-icon [img]="icons.FileText" class="w-6 h-6 text-green-600"></lucide-icon>
         </div>
       </div>
@@ -68,94 +69,94 @@
     [emptyMessage]="'No hay materias registradas'"
   >
 
-  <app-delete-modal
-    [isOpen]="isModalDeleteOpen()"
-    (cancel)="closeDeleteModal()"
-    [message]="messageDelete"
-    (confirm)="deleteSubject()"
-  />
+    <app-delete-modal
+      [isOpen]="isModalDeleteOpen()"
+      (cancel)="closeDeleteModal()"
+      [message]="messageDelete"
+      (confirm)="deleteSubject()"
+    />
 
     @if (!subjectsResource.error() && subjectsResource.hasValue()) {
 
-    <div class="grid grid-cols-3 gap-6">
+      <!-- Cuadrícula de Materias responsiva -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 
-    @for (subject of subjects(); track subject.id) {
-      <div
-        (click)="handleSubjectClick(subject.id.toString())"
-        class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer group"
-      >
+        @for (subject of subjects(); track subject.id) {
+          <div
+            (click)="handleSubjectClick(subject.id.toString())"
+            class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer group"
+          >
 
-        <div class="h-32 {{ subject.color }} relative">
+            <div class="h-32 {{ subject.color }} relative">
 
-          <div class="absolute top-4 right-4 dropdown dropdown-end">
+              <div class="absolute top-4 right-4 dropdown dropdown-end">
 
-            <button
-              tabindex="0"
-              role="button"
-              (click)="$event.stopPropagation()"
-              class="p-2 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition-colors cursor-pointer"
-            >
-              <lucide-icon [img]="icons.MoreVertical" class="w-5 h-5 text-white"></lucide-icon>
-            </button>
-
-            <ul
-              tabindex="0"
-              class="dropdown-content menu bg-white rounded-box z-[1] w-40 p-2 shadow-xl mt-2 border border-gray-100"
-            >
-              <li>
                 <button
-                  (click)="openCreateSubjectModal($event, subject.id, subject)"
-                  class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer flex items-center gap-2"
+                  tabindex="0"
+                  role="button"
+                  (click)="$event.stopPropagation()"
+                  class="p-2 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition-colors cursor-pointer"
                 >
-                  <lucide-icon [img]="icons.Edit" class="w-4 h-4"></lucide-icon>
-                  Editar
+                  <lucide-icon [img]="icons.MoreVertical" class="w-5 h-5 text-white"></lucide-icon>
                 </button>
-              </li>
 
-              <li>
-                <button
-                  (click)="openDeleteModal($event, subject.id)"
-                  class="text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer flex items-center gap-2"
+                <ul
+                  tabindex="0"
+                  class="dropdown-content menu bg-white rounded-box z-[1] w-40 p-2 shadow-xl mt-2 border border-gray-100"
                 >
-                  <lucide-icon [img]="icons.Trash2" class="w-4 h-4"></lucide-icon>
-                  Eliminar
-                </button>
-              </li>
-            </ul>
+                  <li>
+                    <button
+                      (click)="openCreateSubjectModal($event, subject.id, subject)"
+                      class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer flex items-center gap-2"
+                    >
+                      <lucide-icon [img]="icons.Edit" class="w-4 h-4"></lucide-icon>
+                      Editar
+                    </button>
+                  </li>
 
-          </div>
+                  <li>
+                    <button
+                      (click)="openDeleteModal($event, subject.id)"
+                      class="text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer flex items-center gap-2"
+                    >
+                      <lucide-icon [img]="icons.Trash2" class="w-4 h-4"></lucide-icon>
+                      Eliminar
+                    </button>
+                  </li>
+                </ul>
 
+              </div>
 
-          <div class="absolute bottom-4 left-6">
-            <div class="w-16 h-16 bg-white rounded-lg flex items-center justify-center shadow-lg">
-              <lucide-icon [img]="icons.BookOpen" class="w-8 h-8 text-gray-700"></lucide-icon>
+              <div class="absolute bottom-4 left-4 sm:left-6">
+                <div class="w-16 h-16 bg-white rounded-lg flex items-center justify-center shadow-lg">
+                  <lucide-icon [img]="icons.BookOpen" class="w-8 h-8 text-gray-700"></lucide-icon>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div class="p-6 pt-8">
-          <div class="mb-4">
-            <h3 class="font-bold text-gray-900 text-lg mb-1 group-hover:text-yellow-600 transition-colors">
-              {{ subject.name }}
-            </h3>
-            <p class="text-sm text-gray-500">{{ subject.code }}</p>
-          </div>
+            <div class="p-4 sm:p-6 pt-8">
+              <div class="mb-4">
+                <h3 class="font-bold text-gray-900 text-lg mb-1 group-hover:text-yellow-600 transition-colors">
+                  {{ subject.name }}
+                </h3>
+                <p class="text-sm text-gray-500">{{ subject.code }}</p>
+              </div>
 
-          <div class="flex items-center justify-between text-sm">
-            <div class="flex items-center gap-2 text-gray-600">
-              <lucide-icon [img]="icons.Users" class="w-4 h-4"></lucide-icon>
-              <span>{{ subject.students_count }} estudiantes</span>
+              <div class="flex items-center justify-between text-xs sm:text-sm">
+                <div class="flex items-center gap-2 text-gray-600">
+                  <lucide-icon [img]="icons.Users" class="w-4 h-4"></lucide-icon>
+                  <span>{{ subject.students_count }} estudiantes</span>
+                </div>
+                <div class="flex items-center gap-2 text-gray-600">
+                  <lucide-icon [img]="icons.FileText" class="w-4 h-4"></lucide-icon>
+                  <span>{{ subject.exams_count }} exámenes</span>
+                </div>
+              </div>
             </div>
-            <div class="flex items-center gap-2 text-gray-600">
-              <lucide-icon [img]="icons.FileText" class="w-4 h-4"></lucide-icon>
-              <span>{{ subject.exams_count }} exámenes</span>
-            </div>
-          </div>
-        </div>
 
+          </div>
+        }
       </div>
-    }
-    </div>
     }
 
     <!-- Paginación -->
@@ -167,12 +168,12 @@
       (pageChange)="onPageChange($event)"
     />
 
-</loading-information>
+  </loading-information>
 </div>
 
 <loading-modal
-    [status]="modalState().status"
-    [message1]="modalState().title"
-    [message2]="modalState().subtitle"
-  >
+  [status]="modalState().status"
+  [message1]="modalState().title"
+  [message2]="modalState().subtitle"
+>
 </loading-modal>

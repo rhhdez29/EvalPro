@@ -1,4 +1,4 @@
-import { Component, computed, inject, linkedSignal, signal } from '@angular/core';
+import { Component, computed, EventEmitter, inject, linkedSignal, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import {
@@ -9,7 +9,8 @@ import {
   BookOpen,
   Settings,
   Users,
-  UserCheck
+  UserCheck,
+  X
 } from 'lucide-angular';
 import { FacadeService } from '../../../../core/services/facade.service';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -34,8 +35,10 @@ export class SidebarComponent {
   private router = inject(Router);
   private facadeService = inject(FacadeService);
 
+  @Output() linkClicked = new EventEmitter<void>();
+
   // Iconos
-  readonly icons = { GraduationCap, User, LogOut, BookOpen, Settings, Users, UserCheck, ReactiveFormsModule };
+  readonly icons = { GraduationCap, User, LogOut, BookOpen, Settings, Users, UserCheck, X, ReactiveFormsModule };
 
   userRole = this.facadeService.userRole;
   userName = this.facadeService.userName;
@@ -44,7 +47,6 @@ export class SidebarComponent {
   modalStatus = signal<'oculto' | 'cargando' | 'exito' | 'error'>('oculto');
   messageModal1 = signal<string>('');
   messageModal2 = signal<string>('');
-
 
   // Equivalente al useMemo de React
   menuItems = computed<MenuItem[]>(() => {
@@ -71,46 +73,40 @@ export class SidebarComponent {
     }
   });
 
-
   ngOnInit() {
-
-    if(this.userRole() === 'administrador'){
+    if (this.userRole() === 'administrador') {
       this.userService.getTeacherRequests().subscribe({
         next: (response) => {
           this.userService.pendingTeachersCount.set(response.length);
         },
         error: (err) => {
-          this.userService.pendingTeachersCount.set(0)
+          this.userService.pendingTeachersCount.set(0);
         }
-      })
+      });
     }
   }
 
   Logout() {
-
     this.modalStatus.set('cargando');
     this.messageModal1.set('Cargando');
-    this.messageModal2.set('Estamos procesando tu solicitud...')
+    this.messageModal2.set('Estamos procesando tu solicitud...');
 
     this.facadeService.logout().subscribe({
       next: (response) => {
-
         this.modalStatus.set('exito');
         this.messageModal1.set('Cerrando Sesion');
-        this.messageModal2.set('Espere un momento...')
+        this.messageModal2.set('Espere un momento...');
 
         setTimeout(() => {
           this.modalStatus.set('oculto');
           this.facadeService.destroyUser();
           this.router.navigate(['auth/login']);
         }, 3000);
-
       },
       error: (err) => {
         this.facadeService.destroyUser();
-        // Manejo de errores (credenciales incorrectas)
         this.modalStatus.set('error');
-        const mensajeError = err.error?.detail || 'Hubo un error en el servidor'
+        const mensajeError = err.error?.detail || 'Hubo un error en el servidor';
 
         this.messageModal1.set('Uy, algo salió mal...');
         this.messageModal2.set(mensajeError);
@@ -119,9 +115,6 @@ export class SidebarComponent {
           this.modalStatus.set('oculto');
         }, 3000);
       }
-    })
+    });
   }
-
-
-
 }

@@ -1,17 +1,17 @@
 <div>
   <div class="mb-6">
-    <h2 class="text-xl font-bold text-gray-900">Gestión de Estudiantes</h2>
-    <p class="text-gray-600 text-sm mt-1">Asigna estudiantes a esta materia subiendo una lista o agregándolos individualmente</p>
+    <h2 class="text-lg sm:text-xl font-bold text-gray-900">Gestión de Estudiantes</h2>
+    <p class="text-gray-600 text-xs sm:text-sm mt-1">Asigna estudiantes a esta materia subiendo una lista o agregándolos individualmente</p>
   </div>
 
-  <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-    <h3 class="font-semibold text-gray-900 mb-4">Asignación Masiva</h3>
+  <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 mb-6">
+    <h3 class="font-semibold text-gray-900 mb-4 text-base sm:text-lg">Asignación Masiva</h3>
 
     <div
       (drop)="handleDrop($event)"
       (dragover)="handleDragOver($event)"
       (dragleave)="handleDragLeave($event)"
-      class="border-2 border-dashed rounded-lg p-8 text-center transition-all"
+      class="border-2 border-dashed rounded-lg p-4 sm:p-8 text-center transition-all cursor-pointer"
       [class.border-yellow-500]="isDragging()"
       [class.bg-yellow-50]="isDragging()"
       [class.border-green-500]="!isDragging() && uploadedFile()"
@@ -31,39 +31,39 @@
 
       @if (uploadedFile()) {
         <div class="flex flex-col items-center gap-3">
-          <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <svg class="w-10 h-10 sm:w-12 sm:h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           <div>
-            <div class="font-medium text-gray-900 text-lg">{{ uploadedFile()?.name }}</div>
-            <div class="text-sm text-gray-500 mt-1">
+            <div class="font-medium text-gray-900 text-base sm:text-lg">{{ uploadedFile()?.name }}</div>
+            <div class="text-xs sm:text-sm text-gray-500 mt-1">
               {{ (uploadedFile()!.size / 1024 / 1024).toFixed(2) }} MB
             </div>
           </div>
-          <div class="flex gap-3 mt-2">
+          <div class="flex flex-wrap justify-center gap-3 mt-2">
             <button
               (click)="handleUpload()"
-              class="px-6 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium">
+              class="px-5 sm:px-6 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium text-sm sm:text-base cursor-pointer">
               Procesar Archivo
             </button>
             <button
               (click)="removeUploadedFile()"
-              class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+              class="px-5 sm:px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm sm:text-base cursor-pointer">
               Quitar
             </button>
           </div>
         </div>
       } @else {
-        <label for="student-file-upload" class="cursor-pointer">
-          <svg class="w-12 h-12 text-yellow-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-          <div class="font-medium text-gray-900 text-lg mb-2">
+        <label for="student-file-upload" class="cursor-pointer block w-full">
+          <svg class="w-10 h-10 sm:w-12 sm:h-12 text-yellow-600 mx-auto mb-3 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+          <div class="font-medium text-gray-900 text-base sm:text-lg mb-1 sm:mb-2">
             Arrastra y suelta la lista de estudiantes aquí
           </div>
-          <div class="text-sm text-gray-500 mb-1">
+          <div class="text-xs sm:text-sm text-gray-500 mb-1">
             o <span class="text-yellow-600 font-medium">explora</span> para subir
           </div>
-          <div class="text-xs text-gray-400 mt-3">
+          <div class="text-xs text-gray-400 mt-2 sm:mt-3">
             Formatos soportados: PDF, Excel (.xlsx), CSV • Máx 10MB
           </div>
-          <div class="text-xs text-gray-500 mt-2">
+          <div class="text-xs text-gray-500 mt-1 sm:mt-2">
             El archivo debe contener: Nombre, Correo, Matrícula
           </div>
         </label>
@@ -71,83 +71,87 @@
     </div>
   </div>
 
-  <div class="bg-white rounded-xl border border-gray-200 p-6">
-    <div class="flex items-center justify-between mb-6">
+  <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
       <div class="flex items-center gap-3">
-        <h3 class="font-semibold text-gray-900">Estudiantes Inscritos</h3>
-        <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
+        <h3 class="font-semibold text-gray-900 text-base sm:text-lg">Estudiantes Inscritos</h3>
+        <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs sm:text-sm font-medium">
           {{ totalCount() }} estudiantes
         </span>
       </div>
 
-      <button (click)="openModal()" class="flex items-center gap-2 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium text-sm">
+      <button (click)="openModal()" class="flex items-center justify-center gap-2 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium text-sm w-full sm:w-auto cursor-pointer">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
         Añadir Individual
       </button>
     </div>
 
     <div class="mb-4">
-      <div class="relative">
+      <div class="relative w-full">
         <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         <input
           type="text"
           placeholder="Buscar estudiantes..."
           [value]="searchQuery()"
           (input)="updateSearchQuery($event)"
-          class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+          class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all text-sm sm:text-base outline-none"
         />
       </div>
     </div>
 
-    <div class="space-y-2">
+    <!-- Contenedor con scroll horizontal para salvar el layout en pantallas estrechas -->
+    <div class="overflow-x-auto w-full">
+      <div class="space-y-2 min-w-[480px] sm:min-w-full">
 
-      @if (students.isLoading()) {
-        <div class="text-center py-8 text-gray-500 flex flex-col items-center">
-          <svg class="animate-spin h-8 w-8 text-yellow-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-          <p>Cargando estudiantes...</p>
-        </div>
-      } @else {
-      @for (student of filteredStudents(); track student.id) {
-        <div class="flex items-center justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors">
-          <div class="flex items-center gap-4">
-            <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-              <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-            </div>
-            <div>
-              <div class="font-medium text-gray-900">{{ student.name }}</div>
-              <div class="text-sm text-gray-500">{{ student.email }}</div>
-            </div>
+        @if (students.isLoading()) {
+          <div class="text-center py-8 text-gray-500 flex flex-col items-center">
+            <svg class="animate-spin h-8 w-8 text-yellow-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <p class="text-sm sm:text-base">Cargando estudiantes...</p>
           </div>
-          <div class="flex items-center gap-4">
-            <span class="text-sm text-gray-600 font-mono">{{ student.date_enrolled | date: 'dd/MM/yyyy' }}</span>
-            <button
-              (click)="removeStudent(student.id.toString())"
-              class="p-2 hover:bg-red-50 rounded-lg transition-colors group"
-              title="Eliminar estudiante">
-              <svg class="w-4 h-4 text-gray-400 group-hover:text-red-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-          </div>
-        </div>
-      } @empty {
-        <div class="text-center py-8 text-gray-500">
-          No se encontraron estudiantes para esta materia.
-        </div>
-      }
-    }
+        } @else {
+          @for (student of filteredStudents(); track student.id) {
+            <div class="flex items-center justify-between p-3 sm:p-4 hover:bg-gray-50 rounded-lg transition-colors">
+              <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center shrink-0">
+                  <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </div>
+                <div class="min-w-0">
+                  <div class="font-medium text-gray-900 text-sm sm:text-base truncate">{{ student.name }}</div>
+                  <div class="text-xs sm:text-sm text-gray-500 truncate">{{ student.email }}</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 sm:gap-4 shrink-0">
+                <span class="text-xs sm:text-sm text-gray-600 font-mono">{{ student.date_enrolled | date: 'dd/MM/yyyy' }}</span>
+                <button
+                  (click)="removeStudent(student.id.toString())"
+                  class="p-2 hover:bg-red-50 rounded-lg transition-colors group cursor-pointer"
+                  title="Eliminar estudiante">
+                  <svg class="w-4 h-4 text-gray-400 group-hover:text-red-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+              </div>
+            </div>
+          } @empty {
+            <div class="text-center py-8 text-gray-500 text-sm sm:text-base">
+              No se encontraron estudiantes para esta materia.
+            </div>
+          }
+        }
+      </div>
     </div>
 
-    <!-- Paginación -->
-    <app-pagination
-      [currentPage]="currentPage()"
-      [totalPages]="totalPages()"
-      [hasNext]="hasNext()"
-      [hasPrevious]="hasPrevious()"
-      (pageChange)="onPageChange($event)"
-    />
+    <!-- Paginación centrada -->
+    <div class="mt-4 flex justify-center w-full">
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [hasNext]="hasNext()"
+        [hasPrevious]="hasPrevious()"
+        (pageChange)="onPageChange($event)"
+      />
+    </div>
 
   </div>
 </div>
-
 
 <add-student-modal
  [isModalOpen]="isAddStudentModalOpen()"

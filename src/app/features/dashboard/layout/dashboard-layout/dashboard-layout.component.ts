@@ -1,7 +1,7 @@
-import { Component, computed, inject } from '@angular/core';
-import { CommonModule, Location } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
-import { LucideAngularModule, Bell } from 'lucide-angular';
+import { LucideAngularModule, Bell, Menu } from 'lucide-angular';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs/operators';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
@@ -13,8 +13,18 @@ import { SidebarComponent } from '../../components/sidebar/sidebar.component';
   templateUrl: './dashboard-layout.component.html'
 })
 export class DashboardLayoutComponent {
-  readonly icons = { Bell };
+  readonly icons = { Bell, Menu };
   private router = inject(Router);
+
+  isSidebarOpen = signal<boolean>(false);
+
+  toggleSidebar(): void {
+    this.isSidebarOpen.update(v => !v);
+  }
+
+  closeSidebar(): void {
+    this.isSidebarOpen.set(false);
+  }
 
   // Escuchamos los cambios de URL para actualizar el Título automáticamente
   private currentUrl = toSignal(
