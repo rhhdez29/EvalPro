@@ -1,24 +1,24 @@
 @if (activeTab() === 'profile') {
     <form (ngSubmit)="onSubmit()" [formGroup]="myForm">
 
-      <div class="grid grid-cols-3 gap-6">
-        <div class="col-span-2 bg-white rounded-xl border border-gray-200 p-8">
-          <h2 class="text-xl font-bold text-gray-900 mb-6">Información de Perfil</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="col-span-1 lg:col-span-2 bg-white rounded-xl border border-gray-200 p-4 sm:p-6 md:p-8">
+          <h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-6">Información de Perfil</h2>
 
           <div class="space-y-6">
-          <div class="flex items-center gap-6">
-            <div class="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center">
-              <lucide-icon [img]="icons.User" class="w-12 h-12 text-yellow-600"></lucide-icon>
+          <div class="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:gap-6">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 bg-yellow-100 rounded-full flex items-center justify-center shrink-0">
+              <lucide-icon [img]="icons.User" class="w-10 h-10 sm:w-12 sm:h-12 text-yellow-600"></lucide-icon>
             </div>
             <div>
-              <button class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm font-medium mb-2 cursor-pointer">
+              <button class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm font-medium mb-2 cursor-pointer w-full sm:w-auto">
                 Subir Foto
               </button>
               <p class="text-xs text-gray-500">JPG, PNG o GIF. Tamaño máximo 2MB</p>
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div class="space-y-2">
               <label class="text-sm font-medium text-gray-700">Nombre(s)</label>
               <div class="relative">
@@ -27,7 +27,7 @@
                   type="text"
                   formControlName="firstName"
                   appOnlyLetters
-                  class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+                  class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none text-sm sm:text-base"
                   [class.border-red-500]="formUtils.isValidField(myForm,'firstName')"
                 />
               </div>
@@ -46,7 +46,7 @@
                   type="text"
                   formControlName="lastName"
                   appOnlyLetters
-                  class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none"
+                  class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none text-sm sm:text-base"
                   [class.border-red-500]="formUtils.isValidField(myForm,'lastName')"
                 />
               </div>
@@ -61,15 +61,13 @@
               <label class="text-sm font-medium text-gray-700">Carrera</label>
               <div class="relative">
                 <select
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none bg-white"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none bg-white text-sm sm:text-base"
                   formControlName="career"
                   [class.border-red-500]="formUtils.isValidField(myForm,'career')"
                 >
                   <option value="">Seleccionar carrera</option>
                   @for (career of listCareers; track career) {
-                    <option
-                      [value]="career"
-                    >
+                    <option [value]="career">
                       {{ career }}
                     </option>
                   }
@@ -86,15 +84,13 @@
               <label class="text-sm font-medium text-gray-700">Semestre</label>
               <div class="relative">
                 <select
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none bg-white"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none bg-white text-sm sm:text-base"
                   formControlName="semester"
                   [class.border-red-500]="formUtils.isValidField(myForm,'semester')"
                 >
                   <option value="">Seleccionar semestre</option>
                   @for (sem of listSemesters; track sem) {
-                    <option
-                      [value]="sem"
-                    >
+                    <option [value]="sem">
                       Semestre {{ sem }}
                     </option>
                   }
@@ -111,7 +107,7 @@
           <div class="flex justify-end pt-4">
             <button
               type="submit"
-              class="flex items-center gap-2 px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-semibold cursor-pointer"
+              class="flex items-center justify-center gap-2 px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-semibold cursor-pointer w-full sm:w-auto text-sm sm:text-base"
             >
               <lucide-icon [img]="icons.Save" class="w-5 h-5"></lucide-icon>
               Guardar Cambios
@@ -120,37 +116,37 @@
         </div>
       </div>
 
-      <div class="space-y-6">
-        <div class="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 class="font-bold text-gray-900 mb-4">Estadísticas de la Cuenta</h3>
+      <div class="col-span-1 space-y-6">
+        <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
+          <h3 class="font-bold text-gray-900 mb-4 text-base sm:text-lg">Estadísticas de la Cuenta</h3>
           <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <span class="text-gray-600 text-sm">Miembro desde</span>
+            <div class="flex items-center justify-between text-xs sm:text-sm">
+              <span class="text-gray-600">Miembro desde</span>
               <span class="font-semibold text-gray-900">Ene 2024</span>
             </div>
-            <div class="flex items-center justify-between">
-              <span class="text-gray-600 text-sm">Exámenes Totales</span>
+            <div class="flex items-center justify-between text-xs sm:text-sm">
+              <span class="text-gray-600">Exámenes Totales</span>
               <span class="font-semibold text-gray-900">156</span>
             </div>
-            <div class="flex items-center justify-between">
-              <span class="text-gray-600 text-sm">Estudiantes Totales</span>
+            <div class="flex items-center justify-between text-xs sm:text-sm">
+              <span class="text-gray-600">Estudiantes Totales</span>
               <span class="font-semibold text-gray-900">1,234</span>
             </div>
-            <div class="flex items-center justify-between">
-              <span class="text-gray-600 text-sm">Puntaje Promedio</span>
+            <div class="flex items-center justify-between text-xs sm:text-sm">
+              <span class="text-gray-600">Puntaje Promedio</span>
               <span class="font-semibold text-gray-900">87%</span>
             </div>
           </div>
         </div>
 
-        <div class="bg-gradient-to-br from-yellow-600 to-orange-600 rounded-xl p-6 text-white shadow-md">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+        <div class="bg-gradient-to-br from-yellow-600 to-orange-600 rounded-xl p-4 sm:p-6 text-white shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0">
               <lucide-icon [img]="icons.Eye" class="w-6 h-6"></lucide-icon>
             </div>
             <div>
-              <div class="text-2xl font-bold">2,847</div>
-              <div class="text-yellow-100 text-sm">Vistas de Perfil</div>
+              <div class="text-xl sm:text-2xl font-bold">2,847</div>
+              <div class="text-yellow-100 text-xs sm:text-sm">Vistas de Perfil</div>
             </div>
           </div>
         </div>
@@ -161,43 +157,43 @@
 
   @if (activeTab() === 'stats') {
     <div class="space-y-6">
-      <div class="grid grid-cols-4 gap-6">
-        <div class="bg-white rounded-xl p-6 border border-gray-200">
-          <div class="text-3xl font-bold text-gray-900 mb-1">156</div>
-          <div class="text-sm text-gray-600">Exámenes Totales Creados</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200">
+          <div class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">156</div>
+          <div class="text-xs sm:text-sm text-gray-600">Exámenes Totales Creados</div>
         </div>
-        <div class="bg-white rounded-xl p-6 border border-gray-200">
-          <div class="text-3xl font-bold text-gray-900 mb-1">1,234</div>
-          <div class="text-sm text-gray-600">Estudiantes Inscritos</div>
+        <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200">
+          <div class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">1,234</div>
+          <div class="text-xs sm:text-sm text-gray-600">Estudiantes Inscritos</div>
         </div>
-        <div class="bg-white rounded-xl p-6 border border-gray-200">
-          <div class="text-3xl font-bold text-gray-900 mb-1">87%</div>
-          <div class="text-sm text-gray-600">Puntaje Promedio</div>
+        <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200">
+          <div class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">87%</div>
+          <div class="text-xs sm:text-sm text-gray-600">Puntaje Promedio</div>
         </div>
-        <div class="bg-white rounded-xl p-6 border border-gray-200">
-          <div class="text-3xl font-bold text-gray-900 mb-1">4.8</div>
-          <div class="text-sm text-gray-600">Calificación</div>
+        <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200">
+          <div class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">4.8</div>
+          <div class="text-xs sm:text-sm text-gray-600">Calificación</div>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <div class="bg-white rounded-xl border border-gray-200 p-6 flex flex-col">
-          <h3 class="font-bold text-gray-900 mb-6">Tendencia de Exámenes y Estudiantes</h3>
-          <div class="w-full h-[300px] bg-gray-50 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
-            <div class="text-center">
+        <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 flex flex-col">
+          <h3 class="font-bold text-gray-900 mb-4 sm:mb-6 text-base sm:text-lg">Tendencia de Exámenes y Estudiantes</h3>
+          <div class="w-full h-[250px] sm:h-[300px] bg-gray-50 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
+            <div class="text-center p-4">
               <lucide-icon [img]="icons.Eye" class="w-8 h-8 mx-auto mb-2 opacity-50"></lucide-icon>
-              <p class="text-sm">Gráfica de Líneas (Instala ng2-charts aquí)</p>
+              <p class="text-xs sm:text-sm">Gráfica de Líneas</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl border border-gray-200 p-6 flex flex-col">
-          <h3 class="font-bold text-gray-900 mb-6">Puntaje Promedio por Materia</h3>
-          <div class="w-full h-[300px] bg-gray-50 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
-            <div class="text-center">
+        <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 flex flex-col">
+          <h3 class="font-bold text-gray-900 mb-4 sm:mb-6 text-base sm:text-lg">Puntaje Promedio por Materia</h3>
+          <div class="w-full h-[250px] sm:h-[300px] bg-gray-50 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
+            <div class="text-center p-4">
               <lucide-icon [img]="icons.Building" class="w-8 h-8 mx-auto mb-2 opacity-50"></lucide-icon>
-              <p class="text-sm">Gráfica de Barras (Instala ng2-charts aquí)</p>
+              <p class="text-xs sm:text-sm">Gráfica de Barras</p>
             </div>
           </div>
         </div>
@@ -207,22 +203,22 @@
   }
 
   @if (activeTab() === 'preferences') {
-    <div class="grid grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-      <div class="bg-white rounded-xl border border-gray-200 p-8">
+      <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 md:p-8">
         <div class="flex items-center gap-3 mb-6">
           <lucide-icon [img]="icons.Bell" class="w-6 h-6 text-yellow-600"></lucide-icon>
-          <h2 class="text-xl font-bold text-gray-900">Notificaciones</h2>
+          <h2 class="text-lg sm:text-xl font-bold text-gray-900">Notificaciones</h2>
         </div>
 
         <div class="space-y-4">
           @for (item of notificationsList; track item.label) {
-            <div class="flex items-center justify-between py-3">
+            <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0 gap-4">
               <div>
-                <div class="font-medium text-gray-900">{{ item.label }}</div>
-                <div class="text-sm text-gray-600">{{ item.desc }}</div>
+                <div class="font-medium text-gray-900 text-sm sm:text-base">{{ item.label }}</div>
+                <div class="text-xs sm:text-sm text-gray-600">{{ item.desc }}</div>
               </div>
-              <label class="relative inline-flex items-center cursor-pointer">
+              <label class="relative inline-flex items-center cursor-pointer shrink-0">
                 <input type="checkbox" class="sr-only peer" [checked]="item.checked" />
                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600"></div>
               </label>
@@ -233,47 +229,47 @@
 
       <div class="space-y-6">
 
-        <div class="bg-white rounded-xl border border-gray-200 p-8">
+        <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 md:p-8">
           <div class="flex items-center gap-3 mb-6">
             <lucide-icon [img]="icons.Lock" class="w-6 h-6 text-yellow-600"></lucide-icon>
-            <h2 class="text-xl font-bold text-gray-900">Security</h2>
+            <h2 class="text-lg sm:text-xl font-bold text-gray-900">Seguridad</h2>
           </div>
 
-          <div class="space-y-4">
+          <div class="space-y-3 sm:space-y-4">
             <button class="w-full text-left px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-              <div class="font-medium text-gray-900">Cambiar Contraseña</div>
-              <div class="text-sm text-gray-600 mt-1">Actualiza tu contraseña</div>
+              <div class="font-medium text-gray-900 text-sm sm:text-base">Cambiar Contraseña</div>
+              <div class="text-xs sm:text-sm text-gray-600 mt-0.5">Actualiza tu contraseña</div>
             </button>
             <button class="w-full text-left px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-              <div class="font-medium text-gray-900">Autenticación de Dos Factores</div>
-              <div class="text-sm text-gray-600 mt-1">Añade seguridad adicional</div>
+              <div class="font-medium text-gray-900 text-sm sm:text-base">Autenticación de Dos Factores</div>
+              <div class="text-xs sm:text-sm text-gray-600 mt-0.5">Añade seguridad adicional</div>
             </button>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl border border-gray-200 p-8">
+        <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 md:p-8">
           <div class="flex items-center gap-3 mb-6">
             <lucide-icon [img]="icons.Moon" class="w-6 h-6 text-yellow-600"></lucide-icon>
-            <h2 class="text-xl font-bold text-gray-900">Pantalla</h2>
+            <h2 class="text-lg sm:text-xl font-bold text-gray-900">Pantalla</h2>
           </div>
 
           <div class="space-y-4">
-            <div class="flex items-center justify-between py-3">
+            <div class="flex items-center justify-between py-3 border-b border-gray-100 gap-4">
               <div>
-                <div class="font-medium text-gray-900">Modo Oscuro</div>
-                <div class="text-sm text-gray-600">Activar tema oscuro</div>
+                <div class="font-medium text-gray-900 text-sm sm:text-base">Modo Oscuro</div>
+                <div class="text-xs sm:text-sm text-gray-600">Activar tema oscuro</div>
               </div>
-              <label class="relative inline-flex items-center cursor-pointer">
+              <label class="relative inline-flex items-center cursor-pointer shrink-0">
                 <input type="checkbox" class="sr-only peer" />
                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600"></div>
               </label>
             </div>
 
-            <div class="space-y-2">
+            <div class="space-y-2 pt-2">
               <label class="text-sm font-medium text-gray-700">Idioma</label>
               <div class="relative">
                 <lucide-icon [img]="icons.Globe" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
-                <select class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none bg-white">
+                <select class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none bg-white text-sm sm:text-base">
                   <option>Español</option>
                   <option>Inglés</option>
                   <option>Francés</option>

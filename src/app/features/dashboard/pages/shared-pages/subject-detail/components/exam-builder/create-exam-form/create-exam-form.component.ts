@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed, inject, effect } from '@angular/core';
+import { Component, input, output, signal, computed, inject, effect, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NonNullableFormBuilder, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 
@@ -51,6 +51,7 @@ export class CreateExamFormComponent {
   isEditExam = input<boolean>(false);
   questionToEdit = signal<Question | null>(null);
   openQuestionBuilder = signal<boolean>(false);
+  @ViewChild('questionBuilderSection') questionBuilderSection?: ElementRef<HTMLDivElement>;
 
   modalState = signal<ModalState>({
     status: 'oculto',
@@ -398,10 +399,25 @@ export class CreateExamFormComponent {
     return questionGroup;
   }
 
+  onOpenQuestionBuilder() {
+    this.openQuestionBuilder.set(true);
+    this.scrollToBuilder();
+  }
+
+  scrollToBuilder() {
+    setTimeout(() => {
+      this.questionBuilderSection?.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 100);
+  }
+
   editQuestion(index: number, question: Question){
     this.editIndex.set(index);
     this.questionToEdit.set(question);
     this.openQuestionBuilder.set(true);
+    this.scrollToBuilder();
   }
 
   updateQuestion(editedQuestion: Question){

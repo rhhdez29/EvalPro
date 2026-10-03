@@ -11,10 +11,10 @@
 
   <!-- Contenedor del Sidebar responsivo (deslizable en móvil, estático en desktop) -->
   <div
-    class="fixed inset-y-0 left-0 z-50 w-64 transform bg-white transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex-shrink-0"
+    class="fixed inset-y-0 left-0 z-50 w-64 transform md:transform-none bg-white transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex-shrink-0"
     [class.-translate-x-full]="!isSidebarOpen()"
     [class.translate-x-0]="isSidebarOpen()">
-    <side-bar (linkClicked)="closeSidebar()"/>
+    <side-bar (linkClicked)="closeSidebar()" (modalStateChange)="onModalStateChange($event)"/>
   </div>
 
   <!-- Contenedor Principal -->
@@ -49,3 +49,9 @@
 
   </div>
 </div>
+
+<loading-modal
+  [status]="modalState().status"
+  [message1]="modalState().title"
+  [message2]="modalState().subtitle">
+</loading-modal>

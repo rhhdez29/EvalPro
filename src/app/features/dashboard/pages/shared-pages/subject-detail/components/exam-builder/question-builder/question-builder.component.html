@@ -1,7 +1,7 @@
 @if (isBuilding()) {
-  <div class="border-2 border-yellow-500 rounded-lg bg-yellow-50/30 p-6">
-    <div class="flex items-center justify-between mb-6">
-      <h3 class="text-lg font-bold text-gray-900">Crear Nueva Pregunta</h3>
+  <div class="border-2 border-yellow-500 rounded-lg bg-yellow-50/30 p-4 sm:p-6">
+    <div class="flex items-center justify-between mb-4 sm:mb-6">
+      <h3 class="text-base sm:text-lg font-bold text-gray-900">Crear Nueva Pregunta</h3>
       <button
         type="button"
         (click)="handleCancel()"
@@ -15,19 +15,19 @@
       <label class="block text-sm font-semibold text-gray-900 mb-3">
         Tipo de Pregunta <span class="text-red-500">*</span>
       </label>
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
         <button
           type="button"
           (click)="selectType('MCQ')"
-          class="p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
+          class="p-3 sm:p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
           [class.border-yellow-600]="selectedType() === 'MCQ'"
           [class.border-gray-300]="selectedType() !== 'MCQ'"
           [class.hover:border-gray-400]="selectedType() !== 'MCQ'"
         >
           <div class="flex items-center gap-2 mb-1">
             <lucide-icon [img]="icons.Check" class="w-4 h-4"></lucide-icon>
-            <span class="font-semibold text-gray-900">Opción Múltiple</span>
+            <span class="font-semibold text-gray-900 text-sm sm:text-base">Opción Múltiple</span>
           </div>
           <p class="text-xs text-gray-600">Selecciona una o más respuestas correctas</p>
         </button>
@@ -35,14 +35,14 @@
         <button
           type="button"
           (click)="selectType('TF')"
-          class="p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
+          class="p-3 sm:p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
           [class.border-yellow-600]="selectedType() === 'TF'"
           [class.border-gray-300]="selectedType() !== 'TF'"
           [class.hover:border-gray-400]="selectedType() !== 'TF'"
         >
           <div class="flex items-center gap-2 mb-1">
             <lucide-icon [img]="icons.Check" class="w-4 h-4"></lucide-icon>
-            <span class="font-semibold text-gray-900">Verdadero/Falso</span>
+            <span class="font-semibold text-gray-900 text-sm sm:text-base">Verdadero/Falso</span>
           </div>
           <p class="text-xs text-gray-600">Pregunta simple de elección binaria</p>
         </button>
@@ -50,14 +50,14 @@
         <button
           type="button"
           (click)="selectType('MATCH')"
-          class="p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
+          class="p-3 sm:p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
           [class.border-yellow-600]="selectedType() === 'MATCH'"
           [class.border-gray-300]="selectedType() !== 'MATCH'"
           [class.hover:border-gray-400]="selectedType() !== 'MATCH'"
         >
           <div class="flex items-center gap-2 mb-1">
             <lucide-icon [img]="icons.Check" class="w-4 h-4"></lucide-icon>
-            <span class="font-semibold text-gray-900">Emparejamiento de Declaraciones</span>
+            <span class="font-semibold text-gray-900 text-sm sm:text-base">Emparejamiento de Declaraciones</span>
           </div>
           <p class="text-xs text-gray-600">Empareja pares de elementos relacionados</p>
         </button>
@@ -65,14 +65,14 @@
         <button
           type="button"
           (click)="selectType('CODE')"
-          class="p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
+          class="p-3 sm:p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
           [class.border-yellow-600]="selectedType() === 'CODE'"
           [class.border-gray-300]="selectedType() !== 'CODE'"
           [class.hover:border-gray-400]="selectedType() !== 'CODE'"
         >
           <div class="flex items-center gap-2 mb-1">
             <lucide-icon [img]="icons.Code" class="w-4 h-4"></lucide-icon>
-            <span class="font-semibold text-gray-900">Editor de Código</span>
+            <span class="font-semibold text-gray-900 text-sm sm:text-base">Editor de Código</span>
           </div>
           <p class="text-xs text-gray-600">Desafío de programación con validación</p>
         </button>
@@ -80,7 +80,7 @@
       </div>
     </div>
 
-    <div class="bg-white border border-gray-200 rounded-lg p-6">
+    <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
       @switch (selectedType()) {
 
         @case ('MCQ') {

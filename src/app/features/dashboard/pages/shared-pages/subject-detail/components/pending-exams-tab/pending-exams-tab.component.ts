@@ -26,21 +26,21 @@ export class PendingExamsTabComponent {
   exams =  rxResource({
     params: () => this.subjectId(),
     stream: () => this.subjectService.getStudentExams(this.subjectId()).pipe(
-      map(response => {
+      map((response: any) => {
         if (!response) return [];
         console.log(response);
-        if(Array.isArray(response)) return response;
-
-        return[];
+        if (Array.isArray(response)) return response;
+        if (response.results && Array.isArray(response.results)) return response.results;
+        return [];
       })
     )
   })
 
   // Contadores calculados (Reactivos)
-  availableCount = computed(() => this.exams.value()?.filter(e => e.status === 'available').length || 0);
-  inProgressCount = computed(() => this.exams.value()?.filter(e => e.status === 'in-progress').length || 0);
-  overdueCount = computed(() => this.exams.value()?.filter(e => e.status === 'overdue').length || 0);
-  annulledCount = computed(() => this.exams.value()?.filter(e => e.status === 'annulled').length || 0);
+  availableCount = computed(() => this.exams.value()?.filter((e: any) => e.status === 'available').length || 0);
+  inProgressCount = computed(() => this.exams.value()?.filter((e: any) => e.status === 'in-progress').length || 0);
+  overdueCount = computed(() => this.exams.value()?.filter((e: any) => e.status === 'overdue').length || 0);
+  annulledCount = computed(() => this.exams.value()?.filter((e: any) => e.status === 'annulled').length || 0);
 
   // --- Helpers para la Vista ---
 

@@ -1,14 +1,14 @@
-<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-  <div class="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col">
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
+  <div class="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[95vh] sm:max-h-[90vh] flex flex-col">
 
-    <div class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-xl shrink-0">
+    <div class="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between rounded-t-xl shrink-0">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+        <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center shrink-0">
           <lucide-icon [img]="icons.FileText" class="w-5 h-5 text-yellow-600"></lucide-icon>
         </div>
         <div>
-          <h2 class="text-xl font-bold text-gray-900">Crear Nuevo Examen</h2>
-          <p class="text-sm text-gray-600">Construye una evaluación integral</p>
+          <h2 class="text-lg sm:text-xl font-bold text-gray-900">Crear Nuevo Examen</h2>
+          <p class="text-xs sm:text-sm text-gray-600">Construye una evaluación integral</p>
         </div>
       </div>
       <button
@@ -20,12 +20,12 @@
       </button>
     </div>
 
-    <div class="border-b border-gray-200 bg-gray-50 px-6 shrink-0">
+    <div class="border-b border-gray-200 bg-gray-50 px-4 sm:px-6 shrink-0 overflow-x-auto whitespace-nowrap scrollbar-hide">
       <div class="flex gap-1">
         <button
           type="button"
           (click)="setSection('metadata')"
-          class="px-6 py-3 font-medium transition-colors relative cursor-pointer"
+          class="px-4 sm:px-6 py-2.5 sm:py-3 font-medium transition-colors relative cursor-pointer text-xs sm:text-sm md:text-base shrink-0"
           [class.text-yellow-600]="currentSection() === 'metadata'"
           [class.border-b-2]="currentSection() === 'metadata'"
           [class.border-yellow-600]="currentSection() === 'metadata'"
@@ -38,7 +38,7 @@
         <button
           type="button"
           (click)="setSection('questions')"
-          class="px-6 py-3 font-medium transition-colors relative flex items-center cursor-pointer"
+          class="px-4 sm:px-6 py-2.5 sm:py-3 font-medium transition-colors relative flex items-center cursor-pointer text-xs sm:text-sm md:text-base shrink-0"
           [class.text-yellow-600]="currentSection() === 'questions'"
           [class.border-b-2]="currentSection() === 'questions'"
           [class.border-yellow-600]="currentSection() === 'questions'"
@@ -62,7 +62,7 @@
 
         <form [formGroup]="examForm">
 
-        <div class="p-6 space-y-6">
+        <div class="p-4 sm:p-6 space-y-4 sm:space-y-6">
 
           <div>
             <label for="title" class="block text-sm font-semibold text-gray-900 mb-2">
@@ -72,7 +72,7 @@
               type="text"
               formControlName="title"
               placeholder="Ej., Examen Parcial - Cálculo"
-              class="w-full pl-4 pr-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+              class="w-full pl-4 pr-11 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none text-sm sm:text-base"
               [class.border-red-500]="formUtils.isValidField(examForm, 'title')"
               [class.focus:ring-red-500]="formUtils.isValidField(examForm, 'title')"
             />
@@ -89,13 +89,11 @@
             </label>
             <textarea
               formControlName="description"
-              placeholder="e.g., Midterm Exam - Calculus"
-              class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+              class="w-full pl-4 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none text-sm sm:text-base"
               [class.border-red-500]="formUtils.isValidField(examForm, 'description')"
               [class.focus:ring-red-500]="formUtils.isValidField(examForm, 'description')"
               placeholder="Proporciona una breve descripción del contenido y objetivos del examen..."
               rows="4"
-
             ></textarea>
             @if (formUtils.isValidField(examForm, 'description')) {
               <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
@@ -104,7 +102,7 @@
             }
           </div>
 
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label for="startDateTime" class="block text-sm font-semibold text-gray-900 mb-2">
                 Fecha/Hora de Inicio <span class="text-red-500">*</span>
@@ -115,7 +113,7 @@
                 placeholder="Establecer fecha de inicio"
                 formControlName="start_date"
                 readonly
-                class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                class="w-full pl-4 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none text-sm sm:text-base"
                 />
               <owl-date-time #dt1></owl-date-time>
               @if (formUtils.isValidField(examForm, 'start_date')) {
@@ -135,7 +133,7 @@
                 placeholder="Establecer fecha de finalización"
                 formControlName="end_date"
                 readonly
-                class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                class="w-full pl-4 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none text-sm sm:text-base"
                 />
               <owl-date-time #dt2></owl-date-time>
               @if (formUtils.isValidField(examForm, 'end_date')) {
@@ -151,7 +149,7 @@
             </p>
           }
 
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label for="duration" class="block text-sm font-semibold text-gray-900 mb-2">
                 Duración Total (minutos) <span class="text-red-500">*</span>
@@ -161,7 +159,7 @@
                 type="number"
                 min="1"
                 appOnlyNumbers
-                class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                class="w-full pl-4 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none text-sm sm:text-base"
                 [class.border-red-500]="formUtils.isValidField(examForm, 'duration_minutes')"
                 [class.focus:ring-red-500]="formUtils.isValidField(examForm, 'duration_minutes')"
               />
@@ -181,7 +179,7 @@
                 min="1"
                 appOnlyNumbers
                 step="0.01"
-                class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                class="w-full pl-4 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none text-sm sm:text-base"
                 [class.border-red-500]="formUtils.isValidField(examForm, 'total_score')"
                 [class.focus:ring-red-500]="formUtils.isValidField(examForm, 'total_score')"
               />
@@ -197,7 +195,7 @@
             <button
               type="button"
               (click)="setSection('questions')"
-              class="px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
+              class="w-full sm:w-auto px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer text-sm sm:text-base text-center"
             >
               Siguiente: Añadir Preguntas
             </button>
@@ -209,16 +207,15 @@
       }
 
       @if (currentSection() === 'questions') {
-        <div class="p-6 space-y-6">
+        <div class="p-4 sm:p-6 space-y-4 sm:space-y-6">
 
-          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4 flex items-start gap-3">
             <lucide-icon [img]="icons.AlertCircle" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5"></lucide-icon>
             <div class="flex-1">
-              <p class="text-sm font-medium text-blue-900">Distribución de Puntajes</p>
-              <p class="text-sm text-blue-700 mt-1">
+              <p class="text-xs sm:text-sm font-medium text-blue-900">Distribución de Puntajes</p>
+              <p class="text-xs sm:text-sm text-blue-700 mt-1">
                 Total actual: <span class="font-bold">{{ examForm.get('total_score')?.value }}</span> puntos
                 | Objetivo: <span class="font-bold">{{ examForm.get('total_score')?.value }}</span> puntos
-                <!-- diferencia entre el total de la suma de las preguntas y el total del examen -->
                 @if (totalQuestionsScore !== examForm.get('total_score')?.value) {
                   <span class="text-red-600 font-semibold ml-2">
                     (Diferencia: {{ (examForm.get('total_score')?.value ?? 0) - totalQuestionsScore | number:'1.0-2' }})
@@ -229,9 +226,9 @@
           </div>
 
           @if (questionsFormArray.length > 0) {
-            <div class="space-y-4">
+            <div class="space-y-3 sm:space-y-4">
               @for (question of questionsFormArray.controls; track question.value.order; let i = $index) {
-                <div class="bg-white border-2 border-gray-200 rounded-lg p-4 hover:border-yellow-400 transition-all" >
+                <div class="bg-white border-2 border-gray-200 rounded-lg p-3 sm:p-4 hover:border-yellow-400 transition-all">
                   <div class="flex items-start gap-3">
 
                     <div class="flex flex-col gap-1 mt-1 shrink-0">
@@ -245,22 +242,22 @@
                       </button>
                     </div>
 
-                    <div class="flex-1">
-                      <div class="flex items-start justify-between mb-2">
-                        <div>
-                          <span class="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium mb-2">
+                    <div class="flex-1 min-w-0">
+                      <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-2">
+                        <div class="min-w-0">
+                          <span class="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium mb-1 sm:mb-2">
                             Pregunta {{ question.value.order }}
                           </span>
-                          <h4 class="font-semibold text-gray-900">{{ question.value.prompt  | slice:0:70 }}...</h4>
+                          <h4 class="font-semibold text-gray-900 text-sm sm:text-base break-words">{{ question.value.prompt | slice:0:70 }}...</h4>
                         </div>
-                        <div class="flex items-center gap-2">
-                          <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-sm font-bold">
+                        <div class="flex items-center gap-2 shrink-0">
+                          <span class="px-2.5 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs sm:text-sm font-bold">
                             {{ question.value.points }} pts
                           </span>
                           <button
                             type="button"
                             (click)="editQuestion(i, question.value)"
-                            class="p-2 hover:bg-yellow-50 rounded-lg transition-colors cursor-pointer"
+                            class="p-1.5 sm:p-2 hover:bg-yellow-50 rounded-lg transition-colors cursor-pointer"
                           >
                             <lucide-icon [img]="icons.Edit" class="w-4 h-4 text-yellow-600"></lucide-icon>
                           </button>
@@ -268,14 +265,14 @@
                           <button
                             type="button"
                             (click)="removeQuestion(i)"
-                            class="p-2 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                            class="p-1.5 sm:p-2 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                           >
                             <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600"></lucide-icon>
                           </button>
                         </div>
                       </div>
 
-                      <p class="text-sm text-gray-600 capitalize">Tipo: {{ question.value.question_type }}</p>
+                      <p class="text-xs sm:text-sm text-gray-600 capitalize">Tipo: {{ question.value.question_type }}</p>
                     </div>
                   </div>
                 </div>
@@ -285,14 +282,14 @@
 
           <button
             type="button"
-            class="w-full py-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition-all text-gray-600 hover:text-yellow-600 font-medium flex items-center justify-center gap-2 cursor-pointer"
-            (click)="openQuestionBuilder.set(true)"
-            >
+            class="w-full py-3.5 sm:py-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition-all text-gray-600 hover:text-yellow-600 font-medium flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base"
+            (click)="onOpenQuestionBuilder()"
+          >
             <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
             Añadir Nueva Pregunta
           </button>
 
-          <div class="space-y-2">
+          <div #questionBuilderSection class="space-y-2">
             <app-question-builder
               (onAddQuestion)="addQuestion($event)"
               [questionToEdit]="questionToEdit()"
@@ -306,12 +303,12 @@
 
     </div>
 
-    <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 rounded-b-xl shrink-0">
-      <div class="flex gap-3">
+    <div class="border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 rounded-b-xl shrink-0">
+      <div class="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
         <button
           type="button"
           (click)="onClose()"
-          class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium cursor-pointer"
+          class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium cursor-pointer text-sm sm:text-base text-center"
         >
           Cancelar
         </button>
@@ -320,7 +317,7 @@
           <button
             type="button"
             (click)="setSection('metadata')"
-            class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium cursor-pointer"
+            class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium cursor-pointer text-sm sm:text-base text-center"
           >
             Volver a Metadatos
           </button>
@@ -329,7 +326,7 @@
         <button
           type="button"
           (click)="createExam()"
-          class="flex-1 px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
+          class="w-full sm:flex-1 px-5 sm:px-6 py-2.5 sm:py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer text-sm sm:text-base text-center"
         >
           {{ isEditExam() ? 'Actualizar Examen' : 'Crear Examen' }}
         </button>
@@ -338,7 +335,6 @@
 
   </div>
 </div>
-
 
 <loading-modal
   [status]="modalState().status"

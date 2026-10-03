@@ -19,18 +19,20 @@ export class MyGradesTabComponent {
   grades = rxResource({
     params: () => this.subjectId(),
     stream: () => this.subjectService.getStudentGrades(this.subjectId()).pipe(
-      map(response => {
+      map((response: any) => {
+        console.log(response);
         if (!response) return [];
         if (Array.isArray(response)) return response;
+        if (response.results && Array.isArray(response.results)) return response.results;
         return [];
       })
     )
   });
 
   // Contadores
-  completedCount = computed(() => this.grades.value()?.filter(g => g.status === 'completed').length || 0);
-  pendingGradingCount = computed(() => this.grades.value()?.filter(g => g.status === 'needs_grading').length || 0);
-  annulledCount = computed(() => this.grades.value()?.filter(g => g.status === 'annulled_by_fraud').length || 0);
+  completedCount = computed(() => this.grades.value()?.filter((g: any) => g.status === 'completed').length || 0);
+  pendingGradingCount = computed(() => this.grades.value()?.filter((g: any) => g.status === 'needs_grading').length || 0);
+  annulledCount = computed(() => this.grades.value()?.filter((g: any) => g.status === 'annulled_by_fraud').length || 0);
 
   getBadgeLabel(status: string): string {
     const labels: Record<string, string> = {

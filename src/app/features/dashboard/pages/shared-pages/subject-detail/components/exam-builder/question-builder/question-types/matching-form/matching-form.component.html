@@ -1,4 +1,4 @@
-<form [formGroup]="matchingForm" (ngSubmit)="handleAdd()" class="space-y-6">
+<form [formGroup]="matchingForm" (ngSubmit)="handleAdd()" class="space-y-4 sm:space-y-6">
 
   <div>
     <label class="block text-sm font-semibold text-gray-900 mb-2">
@@ -8,11 +8,11 @@
       formControlName="prompt"
       placeholder="e.g., Match each concept with its correct definition..."
       rows="3"
-      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none"
+      class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none text-sm sm:text-base"
       [class.border-red-500]="formUtils.isValidField(matchingForm, 'prompt')"
     ></textarea>
     @if(formUtils.isValidField(matchingForm, 'prompt')){
-      <p class="text-red-500 text-sm">{{ formUtils.getFieldError(matchingForm, 'prompt') }}</p>
+      <p class="text-red-500 text-xs sm:text-sm mt-1">{{ formUtils.getFieldError(matchingForm, 'prompt') }}</p>
     }
   </div>
 
@@ -26,10 +26,10 @@
       min="1"
       step="10"
       appOnlyNumbers
-      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+      class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm sm:text-base"
     />
     @if(formUtils.isValidField(matchingForm, 'points')){
-      <p class="text-red-500 text-sm">{{ formUtils.getFieldError(matchingForm, 'points') }}</p>
+      <p class="text-red-500 text-xs sm:text-sm mt-1">{{ formUtils.getFieldError(matchingForm, 'points') }}</p>
     }
     <p class="mt-2 text-xs text-gray-500">
       Points will be divided equally among all pairs
@@ -45,33 +45,44 @@
     <div class="space-y-3">
       @for (pairCtrl of pairsArray.controls; track $index; let i = $index) {
 
-        <div [formGroupName]="$index" class="flex items-center gap-3">
+        <div [formGroupName]="$index" class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 bg-gray-50 sm:bg-transparent rounded-lg sm:rounded-none border sm:border-0 border-gray-200">
 
-          <div
-            class="flex items-center justify-center w-8 h-12 bg-gray-100 rounded-lg font-bold text-gray-600"
-            [class.bg-red-200]="formUtils.isValidFieldInArrayGroup(pairsArray, i, 'left') || formUtils.isValidFieldInArrayGroup(pairsArray, i, 'right')"
-          >
-            {{ $index + 1 }}
+          <div class="flex items-center justify-between sm:justify-start gap-2 sm:gap-3 w-full sm:w-auto">
+            <div
+              class="flex items-center justify-center w-8 h-8 sm:h-12 bg-gray-200 sm:bg-gray-100 rounded-lg font-bold text-gray-700 sm:text-gray-600 text-xs sm:text-sm shrink-0"
+              [class.bg-red-200]="formUtils.isValidFieldInArrayGroup(pairsArray, i, 'left') || formUtils.isValidFieldInArrayGroup(pairsArray, i, 'right')"
+            >
+              {{ $index + 1 }}
+            </div>
+
+            <button
+              type="button"
+              (click)="removePair($index)"
+              [disabled]="pairsArray.length <= 2"
+              class="sm:hidden p-1.5 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer group"
+            >
+              <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600 group-disabled:text-gray-400"></lucide-icon>
+            </button>
           </div>
 
-          <div class="flex-1">
+          <div class="flex-1 w-full">
             <input
               type="text"
               formControlName="left"
               placeholder="Left item (e.g., Concept)"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              class="w-full px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm sm:text-base bg-white"
               [class.border-red-500]="formUtils.isValidFieldInArrayGroup(pairsArray, i, 'left')"
             />
           </div>
 
-          <lucide-icon [img]="icons.ArrowRight" class="w-5 h-5 text-gray-400 flex-shrink-0"></lucide-icon>
+          <lucide-icon [img]="icons.ArrowRight" class="hidden sm:block w-5 h-5 text-gray-400 shrink-0"></lucide-icon>
 
-          <div class="flex-1">
+          <div class="flex-1 w-full">
             <input
               type="text"
               formControlName="right"
               placeholder="Right item (e.g., Definition)"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              class="w-full px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm sm:text-base bg-white"
               [class.border-red-500]="formUtils.isValidFieldInArrayGroup(pairsArray, i, 'right')"
             />
           </div>
@@ -80,43 +91,43 @@
             type="button"
             (click)="removePair($index)"
             [disabled]="pairsArray.length <= 2"
-            class="p-3 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer group"
+            class="hidden sm:block p-3 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer group shrink-0"
           >
             <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600 group-disabled:text-gray-400"></lucide-icon>
           </button>
         </div>
         @if(formUtils.isValidFieldInArray(pairsArray, i)){
-          <p class="text-red-500 text-sm">Please fill in all pairs completely.</p>
+          <p class="text-red-500 text-xs sm:text-sm">Please fill in all pairs completely.</p>
         }
       }
     </div>
 
-
     <button
       type="button"
       (click)="addPair()"
-      class="mt-3 flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700 cursor-pointer"
+      class="mt-3 flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700 cursor-pointer w-full sm:w-auto justify-center"
     >
       <lucide-icon [img]="icons.Plus" class="w-4 h-4"></lucide-icon>
       Add Pair
     </button>
   </div>
 
-  <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-    <p class="text-sm font-semibold text-gray-900 mb-3">Live Preview</p>
+  <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 sm:p-4">
+    <p class="text-xs sm:text-sm font-semibold text-gray-900 mb-3">Live Preview</p>
     <div class="space-y-2">
       @for (pair of pairsArray.value; track $index) {
         @if (pair.left && pair.right) {
-          <div class="flex items-center gap-3 text-sm">
-            <span class="w-6 h-6 bg-yellow-100 text-yellow-700 rounded-full flex items-center justify-center font-bold">
-              {{ $index + 1 }}
-            </span>
-            <span
-            class="flex-1 bg-white px-3 py-2 rounded border border-gray-200 truncate">
-              {{ pair.left }}
-            </span>
-            <lucide-icon [img]="icons.ArrowRight" class="w-4 h-4 text-gray-400"></lucide-icon>
-            <span class="flex-1 bg-white px-3 py-2 rounded border border-gray-200 truncate">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 sm:w-6 sm:h-6 bg-yellow-100 text-yellow-700 rounded-full flex items-center justify-center font-bold text-xs shrink-0">
+                {{ $index + 1 }}
+              </span>
+              <span class="flex-1 sm:flex-initial bg-white px-3 py-1.5 sm:py-2 rounded border border-gray-200 truncate">
+                {{ pair.left }}
+              </span>
+            </div>
+            <lucide-icon [img]="icons.ArrowRight" class="hidden sm:block w-4 h-4 text-gray-400 shrink-0"></lucide-icon>
+            <span class="bg-white px-3 py-1.5 sm:py-2 rounded border border-gray-200 truncate">
               {{ pair.right }}
             </span>
           </div>
@@ -125,17 +136,17 @@
     </div>
   </div>
 
-  <div class="flex gap-3 pt-4 border-t border-gray-200">
+  <div class="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t border-gray-200">
     <button
       type="button"
       (click)="cancel()"
-      class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium cursor-pointer"
+      class="w-full sm:flex-1 px-5 sm:px-6 py-2.5 sm:py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium cursor-pointer text-sm sm:text-base text-center"
     >
       Cancel
     </button>
     <button
       type="submit"
-      class="flex-1 px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer"
+      class="w-full sm:flex-1 px-5 sm:px-6 py-2.5 sm:py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium cursor-pointer text-sm sm:text-base text-center"
     >
       {{ isEditing() ? 'Update Question' : 'Add Question' }}
     </button>
