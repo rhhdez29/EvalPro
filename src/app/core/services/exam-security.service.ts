@@ -68,8 +68,8 @@ export class ExamSecurityService {
     this.stopExamSecurity();
     this.examVoidedSubject.next();
 
-    // Reporte inmediato al backend
-    if (this.examId) {
+    // Reporte inmediato al backend (omitir si es modo demo)
+    if (this.examId && this.examId !== 'demo') {
       this.http.post(`${environment.url_api}/exams/${this.examId}/void/`, {
         reason: 'Abandono de ventana o pestaña',
         triggerEvent: trigger

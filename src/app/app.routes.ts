@@ -4,7 +4,7 @@ import { ExamGuard } from './core/guards/exam.guard';
 
 export const routes: Routes = [
 
-  //REDIRECCIÓN INICIAL
+  // REDIRECCIÓN INICIAL
   {
     path: '',
     redirectTo: 'landing',
@@ -15,23 +15,26 @@ export const routes: Routes = [
     path: 'landing',
     loadComponent: () => import('./features/landing/pages/landing.component').then(m => m.LandingComponent),
   },
-  //MÓDULO DE AUTENTICACIÓN
+  // EXAMEN DEMO PÚBLICO (Accesible sin autenticación)
+  {
+    path: 'demo-exam',
+    loadComponent: () => import('./features/dashboard/pages/shared-pages/exam-viewer/exam-viewer.component').then(m => m.ExamViewerComponent)
+  },
+  // MÓDULO DE AUTENTICACIÓN
   {
     path: 'auth',
     loadComponent: () => import('./features/auth/layouts/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
     children: [
-      // Si entran a '/auth' directo, los mandamos al login
       { path: '', redirectTo: 'login', pathMatch: 'full' },
       { path: 'login', loadComponent: () => import('./features/auth/pages/auth-login/auth-login.component').then(m => m.AuthLoginComponent) },
       { path: 'register', loadComponent: () => import('./features/auth/pages/auth-register/auth-register.component').then(m => m.AuthRegisterComponent) }
     ]
   },
 
-  //MÓDULO PRINCIPAL (Dashboard / App)
+  // MÓDULO PRINCIPAL (Dashboard / App)
   {
     path: 'home',
     loadComponent: () => import('./features/dashboard/layout/dashboard-layout/dashboard-layout.component').then(m => m.DashboardLayoutComponent),
-    // Aquí en el futuro pondremos: canActivate: [authGuard]
     children: [
 
       // --- ZONA DE ADMINISTRADOR ---

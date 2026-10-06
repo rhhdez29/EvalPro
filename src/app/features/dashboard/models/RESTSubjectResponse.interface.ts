@@ -1,12 +1,11 @@
-
 export interface RESTSubject {
-  id:             number;
-  name:           string;
-  code:           string;
-  color:          string;
-  department:     string;
-  teacher_name:   string;
-  students_count: number;
-  exams_count:    number;
-  next_exam_date?: string | null;
+  id:               number;
+  name:             string;
+  code:             string;
+  color:            string;
+  department:       string;
+  teacher_name:     string;
+  students_count:   number;
+  exams_count:      number;
+  has_active_exam?: boolean;
 }

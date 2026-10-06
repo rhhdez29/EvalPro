@@ -2,20 +2,21 @@ import { Component, input, output, signal, computed, effect, inject, OnInit, OnD
 
 import { DatePipe, Location, NgClass } from '@angular/common';
 import { Router } from '@angular/router';
-// Importa tus componentes de preguntas aquí
 import { MultipleChoiceViewerComponent } from './components/multiple-choice-viewer/multiple-choice-viewer.component';
 import { TrueFalseViewerComponent } from './components/true-false-viewer/true-false-viewer.component';
 import { MatchingViewerComponent } from './components/matching-viewer/matching-viewer.component';
 import { CodeEditorViewerComponent } from './components/code-editor-viewer/code-editor-viewer.component';
-// Importa los iconos de Lucide (ajusta según tu librería)
 import { X, Clock, FileText, AlertCircle, Eye, ChevronLeft, ChevronRight, LucideAngularModule } from 'lucide-angular';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { map, of, tap, forkJoin } from 'rxjs';
+import { map, of, tap, forkJoin, Subscription } from 'rxjs';
 import { FacadeService } from '../../../../../core/services/facade.service';
 import { ExamService } from '../../../services/exam.service';
 import { ExamDetail } from '../../../models/RESTExamResponse.interface';
 import { ExamSecurityService } from '../../../../../core/services/exam-security.service';
-import { Subscription } from 'rxjs';
+import { DEMO_EXAM_DATA } from '../../../../../shared/data/demo-exam.data';
+
+import { ModalState } from '../../../../../core/models/ModalState';
+import { LoadingModalComponent } from '../../../../../shared/components/loading-modal/loading-modal.component';
 
 @Component({
   selector: 'exam-viewer',
@@ -27,21 +28,26 @@ import { Subscription } from 'rxjs';
     MatchingViewerComponent,
     CodeEditorViewerComponent,
     LucideAngularModule,
-    NgClass
-],
+    NgClass,
+    LoadingModalComponent
+  ],
   templateUrl: './exam-viewer.component.html'
 })
 export class ExamViewerComponent implements OnInit, OnDestroy {
-  // Inputs y Outputs (Props en React)
-  id = input.required<string>();
+  // Inputs opcionales para permitir navegación demo sin parámetros de ruta
+  id = input<string>();
   studentId = input<string>();
   isGradingMode = computed(() => !!this.studentId());
   studentAnswersData = signal<any[]>([]);
+
   private examService = inject(ExamService);
-  private facadeService = inject(FacadeService)
+  private facadeService = inject(FacadeService);
   private location = inject(Location);
   private securityService = inject(ExamSecurityService);
   private router = inject(Router);
+
+  // Detección reactiva del Modo Demo
+  isDemoMode = computed(() => !this.id() || this.id() === 'demo' || this.router.url.includes('demo-exam'));
 
   isVoided = signal<boolean>(false);
   isExamFinished = false;
@@ -56,12 +62,22 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
   isTimeUp = signal<boolean>(false);
   isPreviewMode = signal<boolean>(false);
   studentAnswers = signal<Map<number, any>>(new Map());
+  gradingStatusMap = signal<Record<number, 'idle' | 'saving' | 'saved'>>({});
+  submitError = signal<string | null>(null);
+  modalState = signal<ModalState>({ status: 'oculto', title: '', subtitle: '' });
 
   timerInterval: any;
 
   exam = rxResource({
-    params: () => ({ id: this.id(), studentId: this.studentId() }),
+    params: () => ({ id: this.id(), studentId: this.studentId(), isDemo: this.isDemoMode() }),
     stream: ({params}) => {
+      // Modo Demo: retornamos los datos estáticos e inicializamos el temporizador de 60 minutos
+      if (params.isDemo) {
+        this.isPreviewMode.set(false);
+        const serverStartTime = new Date().toISOString();
+        this.iniciarTemporizador(serverStartTime, DEMO_EXAM_DATA.duration_minutes);
+        return of(DEMO_EXAM_DATA);
+      }
 
       const role = this.facadeService.userRole();
 
@@ -69,7 +85,7 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
         this.isPreviewMode.set(true);
         return forkJoin({
           exam: this.examService.getExamByID(Number(params.id)),
-          attempt: this.examService.getExamAttemptForGrading(params.id, params.studentId)
+          attempt: this.examService.getExamAttemptForGrading(params.id!, params.studentId)
         }).pipe(
           tap(res => {
             if (res.attempt.answers) {
@@ -80,39 +96,37 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
         );
       }
 
-      if(role === 'maestro' || role === 'administrador'){
+      if (role === 'maestro' || role === 'administrador') {
         this.isPreviewMode.set(true);
-        return this.examService.getExamByID(Number(params.id))
+        return this.examService.getExamByID(Number(params.id!));
       }
 
       if (role === 'alumno') {
         this.isPreviewMode.set(false);
-        return this.examService.getStudentExamById(Number(params.id)).pipe(
-          tap(response =>{
-            console.log(response);
-            if(response && response.server_start_time){
+        return this.examService.getStudentExamById(Number(params.id!)).pipe(
+          tap(response => {
+            if (response && response.server_start_time) {
               this.iniciarTemporizador(response.server_start_time, response.duration_minutes);
             }
           })
-        )
-
+        );
       }
 
-      return of(null)
+      return of(null);
     }
-  })
+  });
 
-  examData = computed(() => this.exam.value()! as ExamDetail);
-
-  constructor() {
-
-
-  }
+  examData = computed(() => (this.exam.value() || (this.isDemoMode() ? DEMO_EXAM_DATA : null)) as ExamDetail);
 
   ngOnInit() {
-    const role = this.facadeService.userRole();
-    if (role === 'alumno') {
-      this.securityService.startExamSecurity(this.id());
+    if (this.isDemoMode()) {
+      // Activar seguridad anti-fraude en modo demo
+      this.securityService.startExamSecurity('demo');
+    } else {
+      const role = this.facadeService.userRole();
+      if (role === 'alumno' && this.id()) {
+        this.securityService.startExamSecurity(this.id()!);
+      }
     }
 
     this.voidSub = this.securityService.examVoided$.subscribe(() => {
@@ -120,11 +134,10 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Lógica computada (useMemo en React)
-
-  // 1. Ordenar preguntas estrictamente por la propiedad 'order'
+  // 1. Ordenar preguntas strictly por la propiedad 'order'
   sortedQuestions = computed(() => {
-    return [...this.examData().questions].sort((a: any, b: any) => a.order - b.order);
+    const questions = this.examData()?.questions || [];
+    return [...questions].sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0));
   });
 
   // 2. Obtener la pregunta actual
@@ -135,16 +148,17 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
   // 3. Total de preguntas
   totalQuestions = computed(() => this.sortedQuestions().length);
 
-  // 4. Porcentaje de progreso (Evitamos cálculos complejos en el HTML)
+  // 4. Porcentaje de progreso
   progressPercentage = computed(() => {
+    if (!this.totalQuestions()) return 0;
     return Math.round(((this.currentQuestionIndex() + 1) / this.totalQuestions()) * 100);
   });
 
   progressWidth = computed(() => {
+    if (!this.totalQuestions()) return 0;
     return ((this.currentQuestionIndex() + 1) / this.totalQuestions()) * 100;
   });
 
-  // Métodos
   formatTime(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -162,19 +176,46 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
     }
   }
 
+  isQuestionAnswered(question: any): boolean {
+    if (!question || question.id === undefined || question.id === null) return false;
+    const ans = this.studentAnswers().get(question.id);
+
+    if (ans === undefined || ans === null) return false;
+
+    if (question.question_type === 'MCQ') {
+      return Array.isArray(ans) && ans.length > 0;
+    }
+    if (question.question_type === 'TF') {
+      return typeof ans === 'boolean';
+    }
+    if (question.question_type === 'MATCH') {
+      if (ans instanceof Map) return ans.size > 0;
+      if (typeof ans === 'object') return Object.keys(ans).length > 0;
+      return false;
+    }
+    if (question.question_type === 'CODE') {
+      return typeof ans === 'string' && ans.trim().length > 0;
+    }
+
+    return true;
+  }
+
   onAnswerChange(questionId: number, answer: any) {
     this.studentAnswers.update(currentMap => {
       const newMap = new Map(currentMap);
       newMap.set(questionId, answer);
       return newMap;
     });
+
+    if (this.submitError()) {
+      this.submitError.set(null);
+    }
   }
 
   goToPrevious() {
     if (this.currentQuestionIndex() > 0) {
       this.currentQuestionIndex.update(i => i - 1);
     }
-
   }
 
   goToNext() {
@@ -184,10 +225,58 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
   }
 
   submitExam() {
-    if(this.isPreviewMode()){
+    // Validar que todas las preguntas estén contestadas (aplica tanto en examen normal como en modo demo)
+    if (!this.isPreviewMode() && !this.isGradingMode()) {
+      const unanswered = this.sortedQuestions().filter(q => !this.isQuestionAnswered(q));
+
+      if (unanswered.length > 0) {
+        const cant = unanswered.length;
+        const msg = cant === 1
+          ? 'Debes contestar todas las preguntas antes de enviar el examen. (Falta 1 pregunta por responder)'
+          : `Debes contestar todas las preguntas antes de enviar el examen. (Faltan ${cant} preguntas por responder)`;
+
+        this.submitError.set(msg);
+        return;
+      }
+    }
+
+    this.submitError.set(null);
+
+    // Si estamos en modo demo:
+    if (this.isDemoMode()) {
+      this.modalState.set({
+        status: 'cargando',
+        title: 'Enviando Examen',
+        subtitle: 'Procesando tus respuestas...'
+      });
+
+      setTimeout(() => {
+        this.modalState.set({
+          status: 'exito',
+          title: '¡Examen Completado!',
+          subtitle: '¡Felicidades! Has completado el Examen Demo de EvalPro.'
+        });
+
+        setTimeout(() => {
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
+          this.isExamFinished = true;
+          this.securityService.stopExamSecurity();
+          this.router.navigate(['/landing']);
+        }, 2000);
+      }, 1500);
+      return;
+    }
+
+    if (this.isPreviewMode()) {
       alert("This is a preview - submission is disabled");
       return;
     }
+
+    this.modalState.set({
+      status: 'cargando',
+      title: 'Enviando Examen',
+      subtitle: 'Guardando tus respuestas en el servidor...'
+    });
 
     const answersPayload: any[] = [];
     const questions = this.examData().questions;
@@ -216,51 +305,94 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
 
     const payload = { answers: answersPayload };
 
-    console.log(payload);
-
-
     this.examService.submitStudentExam(Number(this.id()), payload).subscribe({
-      next: (res) => {
-        this.isExamFinished = true;
-        this.router.navigate(['/home/student/classes']);
+      next: () => {
+        this.modalState.set({
+          status: 'exito',
+          title: '¡Examen Enviado!',
+          subtitle: 'Tus respuestas han sido registradas con éxito.'
+        });
+
+        setTimeout(() => {
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
+          this.isExamFinished = true;
+          this.router.navigate(['/home/student/classes']);
+        }, 2000);
       },
       error: (err) => {
-        alert("Error submitting exam: " + err.message);
+        const mensajeError = err.error?.detail || err.message || 'Hubo un error al enviar el examen.';
+        this.modalState.set({
+          status: 'error',
+          title: 'Error al Enviar',
+          subtitle: mensajeError
+        });
+
+        setTimeout(() => {
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
+        }, 3000);
       }
     });
-
   }
 
   getAnswerForQuestion(questionId: number) {
     return this.studentAnswersData().find(a => a.question === questionId || a.question_id === questionId);
   }
 
-  saveGrade(answerId: number, points: number) {
-    if (points < 0) return;
-    this.examService.gradeStudentAnswer(answerId, points).subscribe({
-        next: () => {
-          this.studentAnswersData.update(answers =>
-            answers.map(a => a.id === answerId ? { ...a, needs_manual_review: false, points_earned: points } : a)
-          );
-        },
-        error: (err) => alert('Error saving grade: ' + err.message)
-      });
+  getStudentAnswerForViewer(questionId: number) {
+    if (this.isGradingMode()) {
+      return this.getAnswerForQuestion(questionId);
+    }
+    return this.studentAnswers().get(questionId);
   }
 
-  // Utilidad para limpiar el tipo de pregunta en el UI (ej. multiple-choice -> multiple choice)
+  getGradingStatus(answerId: number): 'idle' | 'saving' | 'saved' {
+    return this.gradingStatusMap()[answerId] || 'idle';
+  }
+
+  onGradeInputChange(answerId: number, inputElem?: HTMLInputElement) {
+    const maxPoints = this.currentQuestion()?.points ?? 0;
+    if (inputElem && +inputElem.value > Number(maxPoints)) {
+      inputElem.value = maxPoints.toString();
+    }
+    if (this.gradingStatusMap()[answerId] === 'saved') {
+      this.gradingStatusMap.update(map => ({ ...map, [answerId]: 'idle' }));
+    }
+  }
+
+  saveGrade(answerId: number, points: number) {
+    const maxPoints = this.currentQuestion()?.points ?? 0;
+    if (points < 0 || !answerId) return;
+
+    if (points > Number(maxPoints)) {
+      alert(`La calificación no puede ser mayor que el puntaje máximo de la pregunta (${maxPoints} pts).`);
+      return;
+    }
+
+    this.gradingStatusMap.update(map => ({ ...map, [answerId]: 'saving' }));
+
+    this.examService.gradeStudentAnswer(answerId, points).subscribe({
+      next: () => {
+        this.studentAnswersData.update(answers =>
+          answers.map(a => a.id === answerId ? { ...a, needs_manual_review: false, points_earned: points } : a)
+        );
+        this.gradingStatusMap.update(map => ({ ...map, [answerId]: 'saved' }));
+      },
+      error: (err) => {
+        this.gradingStatusMap.update(map => ({ ...map, [answerId]: 'idle' }));
+        alert('Error saving grade: ' + err.message);
+      }
+    });
+  }
+
   formatQuestionType(type: string): string {
     return type?.replace('-', ' ') || '';
   }
 
-  backPage(){
-
+  backPage() {
     this.location.back();
-
   }
 
   iniciarTemporizador(serverStartTimeIso: string, durationMinutes: number): void {
-
-    //Limpieza de seguridad: Destruir el reloj anterior si existe
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
@@ -272,16 +404,10 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
       const now = new Date().getTime();
       const distance = endTime - now;
 
-      console.log('now', now);
-      console.log('distance', distance);
-
       if (distance <= 0) {
         clearInterval(this.timerInterval);
-
-        // 🌟 Actualizamos el estado usando .set()
         this.timeRemaining.set('00:00');
         this.isTimeUp.set(true);
-
         this.autoSubmit();
         return;
       }
@@ -292,18 +418,18 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
       const mDisplay = minutes < 10 ? '0' + minutes : minutes;
       const sDisplay = seconds < 10 ? '0' + seconds : seconds;
 
-      // 🌟 Actualizamos el texto reactivo en la vista sin disparar Change Detection global
       this.timeRemaining.set(`${mDisplay}:${sDisplay}`);
     }, 1000);
   }
 
   autoSubmit(): void {
-    console.log("El tiempo se agotó. Enviando respuestas automáticamente...");
     this.submitExam();
   }
 
   ngOnDestroy(): void {
-    clearInterval(this.timerInterval);
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
     this.securityService.stopExamSecurity();
     if (this.voidSub) {
       this.voidSub.unsubscribe();
@@ -311,7 +437,11 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
   }
 
   exitVoidedExam() {
-    this.isExamFinished = true; // Permitir que el Guard nos deje salir
-    this.router.navigate(['/home/student/classes']);
+    this.isExamFinished = true;
+    if (this.isDemoMode()) {
+      this.router.navigate(['/landing']);
+    } else {
+      this.router.navigate(['/home/student/classes']);
+    }
   }
 }

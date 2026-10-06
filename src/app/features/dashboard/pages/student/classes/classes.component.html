@@ -74,11 +74,14 @@
                   </div>
                 </div>
 
-                <!-- Badge del próximo examen -->
-                @if (classItem.next_exam_date) {
-                  <div class="bg-red-50 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg border border-red-200 text-center flex flex-col justify-center shrink-0 w-fit sm:w-auto">
-                    <p class="text-[9px] sm:text-[10px] uppercase tracking-wide text-red-600 font-bold mb-0.5">Próximo examen</p>
-                    <p class="text-xs sm:text-sm text-red-700 font-black">{{ classItem.next_exam_date | date:'MMM d, yyyy' }}</p>
+                <!-- Banner de examen activo -->
+                @if (classItem.has_active_exam) {
+                  <div class="bg-red-50 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg border border-red-200 text-center flex flex-col justify-center shrink-0 w-fit sm:w-auto shadow-sm">
+                    <div class="flex items-center gap-1 justify-center">
+                      <span class="inline-block w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+                      <p class="text-[10px] sm:text-xs uppercase tracking-wide text-red-600 font-bold">¡Examen Activo!</p>
+                    </div>
+                    <p class="text-xs sm:text-sm text-red-700 font-black">Nuevo examen disponible</p>
                   </div>
                 }
               </div>

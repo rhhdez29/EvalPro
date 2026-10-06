@@ -136,7 +136,7 @@ export class ExamsTabComponent {
     this.showCreateForm.set(false);
     this.isEditExam.set(false);
     this.examToEdit.set(null);
-    this.currentPage.set(1); // Reset a página 1 al cerrar el formulario
+    this.examsResource.reload();
   }
 
   openViewer(examId: number) {
@@ -203,10 +203,18 @@ export class ExamsTabComponent {
 
     this.examService.changeStatus(id, exam.status).subscribe({
       next: () => {
-        this.currentPage.set(1); // Re-fetch desde página 1 tras cambiar estado
+        this.modalState.set({ status: 'exito', title: 'Estado del examen cambiado correctamente.', subtitle: '' });
+        setTimeout(() => {
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
+          // recargar datos
+          this.examsResource.reload();
+        }, 3000);
       },
       error: (err) => {
-        console.error(err);
+        this.modalState.set({ status: 'error', title: 'Error al cambiar el estado del examen.', subtitle: err });
+        setTimeout(() => {
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
+        }, 3000);
       }
     });
   }

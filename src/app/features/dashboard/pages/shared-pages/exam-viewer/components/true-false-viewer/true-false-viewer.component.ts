@@ -29,9 +29,19 @@ export class TrueFalseViewerComponent {
 
   constructor() {
     effect(() => {
+      const q = this.question();
       const ans = this.studentAnswer();
-      if (ans && ans.text_response !== undefined && ans.text_response !== null) {
-        this.selectedAnswer.set(ans.text_response === 'true');
+
+      if (ans !== undefined && ans !== null) {
+        if (typeof ans === 'boolean') {
+          this.selectedAnswer.set(ans);
+        } else if (typeof ans === 'object' && ans.text_response !== undefined && ans.text_response !== null) {
+          this.selectedAnswer.set(ans.text_response === 'true' || ans.text_response === true);
+        } else {
+          this.selectedAnswer.set(null);
+        }
+      } else {
+        this.selectedAnswer.set(null);
       }
     }, { allowSignalWrites: true });
   }

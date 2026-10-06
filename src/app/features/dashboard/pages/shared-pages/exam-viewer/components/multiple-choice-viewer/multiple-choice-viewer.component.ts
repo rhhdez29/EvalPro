@@ -30,15 +30,24 @@ export class MultipleChoiceViewerComponent {
 
   constructor() {
     effect(() => {
+      const q = this.question();
       const answer = this.studentAnswer();
-      if (answer && answer.selected_option_id) {
-        const index = this.options().findIndex((o: any) => o.id === answer.selected_option_id);
-        if (index !== -1) {
-          const s = new Set<number>();
-          s.add(index);
-          this.selectedOptions.set(s);
+      const newSelected = new Set<number>();
+
+      if (answer !== undefined && answer !== null) {
+        if (Array.isArray(answer)) {
+          answer.forEach((idx: number) => newSelected.add(idx));
+        } else if (typeof answer === 'number') {
+          newSelected.add(answer);
+        } else if (typeof answer === 'object' && answer.selected_option_id !== undefined) {
+          const index = this.options().findIndex((o: any) => o.id === answer.selected_option_id);
+          if (index !== -1) {
+            newSelected.add(index);
+          }
         }
       }
+
+      this.selectedOptions.set(newSelected);
     }, { allowSignalWrites: true });
   }
 

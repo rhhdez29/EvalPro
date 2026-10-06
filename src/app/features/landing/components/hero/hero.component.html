@@ -25,7 +25,9 @@
             <lucide-icon [img]="ArrowRight" class="w-5 h-5"></lucide-icon>
           </button>
 
-          <button class="w-full sm:w-auto justify-center px-6 sm:px-8 py-3.5 sm:py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 transition-colors cursor-pointer font-medium text-base">
+          <button
+            routerLink="/demo-exam"
+            class="w-full sm:w-auto justify-center px-6 sm:px-8 py-3.5 sm:py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 transition-colors cursor-pointer font-medium text-base">
             Ver Demo
           </button>
         </div>
@@ -58,11 +60,13 @@
         <div class="absolute bottom-3 left-3 sm:-bottom-6 sm:-left-6 bg-white rounded-xl shadow-lg p-3.5 sm:p-6 border border-gray-100 max-w-[calc(100%-1.5rem)] sm:max-w-none">
           <div class="flex items-center gap-3 sm:gap-4">
             <div class="w-9 h-9 sm:w-12 sm:h-12 bg-green-100 rounded-full flex items-center justify-center shrink-0">
-              <span class="text-green-600 text-lg sm:text-xl">✓</span>
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
             </div>
             <div>
-              <div class="font-semibold text-gray-900 text-sm sm:text-base">Examen Completado</div>
-              <div class="text-xs sm:text-sm text-gray-600">Puntaje: 95/100</div>
+              <p class="font-semibold text-gray-900 text-sm sm:text-base">Seguridad Anti-Fraude Activa</p>
+              <p class="text-xs sm:text-sm text-gray-500">Supervisión en tiempo real</p>
             </div>
           </div>
         </div>
