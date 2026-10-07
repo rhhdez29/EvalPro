@@ -106,7 +106,7 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
         return this.examService.getStudentExamById(Number(params.id!)).pipe(
           tap(response => {
             if (response && response.server_start_time) {
-              this.iniciarTemporizador(response.server_start_time, response.duration_minutes);
+              this.iniciarTemporizador(response.server_start_time, response.duration_minutes, response.end_date);
             }
           })
         );
@@ -224,9 +224,9 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
     }
   }
 
-  submitExam() {
-    // Validar que todas las preguntas estén contestadas (aplica tanto en examen normal como en modo demo)
-    if (!this.isPreviewMode() && !this.isGradingMode()) {
+  submitExam(isAutoSubmit: boolean = false) {
+    // Validar que todas las preguntas estén contestadas (solo cuando el envío es manual por el usuario)
+    if (!isAutoSubmit && !this.isPreviewMode() && !this.isGradingMode()) {
       const unanswered = this.sortedQuestions().filter(q => !this.isQuestionAnswered(q));
 
       if (unanswered.length > 0) {
@@ -320,7 +320,7 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
         }, 2000);
       },
       error: (err) => {
-        const mensajeError = err.error?.detail || err.message || 'Hubo un error al enviar el examen.';
+        const mensajeError = err.error?.detail || err.error?.error || err.message || 'Hubo un error al enviar el examen.';
         this.modalState.set({
           status: 'error',
           title: 'Error al Enviar',
@@ -392,13 +392,15 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
     this.location.back();
   }
 
-  iniciarTemporizador(serverStartTimeIso: string, durationMinutes: number): void {
+  iniciarTemporizador(serverStartTimeIso: string, durationMinutes: number, endDateIso?: string): void {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
 
     const startTime = new Date(serverStartTimeIso).getTime();
-    const endTime = startTime + (durationMinutes * 60 * 1000);
+    const endTimeByDuration = startTime + (durationMinutes * 60 * 1000);
+    const endTimeByDeadline = endDateIso ? new Date(endDateIso).getTime() : Infinity;
+    const endTime = Math.min(endTimeByDuration, endTimeByDeadline);
 
     this.timerInterval = setInterval(() => {
       const now = new Date().getTime();
@@ -423,7 +425,7 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
   }
 
   autoSubmit(): void {
-    this.submitExam();
+    this.submitExam(true);
   }
 
   ngOnDestroy(): void {

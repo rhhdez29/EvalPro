@@ -27,6 +27,22 @@ export class FormUtilsService {
 
   }
 
+  teacherEmailValidator(): ValidatorFn {
+
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      if (!value) return null;
+
+      const teacherEmailRegex = /^[a-zA-Z0-9._%+-]+@correo\.buap\.mx$/;
+
+      const isValid = teacherEmailRegex.test(value);
+
+      return isValid ? null : { teacherEmail: true };
+    };
+
+  }
+
   minValue(min: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;

@@ -147,7 +147,9 @@ export class ExamService {
     .pipe(
       catchError((err: HttpErrorResponse) => {
         let errorMsg = 'Ocurrió un error al enviar el examen';
-        if (err.error && err.error.error) {
+        if (err.error && err.error.detail) {
+          errorMsg = err.error.detail;
+        } else if (err.error && err.error.error) {
           errorMsg = err.error.error;
         }
         return throwError(() => new Error(errorMsg));

@@ -20,6 +20,8 @@ export class ValidatorService2 {
           return 'Ingrese un correo valido.'
         case 'invalidFormat':
           return 'Ingrese un correo valido.'
+        case 'teacherEmail':
+          return 'Debe ser un correo institucional válido (ej. nombre@correo.buap.mx).'
         case 'max':
           return `Maximo de ${errors['max'].max} caracteres.`;
         case 'minValue':

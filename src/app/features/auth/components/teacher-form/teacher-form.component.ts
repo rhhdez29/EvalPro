@@ -52,7 +52,7 @@ export class TeacherFormComponent {
     rol: ['maestro'],
     first_name: ['', Validators.required],
     last_name: ['', Validators.required],
-    email: ['', [Validators.required, this.formUtils.strictEmailValidator()]],
+    email: ['', [Validators.required, this.formUtils.teacherEmailValidator()]],
     password: ['', [Validators.required, Validators.minLength(8)]],
     id_teacher: ['', [Validators.required, Validators.minLength(9)]],
     faculty: ['', Validators.required]

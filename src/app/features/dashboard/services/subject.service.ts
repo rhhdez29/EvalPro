@@ -45,6 +45,22 @@ export class SubjectService {
     );
   }
 
+  // Obtener mis materias (solo las creadas por el usuario autenticado, incluye admin)
+  getMySubjects(page: number = 1): Observable<PaginationResult<RESTSubject>> {
+    return this.http.get<PaginationResult<RESTSubject>>(`${this.apiUrl}?mine=true&page=${page}`)
+    .pipe(
+      catchError((err: HttpErrorResponse) => {
+        let error = 'Ocurrió un error inesperado al obtener las materias.';
+        if (err.error && err.error.error) {
+          error = err.error.error;
+        } else if (err.error && err.error.detail) {
+          error = err.error.detail;
+        }
+        return throwError(() => new Error(error));
+      })
+    );
+  }
+
   // Crear una nueva materia
   createSubject(subjectData: any) {
     return this.http.post<any>(this.apiUrl, subjectData);

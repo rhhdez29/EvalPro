@@ -54,7 +54,7 @@ export const routes: Routes = [
       // --- ZONA DE PROFESOR ---
       {
         path: 'teacher',
-        canActivate: [roleGuard(['maestro'])],
+        canActivate: [roleGuard(['maestro', 'administrador'])],
         children: [
           { path: 'subjects', loadComponent: () => import('./features/dashboard/pages/teacher/subjects/subjects.component').then(m => m.SubjectsComponent) },
           { path: 'exam/:id', loadComponent: () => import('./features/dashboard/pages/shared-pages/exam-viewer/exam-viewer.component').then(m => m.ExamViewerComponent) },

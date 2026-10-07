@@ -67,7 +67,7 @@ export class SubjectsComponent {
     params: () => this.currentPage(),
     stream: ({ params: page }) => {
       if (isPlatformBrowser(this.platformId)) {
-        return this.subjectsService.getSubjects(page);
+        return this.subjectsService.getMySubjects(page);
       }
       return of({ count: 0, next: null, previous: null, results: [] });
     },

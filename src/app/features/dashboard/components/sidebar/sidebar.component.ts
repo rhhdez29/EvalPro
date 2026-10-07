@@ -51,6 +51,7 @@ export class SidebarComponent {
       case 'administrador':
         return [
           { path: 'admin/validation', label: 'Validación de Profesores', icon: this.icons.UserCheck, badge: this.userService.pendingTeachersCount() },
+          { path: 'teacher/subjects', label: 'Mis Materias', icon: this.icons.GraduationCap },
           { path: 'admin/subjects', label: 'Gestión de Materias', icon: this.icons.BookOpen },
           { path: 'admin/users-list', label: 'Usuarios', icon: this.icons.Users },
           { path: 'settings', label: 'Configuración', icon: this.icons.Settings },
