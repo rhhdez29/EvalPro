@@ -16,7 +16,7 @@ export class StudentService {
 
   private http = inject(HttpClient);
 
-  public registerStudent(data: FormData): Observable<any>{
+  public registerStudent(data: any): Observable<any>{
     console.log("Datos del usuario registrado: ", data)
 
     return this.http.post<any>(`${environment.url_api}/students/`, data)

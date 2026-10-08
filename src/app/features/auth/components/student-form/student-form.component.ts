@@ -29,8 +29,6 @@ import { LoadingModalComponent } from '../../../../shared/components/loading-mod
     formUtils = inject(FormUtilsService);
 
     // --- STATE (Signals) ---
-    uploadedFile = signal<File | null>(null);
-    isDragging = signal(false);
     modalStatus = signal<'oculto' | 'cargando' | 'exito' | 'error'>('oculto');
     messageModal1 = signal<string>('');
     messageModal2 = signal<string>('');
@@ -39,7 +37,7 @@ import { LoadingModalComponent } from '../../../../shared/components/loading-mod
     touchedFields =signal<Set<string>>(new Set());
 
     // Cuando tenga datos, lanzará la petición.
-    registerPayload = signal<FormData | null>(null);
+    registerPayload = signal<any>(null);
 
     formStudent: FormGroup = this.fb.group({
       rol: ['alumno'],
@@ -49,8 +47,7 @@ import { LoadingModalComponent } from '../../../../shared/components/loading-mod
       password: ['', [Validators.required, Validators.minLength(8)]],
       id_student: ['', [Validators.required, Validators.minLength(9)]],
       career: ['', [Validators.required]],
-      semester: ['', [Validators.required]],
-      kardex: [null, [Validators.required]]
+      semester: ['', [Validators.required]]
     })
 
     // --- DATA ---
@@ -74,71 +71,19 @@ import { LoadingModalComponent } from '../../../../shared/components/loading-mod
     }
 
 
-    // File Upload: Input Change
-    onFileSelected(event: Event) {
-      const input = event.target as HTMLInputElement;
-      const file = input.files?.[0] ?? null
-
-      if (file){
-
-        this.formStudent.patchValue({ kardex: file });
-        this.uploadedFile.set(file);
-      }
-
-    }
-
-    // File Upload: Drag & Drop
-    onDragOver(event: DragEvent) {
-      event.preventDefault();
-      event.stopPropagation();
-      this.isDragging.set(true);
-    }
-
-    onDragLeave(event: DragEvent) {
-      event.preventDefault();
-      event.stopPropagation();
-      this.isDragging.set(false);
-    }
-
-    onDrop(event: DragEvent) {
-      event.preventDefault();
-      event.stopPropagation();
-      this.isDragging.set(false);
-
-      if (event.dataTransfer && event.dataTransfer.files.length > 0) {
-        this.uploadedFile.set(event.dataTransfer.files[0]);
-      }
-    }
-
-    removeFile() {
-      this.formStudent.patchValue({ kardex: null });
-      this.uploadedFile.set(null);
-    }
-
     register() {
 
       if(this.formStudent.invalid){
         this.formStudent.markAllAsTouched();
         return;
       }
-      const formData = new FormData();
       const rawData = this.formStudent.getRawValue();
-
-      formData.append('rol', rawData.rol);
-      formData.append('first_name', rawData.first_name);
-      formData.append('last_name', rawData.last_name);
-      formData.append('email', rawData.email);
-      formData.append('password', rawData.password);
-      formData.append('id_student', rawData.id_teacher);
-      formData.append('career', rawData.career);
-      formData.append('semester', rawData.semester);
-      formData.append('kardex', this.uploadedFile()!, this.uploadedFile()!.name);
 
       this.modalStatus.set('cargando');
       this.messageModal1.set('Cargando');
       this.messageModal2.set('Estamos procesando tu solicitud...')
 
-      this.studentService.registerStudent(formData).subscribe({
+      this.studentService.registerStudent(rawData).subscribe({
         next: (response) => {
           this.modalStatus.set('exito');
           this.messageModal1.set('¡Registro exitoso!');
@@ -162,7 +107,6 @@ import { LoadingModalComponent } from '../../../../shared/components/loading-mod
           setTimeout(() => {
             this.modalStatus.set('oculto');
             this.formStudent.reset();
-            this.uploadedFile.set(null);
           }, 3000);
 
 

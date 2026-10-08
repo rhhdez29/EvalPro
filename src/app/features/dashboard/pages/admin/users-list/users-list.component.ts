@@ -134,7 +134,7 @@ export class UsersListComponent {
         });
         setTimeout(() => {
           this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
-          this.currentPage.set(1); // Volver a página 1 tras una acción
+          this.users.reload();
         }, 3000);
         console.log(user);
       },
@@ -167,7 +167,7 @@ export class UsersListComponent {
         });
         setTimeout(() => {
           this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
-          this.currentPage.set(1); // Volver a página 1 tras una acción
+          this.users.reload();
         }, 3000);
       },
       error: (error) => {

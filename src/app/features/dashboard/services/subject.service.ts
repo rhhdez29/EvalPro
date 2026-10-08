@@ -127,6 +127,20 @@ export class SubjectService {
 
   }
 
+  // Eliminar estudiante de una materia
+  removeStudentFromSubject(subjectId: string, studentId: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}${subjectId}/remove_student/${studentId}/`)
+      .pipe(
+        catchError((err: HttpErrorResponse) => {
+          let error = 'Ocurrió un error inesperado al intentar eliminar el estudiante.';
+          if (err.error && err.error.error) {
+            error = err.error.error;
+          }
+          return throwError(() => new Error(error));
+        })
+      );
+  }
+
   // Obtener estudiantes de una materia
   getStudentsBySubject(id: string, page: number = 1) {
     return this.http.get<PaginationResult<StudentListBySubject>>(`${this.apiUrl}${id}/enrolled_students/?page=${page}`)

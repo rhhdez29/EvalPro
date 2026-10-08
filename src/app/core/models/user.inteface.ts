@@ -16,7 +16,7 @@ export interface Student extends user{
   id_student: string;
   career: string;
   semester: string;
-  kardex: string;
+
   upcoming_exams_count?: number;
 }
 

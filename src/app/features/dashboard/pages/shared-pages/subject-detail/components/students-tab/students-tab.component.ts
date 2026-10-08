@@ -116,7 +116,7 @@ export class StudentsTabComponent {
       next: () => {
         this.loadingStatus.set('exito');
         this.loadingMessage1.set('Estudiante agregado');
-        this.currentPage.set(1); // Reset a página 1 tras agregar
+        this.students.reload();
 
         setTimeout(() => {
           this.loadingStatus.set('oculto');
@@ -154,6 +154,35 @@ export class StudentsTabComponent {
   }
 
   removeStudent(studentId: string) {
-    console.log(this.students.value());
+    if (confirm('¿Estás seguro de que deseas eliminar a este estudiante de la materia?')) {
+      this.loadingStatus.set('cargando');
+      this.loadingMessage1.set('Eliminando estudiante');
+      this.loadingMessage2.set('Por favor espere...');
+
+      this.subjectService.removeStudentFromSubject(this.subjectId(), studentId).subscribe({
+        next: () => {
+          this.loadingStatus.set('exito');
+          this.loadingMessage1.set('Estudiante eliminado');
+          this.students.reload();
+
+          setTimeout(() => {
+            this.loadingStatus.set('oculto');
+            this.loadingMessage1.set('');
+            this.loadingMessage2.set('');
+          }, 3000);
+        },
+        error: (error) => {
+          this.loadingStatus.set('error');
+          this.loadingMessage1.set('Error al eliminar estudiante');
+          this.loadingMessage2.set(error.message);
+
+          setTimeout(() => {
+            this.loadingStatus.set('oculto');
+            this.loadingMessage1.set('');
+            this.loadingMessage2.set('');
+          }, 3000);
+        }
+      });
+    }
   }
 }
