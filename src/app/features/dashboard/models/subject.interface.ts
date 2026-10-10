@@ -15,3 +15,9 @@ export interface Subject {
 export type CreateSubjectForm =Omit<Subject, 'id' | 'created_by' | 'teacher_name' | 'students_count' | 'exams_count'>;
 
 export type EditSubjectForm = Omit<Subject, 'id' | 'created_by' | 'teacher_name' | 'students_count' | 'exams_count'>;
+
+export interface TeacherStats {
+  total_subjects: number;
+  total_students: number;
+  total_exams: number;
+}

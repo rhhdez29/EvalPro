@@ -14,6 +14,8 @@ export class ExamSecurityService {
 
   public examVoided$ = this.examVoidedSubject.asObservable();
   public isVoided = false;
+  public isUnloading = false;
+  public isExamFinished = false;
 
   constructor(
     private http: HttpClient,
@@ -52,12 +54,14 @@ export class ExamSecurityService {
   }
 
   private handleVisibilityChange = () => {
+    if (this.isExamFinished || this.isUnloading) return;
     if (document.hidden && this.isExamActive && !this.isVoided) {
       this.voidExam('visibilitychange');
     }
   }
 
   private handleBlur = () => {
+    if (this.isExamFinished || this.isUnloading) return;
     if (this.isExamActive && !this.isVoided) {
       this.voidExam('window_blur');
     }
@@ -65,6 +69,7 @@ export class ExamSecurityService {
 
   private voidExam(trigger: string) {
     this.isVoided = true;
+    this.isExamFinished = true;
     this.stopExamSecurity();
     this.examVoidedSubject.next();
 

@@ -50,6 +50,8 @@ export interface ExamBase{
 //Lista de examenes con cantidad de preguntas
 export interface ExamSummary extends ExamBase{
   questions_count: number;
+  total_students: number;
+  submitted_students: number;
 }
 
 //Examen a detalle con preguntas

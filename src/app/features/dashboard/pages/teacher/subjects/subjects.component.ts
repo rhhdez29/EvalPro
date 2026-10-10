@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
+import { FacadeService } from '../../../../../core/services/facade.service';
 
 import {
   LucideAngularModule,
@@ -26,7 +27,7 @@ import { DeleteModalComponent } from "../../../../../shared/components/delete-mo
 import { ModalState } from '../../../../../core/models/ModalState';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 
-const PAGE_SIZE = 10;
+
 
 @Component({
   selector: 'app-my-subjects',
@@ -47,6 +48,9 @@ export class SubjectsComponent {
   private router = inject(Router);
   private subjectsService = inject(SubjectService);
   private platformId = inject(PLATFORM_ID);
+  private facadeService = inject(FacadeService);
+
+  PAGE_SIZE = computed(() => this.facadeService.userRole() === 'administrador' ? 10 : 6);
 
   currentPage      = signal(1);
   isLoading        = signal(false);
@@ -73,11 +77,21 @@ export class SubjectsComponent {
     },
   });
 
+  // rxResource de estadísticas (carga independiente)
+  statsResource = rxResource({
+    stream: () => {
+      if (isPlatformBrowser(this.platformId)) {
+        return this.subjectsService.getTeacherStats();
+      }
+      return of({ total_subjects: 0, total_students: 0, total_exams: 0 });
+    },
+  });
+
   subjects = linkedSignal(() => this.subjectsResource.value()?.results ?? []);
 
   // Paginación
   totalCount  = computed(() => this.subjectsResource.value()?.count ?? 0);
-  totalPages  = computed(() => Math.max(1, Math.ceil(this.totalCount() / PAGE_SIZE)));
+  totalPages  = computed(() => Math.max(1, Math.ceil(this.totalCount() / this.PAGE_SIZE())));
   hasNext     = computed(() => !!this.subjectsResource.value()?.next);
   hasPrevious = computed(() => !!this.subjectsResource.value()?.previous);
 

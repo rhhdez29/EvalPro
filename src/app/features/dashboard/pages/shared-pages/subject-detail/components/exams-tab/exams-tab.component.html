@@ -26,7 +26,7 @@
     (confirm)="deleteExam()"
   />
 
-  @if (!examsResource.error() && !isExamsEmpty()) {
+  @if (!examsResource.error() || !isExamsEmpty()) {
     <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
       @for (exam of examsResource.value()?.results; track exam.id) {
         <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 hover:shadow-md transition-all flex flex-col justify-between">
@@ -133,17 +133,25 @@
             <div class="flex items-center justify-between text-xs sm:text-sm mb-2">
               <span class="text-gray-600">Entregas</span>
               <span class="font-medium text-gray-900">
-                {{ 1 }}/{{ 5 }}
+                {{ exam.submitted_students }} de {{ exam.total_students }} entregados
               </span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2">
               <div
                 class="bg-yellow-600 h-2 rounded-full transition-all"
-                [style.width.%]="(50 / 50) * 100"
+                [style.width.%]="exam.total_students > 0 ? (exam.submitted_students / exam.total_students * 100) : 0"
               ></div>
             </div>
           </div>
 
+        </div>
+      } @empty {
+        <div class="col-span-full flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 py-12 px-6 text-center">
+          <span class="mb-4 text-5xl">📋</span>
+          <h3 class="text-lg font-bold text-gray-800">Aún no hay exámenes creados</h3>
+          <p class="mt-2 text-sm text-gray-500">
+            No has asignado ningún examen a esta materia. Usa el botón de "Agregar Examen" para crear el primero.
+          </p>
         </div>
       }
     </div>

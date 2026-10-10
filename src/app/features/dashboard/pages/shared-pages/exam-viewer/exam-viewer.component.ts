@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed, effect, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, input, output, signal, computed, effect, inject, OnInit, OnDestroy, HostListener } from '@angular/core';
 
 import { DatePipe, Location, NgClass } from '@angular/common';
 import { Router } from '@angular/router';
@@ -51,6 +51,7 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
 
   isVoided = signal<boolean>(false);
   isExamFinished = false;
+  shouldAllowExit = false;
   private voidSub!: Subscription;
 
   // Iconos disponibles para la vista
@@ -117,6 +118,36 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
   });
 
   examData = computed(() => (this.exam.value() || (this.isDemoMode() ? DEMO_EXAM_DATA : null)) as ExamDetail);
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any): void {
+    // Si no estamos en demo/preview y el examen no ha terminado ni se permite la salida limpia
+    if (!this.shouldAllowExit && !this.isPreviewMode() && !this.isGradingMode() && !this.isExamFinished) {
+      this.securityService.isUnloading = true;
+      $event.returnValue = true;
+    }
+  }
+
+  @HostListener('window:focus')
+  @HostListener('document:click')
+  onUserReturn(): void {
+    if (this.securityService.isUnloading) {
+      // El usuario canceló la recarga o hizo clic para volver al examen
+      this.securityService.isUnloading = false;
+    }
+  }
+
+  constructor() {
+    effect(() => {
+      const err = this.exam.error() as any;
+      if (err) {
+        this.isExamFinished = true;
+        this.securityService.isExamFinished = true;
+        const errorMsg = err?.error?.detail || err?.error?.error || err?.message || 'Este examen ya fue completado o anulado. No puedes volver a ingresar.';
+        alert(errorMsg);
+        this.router.navigate(['/home/student/classes']); 
+      }
+    });
+  }
 
   ngOnInit() {
     if (this.isDemoMode()) {
@@ -225,6 +256,8 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
   }
 
   submitExam(isAutoSubmit: boolean = false) {
+    this.isExamFinished = true;
+    this.securityService.isExamFinished = true;
     // Validar que todas las preguntas estén contestadas (solo cuando el envío es manual por el usuario)
     if (!isAutoSubmit && !this.isPreviewMode() && !this.isGradingMode()) {
       const unanswered = this.sortedQuestions().filter(q => !this.isQuestionAnswered(q));
@@ -303,7 +336,10 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
       answersPayload.push(answerObj);
     });
 
-    const payload = { answers: answersPayload };
+    const payload = { 
+      answers: answersPayload,
+      is_auto_submitted: isAutoSubmit 
+    };
 
     this.examService.submitStudentExam(Number(this.id()), payload).subscribe({
       next: () => {
@@ -316,7 +352,8 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
           this.isExamFinished = true;
-          this.router.navigate(['/home/student/classes']);
+          this.cleanupExamState();
+          this.router.navigate(['/home/student/classes'], { queryParams: { subject: this.examData().subject } });
         }, 2000);
       },
       error: (err) => {
@@ -428,7 +465,8 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
     this.submitExam(true);
   }
 
-  ngOnDestroy(): void {
+  private cleanupExamState() {
+    this.shouldAllowExit = true;
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
@@ -438,12 +476,17 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngOnDestroy(): void {
+    this.cleanupExamState();
+  }
+
   exitVoidedExam() {
     this.isExamFinished = true;
+    this.cleanupExamState();
     if (this.isDemoMode()) {
       this.router.navigate(['/landing']);
     } else {
-      this.router.navigate(['/home/student/classes']);
+      this.router.navigate(['/home/student/classes'], { queryParams: { subject: this.examData().subject } });
     }
   }
 }

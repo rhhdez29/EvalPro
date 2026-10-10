@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from './../../../../environments/environments';
 import { catchError, Observable, throwError } from 'rxjs';
 import { RESTSubject } from '../models/RESTSubjectResponse.interface';
-import { EditSubjectForm, Subject, } from '../models/subject.interface';
+import { EditSubjectForm, Subject, TeacherStats } from '../models/subject.interface';
 // import { SubjectMapper } from '../../../shared/mappers/subject-mapper';
 
 
@@ -20,6 +20,11 @@ export class SubjectService {
 
   apiUrl = `${environment.url_api}/subjects/`;
 
+
+  // Estadísticas de materias del usuario
+  getTeacherStats(): Observable<TeacherStats> {
+    return this.http.get<TeacherStats>(`${this.apiUrl}stats/`);
+  }
 
   // Obtener todas las materias
   getSubjects(page: number = 1): Observable<PaginationResult<RESTSubject>> {

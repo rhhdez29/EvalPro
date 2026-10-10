@@ -22,6 +22,10 @@ export class PendingExamsTabComponent {
   private subjectService = inject(SubjectService);
   private router = inject(Router);
 
+  // Estado Modal Anti-fraude
+  showAntiFraudModal = signal(false);
+  selectedExamId = signal<number | null>(null);
+
   // Estado Local (Simulado por ahora)
   exams =  rxResource({
     params: () => this.subjectId(),
@@ -70,10 +74,22 @@ export class PendingExamsTabComponent {
 
   // --- Acciones ---
 
-  startExam(examId: number) {
+  openWarning(examId: number) {
+    this.selectedExamId.set(examId);
+    this.showAntiFraudModal.set(true);
+  }
 
-    this.router.navigate([`/home/student/exam/${examId}`]);
+  closeWarning() {
+    this.showAntiFraudModal.set(false);
+    this.selectedExamId.set(null);
+  }
 
+  confirmStartExam() {
+    const examId = this.selectedExamId();
+    if (examId !== null) {
+      this.showAntiFraudModal.set(false);
+      this.router.navigate([`/home/student/exam/${examId}`]);
+    }
   }
 
   handleContinueExam(examId: string) {

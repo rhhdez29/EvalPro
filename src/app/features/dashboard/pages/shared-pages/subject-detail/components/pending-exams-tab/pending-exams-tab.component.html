@@ -88,15 +88,15 @@
           <div class="flex flex-col items-stretch sm:items-end gap-2 sm:gap-3 w-full sm:w-auto">
 
             <!-- Botones de Acción -->
-            @if (exam.status === 'in-progress') {
+            @if (exam.status === 'in_progress') {
               <button
-                (click)="handleContinueExam(exam.id.toString())"
+                (click)="openWarning(exam.id)"
                 class="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base w-full sm:w-auto cursor-pointer">
                 Continuar Examen
               </button>
             } @else if (exam.status === 'available') {
               <button
-                (click)="startExam(exam.id)"
+                (click)="openWarning(exam.id)"
                 class="flex items-center justify-center gap-2 px-6 py-2.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium text-sm sm:text-base w-full sm:w-auto cursor-pointer">
                 <!-- Icono Play -->
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
@@ -151,3 +151,39 @@
     }
   </div>
 </div>
+
+@if (showAntiFraudModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4">
+    <div class="w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl">
+      <div class="mb-4 flex items-center gap-3 border-b pb-3">
+        <span class="text-3xl">🚨</span>
+        <h3 class="text-xl font-bold text-red-600">Advertencia de Seguridad</h3>
+      </div>
+
+      <div class="space-y-3 text-gray-700">
+        <p class="font-semibold">Estás a punto de iniciar tu examen. Lee atentamente antes de continuar:</p>
+
+        <ul class="list-inside list-disc space-y-2 rounded-lg bg-red-50 p-4 text-sm text-red-800">
+          <li><strong>No cambies de pestaña:</strong> Mantente en esta ventana del navegador en todo momento.</li>
+          <li><strong>No minimices ni abras otras aplicaciones:</strong> El sistema monitorea la pérdida de enfoque.</li>
+          <li><strong>El tiempo no se detiene:</strong> Si cierras la página o pierdes conexión, el reloj seguirá corriendo en el servidor.</li>
+          <li><strong>No recargues la página (F5):</strong> Actualizar el navegador se considera abandono del examen y forzará el envío de tus respuestas.</li>
+          <li><strong>Envío automático:</strong> Al llegar a cero, tus respuestas se enviarán automáticamente.</li>
+        </ul>
+
+        <p class="text-sm font-medium text-gray-800">
+          Si el sistema detecta actividad sospechosa (como salir del examen), se registrará como fraude y el examen se enviará y bloqueará inmediatamente.
+        </p>
+      </div>
+
+      <div class="mt-6 flex justify-end gap-3">
+        <button (click)="closeWarning()" class="rounded-lg bg-gray-200 px-4 py-2 font-medium text-gray-700 hover:bg-gray-300">
+          Cancelar
+        </button>
+        <button (click)="confirmStartExam()" class="rounded-lg bg-red-600 px-4 py-2 font-medium text-white shadow hover:bg-red-700">
+          Entendido, comenzar examen
+        </button>
+      </div>
+    </div>
+  </div>
+}

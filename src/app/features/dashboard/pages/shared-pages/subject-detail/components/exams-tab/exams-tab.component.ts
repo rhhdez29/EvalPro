@@ -12,7 +12,8 @@ import {
   Edit,
   Trash2,
   Eye,
-  List
+  List,
+  FileText,
 } from 'lucide-angular';
 
 import { ExamService } from '../../../../../services/exam.service';
@@ -94,7 +95,7 @@ export class ExamsTabComponent {
   });
 
   // Iconos
-  readonly icons = { Plus, Calendar, Clock, MoreVertical, Edit, Trash2, Eye, List };
+  readonly icons = { Plus, Calendar, Clock, MoreVertical, Edit, Trash2, Eye, List, FileText };
 
   private idExam: number | null = null;
   messageDelete = '¿Estas seguro de que deseas eliminar este examen? Esta acción no se puede deshacer.';
