@@ -101,8 +101,9 @@
 
           @for (subject of filteredSubjects(); track subject.id) {
             <tr
-              class="hover:bg-gray-50 transition-colors cursor-pointer group"
-              (click)="handleSubjectClick(subject.id.toString())"
+              class="hover:bg-gray-50 transition-colors group"
+              [class.cursor-pointer]="isOwner(subject)"
+              (click)="isOwner(subject) ? handleSubjectClick(subject.id.toString()) : null"
             >
               <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
@@ -141,20 +142,38 @@
 
               <td class="px-6 py-4">
                 <div class="flex items-center justify-end gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                  <button
-                    (click)="openCreateSubjectModal($event, subject.id, subject)"
-                    class="p-2 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"
-                    title="Editar Materia"
-                  >
-                    <lucide-icon [img]="icons.Edit" class="w-4 h-4 text-gray-600"></lucide-icon>
-                  </button>
-                  <button
-                    (click)="openDeleteModal($event, subject.id)"
-                    class="p-2 hover:bg-red-100 rounded-lg transition-colors cursor-pointer"
-                    title="Eliminar Materia"
-                  >
-                    <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600"></lucide-icon>
-                  </button>
+                  <!-- Botón Ver Detalles/Gestionar: Visible SOLO si es dueño -->
+                  @if (subject.teacher_id === currentUser()?.id || isOwner(subject)) {
+                    <button
+                      (click)="handleSubjectClick(subject.id.toString(), $event)"
+                      class="p-2 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
+                      title="Ver Detalles / Gestionar"
+                    >
+                      <lucide-icon [img]="icons.Eye" class="w-4 h-4 text-blue-600"></lucide-icon>
+                    </button>
+                  }
+
+                  <!-- Botón Editar: Visible SOLO si es dueño -->
+                  @if (subject.teacher_id === currentUser()?.id || isOwner(subject)) {
+                    <button
+                      (click)="openCreateSubjectModal($event, subject.id, subject)"
+                      class="p-2 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"
+                      title="Editar Materia"
+                    >
+                      <lucide-icon [img]="icons.Edit" class="w-4 h-4 text-gray-600"></lucide-icon>
+                    </button>
+                  }
+
+                  <!-- Botón Eliminar: Visible si es admin O si es dueño -->
+                  @if (isAdmin() || subject.teacher_id === currentUser()?.id || isOwner(subject)) {
+                    <button
+                      (click)="openDeleteModal($event, subject.id)"
+                      class="p-2 hover:bg-red-100 rounded-lg transition-colors cursor-pointer"
+                      title="Eliminar Materia"
+                    >
+                      <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600"></lucide-icon>
+                    </button>
+                  }
                 </div>
               </td>
             </tr>

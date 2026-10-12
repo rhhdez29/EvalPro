@@ -14,7 +14,8 @@ import {
   MoreVertical,
   Edit,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  Eye
 } from 'lucide-angular';
 
 import { SubjectService } from '../../../services/subject.service';
@@ -48,7 +49,17 @@ export class SubjectsComponent {
   private router = inject(Router);
   private subjectsService = inject(SubjectService);
   private platformId = inject(PLATFORM_ID);
-  private facadeService = inject(FacadeService);
+  public facadeService = inject(FacadeService);
+
+  currentUser = this.facadeService.currentUser;
+  isAdmin = computed(() => this.facadeService.userRole() === 'administrador');
+
+  isOwner(subject: any): boolean {
+    const currentUserId = this.currentUser()?.id;
+    if (!currentUserId || !subject) return false;
+    const teacherId = subject.teacher_id ?? subject.created_by;
+    return Number(teacherId) === Number(currentUserId);
+  }
 
   PAGE_SIZE = computed(() => this.facadeService.userRole() === 'administrador' ? 10 : 6);
 
@@ -102,7 +113,7 @@ export class SubjectsComponent {
   });
 
   // Mapeo de iconos para el HTML
-  readonly icons = { Plus, BookOpen, Users, FileText, MoreVertical, Edit, Trash2, AlertCircle };
+  readonly icons = { Plus, BookOpen, Users, FileText, MoreVertical, Edit, Trash2, AlertCircle, Eye };
 
   messageDelete = '¿Estas seguro de que deseas eliminar esta materia? Esta acción no se puede deshacer.';
   private idSubject: number | null = null;
@@ -119,7 +130,13 @@ export class SubjectsComponent {
   }
 
   // --- MÉTODOS ---
-  handleSubjectClick(subjectId: string) {
+  handleSubjectClick(subjectId: string, event?: Event) {
+    if (event) event.stopPropagation();
+    const subject = this.subjects().find(s => s.id.toString() === subjectId.toString());
+    if (subject && !this.isOwner(subject)) {
+      alert('No tienes permiso para gestionar el contenido de esta materia');
+      return;
+    }
     this.router.navigate([`home/subject/${subjectId}`]);
   }
 

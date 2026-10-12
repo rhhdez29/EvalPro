@@ -6,15 +6,17 @@ export interface Subject {
   color: string;
 
   // Estos campos vienen de solo lectura desde Django
+  teacher_id?: number;
+  created_by?: number;
   teacher_name: string;
   students_count: string;
   exams_count: string;
 
 }
 
-export type CreateSubjectForm =Omit<Subject, 'id' | 'created_by' | 'teacher_name' | 'students_count' | 'exams_count'>;
+export type CreateSubjectForm = Omit<Subject, 'id' | 'created_by' | 'teacher_id' | 'teacher_name' | 'students_count' | 'exams_count'>;
 
-export type EditSubjectForm = Omit<Subject, 'id' | 'created_by' | 'teacher_name' | 'students_count' | 'exams_count'>;
+export type EditSubjectForm = Omit<Subject, 'id' | 'created_by' | 'teacher_id' | 'teacher_name' | 'students_count' | 'exams_count'>;
 
 export interface TeacherStats {
   total_subjects: number;

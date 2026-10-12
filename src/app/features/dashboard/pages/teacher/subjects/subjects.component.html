@@ -83,8 +83,10 @@
 
         @for (subject of subjects(); track subject.id) {
           <div
-            (click)="handleSubjectClick(subject.id.toString())"
-            class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer group"
+            (click)="isOwner(subject) ? handleSubjectClick(subject.id.toString()) : null"
+            class="bg-white rounded-xl border border-gray-200 overflow-hidden transition-all group"
+            [class.hover:shadow-lg]="isOwner(subject)"
+            [class.cursor-pointer]="isOwner(subject)"
           >
 
             <div class="h-32 {{ subject.color }} relative">
@@ -104,25 +106,39 @@
                   tabindex="0"
                   class="dropdown-content menu bg-white rounded-box z-[1] w-40 p-2 shadow-xl mt-2 border border-gray-100"
                 >
-                  <li>
-                    <button
-                      (click)="openCreateSubjectModal($event, subject.id, subject)"
-                      class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer flex items-center gap-2"
-                    >
-                      <lucide-icon [img]="icons.Edit" class="w-4 h-4"></lucide-icon>
-                      Editar
-                    </button>
-                  </li>
+                  @if (subject.teacher_id === currentUser()?.id || isOwner(subject)) {
+                    <li>
+                      <button
+                        (click)="handleSubjectClick(subject.id.toString(), $event)"
+                        class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer flex items-center gap-2"
+                      >
+                        <lucide-icon [img]="icons.Eye" class="w-4 h-4"></lucide-icon>
+                        Ver Detalles
+                      </button>
+                    </li>
 
-                  <li>
-                    <button
-                      (click)="openDeleteModal($event, subject.id)"
-                      class="text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer flex items-center gap-2"
-                    >
-                      <lucide-icon [img]="icons.Trash2" class="w-4 h-4"></lucide-icon>
-                      Eliminar
-                    </button>
-                  </li>
+                    <li>
+                      <button
+                        (click)="openCreateSubjectModal($event, subject.id, subject)"
+                        class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer flex items-center gap-2"
+                      >
+                        <lucide-icon [img]="icons.Edit" class="w-4 h-4"></lucide-icon>
+                        Editar
+                      </button>
+                    </li>
+                  }
+
+                  @if (isAdmin() || subject.teacher_id === currentUser()?.id || isOwner(subject)) {
+                    <li>
+                      <button
+                        (click)="openDeleteModal($event, subject.id)"
+                        class="text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer flex items-center gap-2"
+                      >
+                        <lucide-icon [img]="icons.Trash2" class="w-4 h-4"></lucide-icon>
+                        Eliminar
+                      </button>
+                    </li>
+                  }
                 </ul>
 
               </div>

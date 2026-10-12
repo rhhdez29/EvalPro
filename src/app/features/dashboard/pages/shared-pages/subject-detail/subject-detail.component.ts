@@ -86,6 +86,30 @@ export class SubjectDetailComponent {
   })
 
   constructor() {
+    // Protección de ruta: Si el usuario autenticado no es el dueño de la materia, redirigir
+    effect(() => {
+      const subject = this.subjectDetailResource.value();
+      if (!subject) return;
+
+      const user = this.facade.currentUser();
+      const role = this.facade.userRole();
+
+      // Los alumnos pueden acceder a sus materias inscritas
+      if (role === 'alumno') return;
+
+      const teacherId = subject.teacher_id ?? subject.created_by;
+      const isOwner = user?.id && teacherId && Number(teacherId) === Number(user.id);
+
+      if (!isOwner) {
+        alert('No tienes permiso para gestionar el contenido de esta materia');
+        if (role === 'administrador') {
+          this.router.navigate(['home/admin/subjects']);
+        } else {
+          this.router.navigate(['home/teacher/subjects']);
+        }
+      }
+    });
+
     // Efecto para seleccionar la primera pestaña por defecto cuando se carguen
     effect(() => {
       const currentTabs = this.tabs();

@@ -9,7 +9,8 @@ import {
   Users,
   Search,
   Edit,
-  Trash2
+  Trash2,
+  Eye
 } from 'lucide-angular';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { SubjectService } from '../../../services/subject.service';
@@ -21,14 +22,20 @@ import { DeleteModalComponent } from "../../../../../shared/components/delete-mo
 import { ModalState } from '../../../../../core/models/ModalState';
 import { LoadingModalComponent } from "../../../../../shared/components/loading-modal/loading-modal.component";
 import { PaginationComponent } from "../../../../../shared/components/pagination/pagination.component";
+import { FacadeService } from '../../../../../core/services/facade.service';
 
 export interface Subject {
   id: string;
   name: string;
   code: string;
   teacher: string;
+  teacher_name?: string;
+  teacher_id?: number | string;
+  created_by?: number | string;
   students: number;
+  students_count?: number;
   exams: number;
+  exams_count?: number;
   department: string;
   color: string;
 }
@@ -53,8 +60,19 @@ const PAGE_SIZE = 10;
 export class SubjectManagementComponent {
 
   private router = inject(Router);
+  public facadeService = inject(FacadeService);
 
-  readonly icons = { Plus, BookOpen, Users, Search, Edit, Trash2 };
+  readonly icons = { Plus, BookOpen, Users, Search, Edit, Trash2, Eye };
+
+  currentUser = this.facadeService.currentUser;
+  isAdmin = computed(() => this.facadeService.userRole() === 'administrador');
+
+  isOwner(subject: any): boolean {
+    const currentUserId = this.currentUser()?.id;
+    if (!currentUserId || !subject) return false;
+    const teacherId = subject.teacher_id ?? subject.created_by;
+    return Number(teacherId) === Number(currentUserId);
+  }
 
   private platformId = inject(PLATFORM_ID);
 
@@ -142,7 +160,15 @@ export class SubjectManagementComponent {
     this.currentPage.set(page);
   }
 
-  handleSubjectClick(subjectId: string) {
+  handleSubjectClick(subjectId: string, event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    const subject = this.subjects().find(s => s.id.toString() === subjectId.toString());
+    if (subject && !this.isOwner(subject)) {
+      alert('No tienes permiso para gestionar el contenido de esta materia');
+      return;
+    }
     this.router.navigate([`home/subject/${subjectId}`]);
   }
 
