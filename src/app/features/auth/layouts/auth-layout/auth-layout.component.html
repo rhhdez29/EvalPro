@@ -22,9 +22,15 @@
         <span class="text-xl sm:text-2xl font-bold text-gray-900">EvalPro</span>
       </div>
       <p class="text-gray-600 text-xs sm:text-sm">
-        {{ isLoginTab() ? 'Bienvenido de nuevo. Por favor ingresa tus datos.' : 'Crea tu cuenta para comenzar.' }}
+        @if (isVerifyTab()) {
+          Verificación de cuenta y seguridad
+        } @else {
+          {{ isLoginTab() ? 'Bienvenido de nuevo. Por favor ingresa tus datos.' : 'Crea tu cuenta para comenzar.' }}
+        }
       </p>
     </div>
+
+    @if (!isVerifyTab()) {
 
     <div class="px-4 sm:px-8 md:px-10 mb-6 sm:mb-8">
       <div class="bg-gray-100 rounded-xl p-1 flex relative">
@@ -52,6 +58,7 @@
         </a>
       </div>
     </div>
+    }
 
     <div class="px-4 sm:px-8 md:px-10 pb-6 sm:pb-10">
       <router-outlet></router-outlet>

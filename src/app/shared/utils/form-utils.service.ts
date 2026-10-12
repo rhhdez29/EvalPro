@@ -27,6 +27,24 @@ export class FormUtilsService {
 
   }
 
+  institutionalEmailValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      if (!value) return null;
+
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@(alumno|correo)\.buap\.mx$/i;
+
+      const isValid = emailRegex.test(value);
+
+      return isValid ? null : { institutionalEmail: true };
+    };
+  }
+
+  loginEmailValidator(): ValidatorFn {
+    return this.institutionalEmailValidator();
+  }
+
   teacherEmailValidator(): ValidatorFn {
 
     return (control: AbstractControl): ValidationErrors | null => {

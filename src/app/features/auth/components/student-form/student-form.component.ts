@@ -87,13 +87,12 @@ import { LoadingModalComponent } from '../../../../shared/components/loading-mod
         next: (response) => {
           this.modalStatus.set('exito');
           this.messageModal1.set('¡Registro exitoso!');
-          this.messageModal2.set('Ya puedes iniciar sesion')
-
+          this.messageModal2.set('Hemos enviado un código a tu correo institucional');
 
           setTimeout(() => {
             this.modalStatus.set('oculto');
-            this.route.navigate(['/landing']);
-          }, 3000);
+            this.route.navigate(['/auth/verify-email'], { queryParams: { email: rawData.email } });
+          }, 1500);
 
         },
         error: (err) => {

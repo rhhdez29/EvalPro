@@ -27,7 +27,8 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'login', pathMatch: 'full' },
       { path: 'login', loadComponent: () => import('./features/auth/pages/auth-login/auth-login.component').then(m => m.AuthLoginComponent) },
-      { path: 'register', loadComponent: () => import('./features/auth/pages/auth-register/auth-register.component').then(m => m.AuthRegisterComponent) }
+      { path: 'register', loadComponent: () => import('./features/auth/pages/auth-register/auth-register.component').then(m => m.AuthRegisterComponent) },
+      { path: 'verify-email', loadComponent: () => import('./features/auth/components/verify-email/verify-email.component').then(m => m.VerifyEmailComponent) }
     ]
   },
 

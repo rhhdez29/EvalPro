@@ -13,8 +13,9 @@ import { LucideAngularModule, GraduationCap, ChevronLeft } from 'lucide-angular'
 })
 export class AuthLayoutComponent implements OnInit {
 
-  // Signal para saber si estamos en Login
+  // Signals para saber qué vista está activa
   isLoginTab = signal(true);
+  isVerifyTab = signal(false);
 
   readonly GraduationCap = GraduationCap;
   readonly ChevronLeft = ChevronLeft;
@@ -22,19 +23,17 @@ export class AuthLayoutComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    // Escuchamos la URL para mover el switch automáticamente
-    // Si la URL tiene '/login', isLoginTab = true. Si no (es register), false.
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.updateTabState();
     });
 
-    // Ejecutar al inicio por si recargan la página
     this.updateTabState();
   }
 
   private updateTabState() {
     this.isLoginTab.set(this.router.url.includes('/login'));
+    this.isVerifyTab.set(this.router.url.includes('/verify-email'));
   }
 }

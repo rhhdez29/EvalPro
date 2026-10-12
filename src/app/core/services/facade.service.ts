@@ -60,20 +60,23 @@ export class FacadeService {
     return this.http.post<any>(`${environment.url_api}/login/`,data)
     .pipe(
       catchError((err: HttpErrorResponse) => {
-        let error = 'Ocurrió un error inesperado al intentar iniciar sesión.';
+        let errorMsg = 'Ocurrió un error inesperado al intentar iniciar sesión.';
 
         if (err.error && err.error.error) {
-          error = err.error.error;
+          errorMsg = err.error.error;
         }
-        else if (err.status === 400 || err.status === 401) {
-          // A veces DRF manda los errores en un arreglo, o bajo la llave "detail" o "non_field_errors"
-          if (err.error.non_field_errors) {
-            error = err.error.non_field_errors[0];
-          } else {
-            error = 'Ocurrió un error inesperado al intentar iniciar sesión.';
+        else if (err.status === 400 || err.status === 401 || err.status === 403) {
+          if (err.error?.non_field_errors) {
+            errorMsg = err.error.non_field_errors[0];
+          } else if (err.error?.detail) {
+            errorMsg = err.error.detail;
           }
         }
-        return throwError(() => new Error(error));
+
+        const customError: any = new Error(errorMsg);
+        customError.error = err.error;
+        customError.status = err.status;
+        return throwError(() => customError);
       })
     )
   }

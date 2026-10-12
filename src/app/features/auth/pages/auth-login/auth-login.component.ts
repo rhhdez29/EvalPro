@@ -38,7 +38,7 @@ export class AuthLoginComponent {
   };
 
   formUser: FormGroup = this.fb.group({
-    username: ['', [Validators.required, this.formUtils.strictEmailValidator()]],
+    username: ['', [Validators.required, this.formUtils.institutionalEmailValidator()]],
     password: ['', [Validators.required]]
   })
 
@@ -111,12 +111,56 @@ export class AuthLoginComponent {
         }, 3000);
 
       },
-      error: (error: string) => {
+      error: (err: any) => {
 
-        this.modalState.set({status: 'error', title: 'Uy, algo salió mal...', subtitle: error});
+        // Si la cuenta requiere verificación de correo previa
+        if (err.error?.code === 'unverified_email' || err.code === 'unverified_email') {
+          this.modalState.set({
+            status: 'error',
+            title: 'Verificación requerida',
+            subtitle: 'Necesitas verificar tu correo primero. Redirigiendo a la pantalla de verificación...'
+          });
+
+          setTimeout(() => {
+            this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
+            this.router.navigate(['/auth/verify-email'], {
+              queryParams: { email: userData.username }
+            });
+          }, 2000);
+          return;
+        }
+
+        const mensajeError =
+          err.error?.detail ||
+          err.error?.error ||
+          err.error?.message ||
+          (typeof err === 'string' ? err : err.message || 'Ocurrió un error inesperado al intentar iniciar sesión.');
+
+        // Si la cuenta está suspendida por un administrador
+        if (
+          err.error?.code === 'account_suspended' ||
+          (typeof mensajeError === 'string' && mensajeError.toLowerCase().includes('suspendida'))
+        ) {
+          this.modalState.set({
+            status: 'error',
+            title: 'Cuenta suspendida',
+            subtitle: 'Tu cuenta ha sido suspendida por un administrador. Por favor, contacta a control escolar.'
+          });
+
+          setTimeout(() => {
+            this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
+          }, 4000);
+          return;
+        }
+
+        this.modalState.set({
+          status: 'error',
+          title: 'Uy, algo salió mal...',
+          subtitle: mensajeError
+        });
 
         setTimeout(() => {
-          this.modalState.set({status: 'oculto', title: '', subtitle: ''});
+          this.modalState.set({ status: 'oculto', title: '', subtitle: '' });
           this.formUser.reset();
         }, 3000);
 
