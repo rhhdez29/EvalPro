@@ -34,6 +34,8 @@ export class ValidatorService2 {
           return 'La fecha de fin debe ser mayor a la fecha de inicio.';
         case 'insufficientDuration':
           return 'La duracion debe ser mayor a 1 hora.';
+        case 'passwordMismatch':
+          return 'Las contraseñas no coinciden.';
       }
     }
     return null;

@@ -58,6 +58,7 @@ export const routes: Routes = [
         canActivate: [roleGuard(['maestro', 'administrador'])],
         children: [
           { path: 'subjects', loadComponent: () => import('./features/dashboard/pages/teacher/subjects/subjects.component').then(m => m.SubjectsComponent) },
+          { path: 'stats', loadComponent: () => import('./features/dashboard/pages/teacher/teacher-stats/teacher-stats.component').then(m => m.TeacherStatsComponent) },
           { path: 'exam/:id', loadComponent: () => import('./features/dashboard/pages/shared-pages/exam-viewer/exam-viewer.component').then(m => m.ExamViewerComponent) },
           { path: 'exam/:id/grade/:studentId', loadComponent: () => import('./features/dashboard/pages/shared-pages/exam-viewer/exam-viewer.component').then(m => m.ExamViewerComponent) },
           { path: 'exam/:id/results', loadComponent: () => import('./features/dashboard/pages/teacher/exam-results/exam-results.component').then(m => m.ExamResultsComponent) }
@@ -70,6 +71,7 @@ export const routes: Routes = [
         canActivate: [roleGuard(['alumno'])],
         children: [
           { path: 'classes', loadComponent: () => import('./features/dashboard/pages/student/classes/classes.component').then(m => m.ClassesComponent) },
+          { path: 'performance', loadComponent: () => import('./features/dashboard/pages/student/student-performance/student-performance.component').then(m => m.StudentPerformanceComponent) },
           { path: 'exam/:id', canDeactivate: [ExamGuard], loadComponent: () => import('./features/dashboard/pages/shared-pages/exam-viewer/exam-viewer.component').then(m => m.ExamViewerComponent) }
         ]
       },

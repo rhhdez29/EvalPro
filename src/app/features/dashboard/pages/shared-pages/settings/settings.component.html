@@ -1,47 +1,242 @@
-<div class="p-4 sm:p-6 md:p-8 space-y-6 max-w-5xl">
+<div class="p-4 sm:p-6 md:p-8 space-y-6 max-w-4xl">
 
-  <div class="bg-white rounded-xl border border-gray-200 p-1.5 sm:p-2 flex overflow-x-auto whitespace-nowrap scrollbar-hide gap-1 sm:gap-2 w-full sm:w-auto sm:inline-flex">
-    <button
-      (click)="setTab('profile')"
-      [class.bg-yellow-600]="activeTab() === 'profile'"
-      [class.text-white]="activeTab() === 'profile'"
-      [class.text-gray-700]="activeTab() !== 'profile'"
-      class="flex-1 sm:flex-initial text-center px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-colors hover:bg-gray-100 cursor-pointer"
-    >
-      Perfil
-    </button>
-    <button
-      (click)="setTab('stats')"
-      [class.bg-yellow-600]="activeTab() === 'stats'"
-      [class.text-white]="activeTab() === 'stats'"
-      [class.text-gray-700]="activeTab() !== 'stats'"
-      class="flex-1 sm:flex-initial text-center px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-colors hover:bg-gray-100 cursor-pointer"
-    >
-      Estadísticas
-    </button>
-    <button
-      (click)="setTab('preferences')"
-      [class.bg-yellow-600]="activeTab() === 'preferences'"
-      [class.text-white]="activeTab() === 'preferences'"
-      [class.text-gray-700]="activeTab() !== 'preferences'"
-      class="flex-1 sm:flex-initial text-center px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-colors hover:bg-gray-100 cursor-pointer"
-    >
-      Preferencias
-    </button>
+  <!-- TARJETA 1: INFORMACIÓN PERSONAL -->
+  <div class="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 shadow-sm">
+    <div class="flex items-center gap-3.5 pb-6 border-b border-gray-100">
+      <div class="w-11 h-11 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center shrink-0">
+        <lucide-icon [img]="icons.User" class="w-5 h-5"></lucide-icon>
+      </div>
+      <div>
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900">Información Personal</h2>
+        <p class="text-xs sm:text-sm text-gray-500">Datos institucionales asociados a tu cuenta en EvalPro</p>
+      </div>
+    </div>
+
+    <div class="pt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+      <!-- Nombre Completo -->
+      <div class="space-y-1.5">
+        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Nombre Completo</span>
+        <div class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm sm:text-base text-gray-800 font-medium">
+          <lucide-icon [img]="icons.User" class="w-4 h-4 text-gray-400 shrink-0"></lucide-icon>
+          <span class="truncate">{{ fullName() }}</span>
+        </div>
+      </div>
+
+      <!-- Correo Electrónico -->
+      <div class="space-y-1.5">
+        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Correo Electrónico</span>
+        <div class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm sm:text-base text-gray-800 font-medium">
+          <lucide-icon [img]="icons.Mail" class="w-4 h-4 text-gray-400 shrink-0"></lucide-icon>
+          <span class="truncate">{{ currentUser()?.email }}</span>
+        </div>
+      </div>
+
+      <!-- Rol del Usuario -->
+      <div class="space-y-1.5">
+        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Rol de Usuario</span>
+        <div class="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm sm:text-base">
+          <div class="flex items-center gap-3 text-gray-800 font-medium">
+            <lucide-icon [img]="icons.Shield" class="w-4 h-4 text-gray-400 shrink-0"></lucide-icon>
+            <span>{{ roleLabel() }}</span>
+          </div>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+            Activo
+          </span>
+        </div>
+      </div>
+
+      <!-- Matrícula / ID -->
+      <div class="space-y-1.5">
+        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ identifierLabel() }}</span>
+        <div class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm sm:text-base text-gray-800 font-mono font-medium">
+          <lucide-icon [img]="icons.IdCard" class="w-4 h-4 text-gray-400 shrink-0"></lucide-icon>
+          <span class="truncate">{{ userIdentifier() }}</span>
+        </div>
+      </div>
+
+      <!-- Información Académica Adicional (Facultad / Carrera) -->
+      @if (academicInfo(); as info) {
+        <div class="sm:col-span-2 space-y-1.5">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ info.label }}</span>
+          <div class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm sm:text-base text-gray-800 font-medium">
+            <lucide-icon [img]="icons.Building" class="w-4 h-4 text-gray-400 shrink-0"></lucide-icon>
+            <span class="truncate">{{ info.value }}</span>
+          </div>
+        </div>
+      }
+    </div>
   </div>
 
-  @if (userRole() === 'maestro') {
-    <settings-teacher
-      [activeTab]="activeTab()"
-      [user]="userData()"
-    >
-    </settings-teacher>
-  }
-  @if (userRole() === 'alumno') {
-    <settings-student
-      [activeTab]="activeTab()"
-      [user]="userData()"
-    >
-    </settings-student>
-  }
+  <!-- TARJETA 2: SEGURIDAD (CAMBIAR CONTRASEÑA) -->
+  <div class="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 shadow-sm">
+    <div class="flex items-center gap-3.5 pb-6 border-b border-gray-100">
+      <div class="w-11 h-11 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center shrink-0">
+        <lucide-icon [img]="icons.Lock" class="w-5 h-5"></lucide-icon>
+      </div>
+      <div>
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900">Seguridad</h2>
+        <p class="text-xs sm:text-sm text-gray-500">Actualiza tu contraseña para mantener protegida tu cuenta</p>
+      </div>
+    </div>
+
+    <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()" class="pt-6 space-y-5">
+      <!-- Contraseña Actual -->
+      <div class="space-y-1.5">
+        <label class="text-sm font-medium text-gray-700">Contraseña Actual</label>
+        <div class="relative">
+          <lucide-icon [img]="icons.Lock" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></lucide-icon>
+          <input
+            [type]="showCurrentPassword() ? 'text' : 'password'"
+            formControlName="currentPassword"
+            placeholder="••••••••"
+            class="w-full pl-10 pr-11 py-2.5 sm:py-3 border border-gray-300 rounded-lg text-sm sm:text-base outline-none transition focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            [class.border-red-500]="formUtils.isValidField(passwordForm, 'currentPassword')"
+          />
+          <button
+            type="button"
+            (click)="toggleCurrentPassword()"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer p-1"
+          >
+            <lucide-icon [img]="showCurrentPassword() ? icons.EyeOff : icons.Eye" class="w-4 h-4"></lucide-icon>
+          </button>
+        </div>
+        @if (formUtils.isValidField(passwordForm, 'currentPassword')) {
+          <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+            {{ formUtils.getFieldError(passwordForm, 'currentPassword') }}
+          </p>
+        }
+      </div>
+
+      <!-- Grid para Nueva Contraseña y Confirmar -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <!-- Nueva Contraseña -->
+        <div class="space-y-1.5">
+          <label class="text-sm font-medium text-gray-700">Nueva Contraseña</label>
+          <div class="relative">
+            <lucide-icon [img]="icons.Key" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></lucide-icon>
+            <input
+              [type]="showNewPassword() ? 'text' : 'password'"
+              formControlName="newPassword"
+              placeholder="••••••••"
+              class="w-full pl-10 pr-11 py-2.5 sm:py-3 border border-gray-300 rounded-lg text-sm sm:text-base outline-none transition focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              [class.border-red-500]="formUtils.isValidField(passwordForm, 'newPassword')"
+            />
+            <button
+              type="button"
+              (click)="toggleNewPassword()"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer p-1"
+            >
+              <lucide-icon [img]="showNewPassword() ? icons.EyeOff : icons.Eye" class="w-4 h-4"></lucide-icon>
+            </button>
+          </div>
+          @if (formUtils.isValidField(passwordForm, 'newPassword')) {
+            <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+              {{ formUtils.getFieldError(passwordForm, 'newPassword') }}
+            </p>
+          }
+        </div>
+
+        <!-- Confirmar Nueva Contraseña -->
+        <div class="space-y-1.5">
+          <label class="text-sm font-medium text-gray-700">Confirmar Nueva Contraseña</label>
+          <div class="relative">
+            <lucide-icon [img]="icons.Key" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></lucide-icon>
+            <input
+              [type]="showConfirmPassword() ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              placeholder="••••••••"
+              class="w-full pl-10 pr-11 py-2.5 sm:py-3 border border-gray-300 rounded-lg text-sm sm:text-base outline-none transition focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              [class.border-red-500]="formUtils.isValidField(passwordForm, 'confirmPassword') || isConfirmPasswordMismatch"
+            />
+            <button
+              type="button"
+              (click)="toggleConfirmPassword()"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer p-1"
+            >
+              <lucide-icon [img]="showConfirmPassword() ? icons.EyeOff : icons.Eye" class="w-4 h-4"></lucide-icon>
+            </button>
+          </div>
+          @if (formUtils.isValidField(passwordForm, 'confirmPassword')) {
+            <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+              {{ formUtils.getFieldError(passwordForm, 'confirmPassword') }}
+            </p>
+          } @else if (isConfirmPasswordMismatch) {
+            <p class="text-xs text-red-500 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+              Las contraseñas no coinciden.
+            </p>
+          }
+        </div>
+      </div>
+
+      <!-- Botón de Envío -->
+      <div class="flex justify-end pt-2">
+        <button
+          type="submit"
+          class="flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium text-sm sm:text-base cursor-pointer shadow-sm hover:shadow"
+        >
+          <lucide-icon [img]="icons.Save" class="w-4 h-4"></lucide-icon>
+          Actualizar Contraseña
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- TARJETA 3: PANTALLA / APARIENCIA -->
+  <div class="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 shadow-sm">
+    <div class="flex items-center gap-3.5 pb-6 border-b border-gray-100">
+      <div class="w-11 h-11 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center shrink-0">
+        <lucide-icon [img]="icons.Moon" class="w-5 h-5"></lucide-icon>
+      </div>
+      <div>
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900">Pantalla y Apariencia</h2>
+        <p class="text-xs sm:text-sm text-gray-500">Personaliza la visualización del sistema y las preferencias de idioma</p>
+      </div>
+    </div>
+
+    <div class="pt-6 space-y-6">
+      <!-- Opción Modo Oscuro -->
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <div class="font-medium text-gray-900 text-sm sm:text-base">Modo Oscuro</div>
+          <div class="text-xs sm:text-sm text-gray-500">Activa una paleta con fondo oscuro para descansar la vista</div>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+          <input
+            type="checkbox"
+            class="sr-only peer"
+            [checked]="darkMode()"
+            (change)="toggleDarkMode()"
+          />
+          <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600"></div>
+        </label>
+      </div>
+
+      <div class="border-t border-gray-100"></div>
+
+      <!-- Selector de Idioma -->
+      <div class="space-y-1.5">
+        <label class="text-sm font-medium text-gray-700">Idioma de la Plataforma</label>
+        <div class="relative max-w-sm">
+          <lucide-icon [img]="icons.Globe" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></lucide-icon>
+          <select
+            [value]="selectedLanguage()"
+            (change)="onLanguageChange($event)"
+            class="w-full pl-10 pr-8 py-2.5 sm:py-3 border border-gray-300 rounded-lg text-sm sm:text-base outline-none bg-white transition focus:ring-2 focus:ring-yellow-500 focus:border-transparent cursor-pointer"
+          >
+            @for (lang of languages; track lang) {
+              <option [value]="lang">{{ lang }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
+
+<!-- MODAL DE FEEDBACK VISUAL -->
+<loading-modal
+  [status]="modalStatus()"
+  [message1]="modalMessage1()"
+  [message2]="modalMessage2()"
+></loading-modal>

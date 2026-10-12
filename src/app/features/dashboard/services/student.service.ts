@@ -6,6 +6,8 @@ import { catchError, throwError } from 'rxjs';
 import { PaginationResult } from '../models/PaginationResult';
 import { RESTSubject } from '../models/RESTSubjectResponse.interface';
 import { StudentListBySubject } from '../models/student-list-by-subject';
+import { StudentStatsResponse } from '../models/student-stats.interface';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -45,5 +47,8 @@ export class StudentService {
     )
   }
 
+  getStudentStats(): Observable<StudentStatsResponse> {
+    return this.http.get<StudentStatsResponse>(`${this.apiUrl}api/student/stats/`);
+  }
 
 }

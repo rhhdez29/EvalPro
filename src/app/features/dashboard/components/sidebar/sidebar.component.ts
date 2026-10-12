@@ -10,6 +10,7 @@ import {
   Settings,
   Users,
   UserCheck,
+  TrendingUp,
   X
 } from 'lucide-angular';
 import { FacadeService } from '../../../../core/services/facade.service';
@@ -39,7 +40,7 @@ export class SidebarComponent {
   modalStateChange = output<ModalState>();
 
   // Iconos
-  readonly icons = { GraduationCap, User, LogOut, BookOpen, Settings, Users, UserCheck, X, ReactiveFormsModule };
+  readonly icons = { GraduationCap, User, LogOut, BookOpen, Settings, Users, UserCheck, TrendingUp, X, ReactiveFormsModule };
 
   userRole = this.facadeService.userRole;
   userName = this.facadeService.userName;
@@ -54,16 +55,19 @@ export class SidebarComponent {
           { path: 'teacher/subjects', label: 'Mis Materias', icon: this.icons.GraduationCap },
           { path: 'admin/subjects', label: 'Gestión de Materias', icon: this.icons.BookOpen },
           { path: 'admin/users-list', label: 'Usuarios', icon: this.icons.Users },
+          { path: 'teacher/stats', label: 'Estadísticas', icon: this.icons.TrendingUp },
           { path: 'settings', label: 'Configuración', icon: this.icons.Settings },
         ];
       case 'maestro':
         return [
           { path: 'teacher/subjects', label: 'Mis Materias', icon: this.icons.BookOpen },
+          { path: 'teacher/stats', label: 'Estadísticas', icon: this.icons.TrendingUp },
           { path: 'settings', label: 'Configuración', icon: this.icons.Settings },
         ];
       case 'alumno':
         return [
           { path: 'student/classes', label: 'Mis Clases', icon: this.icons.BookOpen },
+          { path: 'student/performance', label: 'Mi Rendimiento', icon: this.icons.TrendingUp },
           { path: 'settings', label: 'Configuración', icon: this.icons.Settings },
         ];
       default:
