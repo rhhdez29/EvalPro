@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { LucideAngularModule, Bell, Menu } from 'lucide-angular';
@@ -7,6 +7,8 @@ import { filter, map } from 'rxjs/operators';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { LoadingModalComponent } from '../../../../shared/components/loading-modal/loading-modal.component';
 import { ModalState } from '../../../../core/models/ModalState';
+import { ThemeService } from '../../../../core/services/theme.service';
+import { FacadeService } from '../../../../core/services/facade.service';
 
 @Component({
   selector: 'app-dashboard-layout',
@@ -14,12 +16,26 @@ import { ModalState } from '../../../../core/models/ModalState';
   imports: [CommonModule, RouterOutlet, SidebarComponent, LucideAngularModule, LoadingModalComponent],
   templateUrl: './dashboard-layout.component.html'
 })
-export class DashboardLayoutComponent {
+export class DashboardLayoutComponent implements OnDestroy {
   readonly icons = { Bell, Menu };
   private router = inject(Router);
+  private themeService = inject(ThemeService);
+  private facadeService = inject(FacadeService);
 
   isSidebarOpen = signal<boolean>(false);
   modalState = signal<ModalState>({ status: 'oculto', title: '', subtitle: '' });
+
+  constructor() {
+    // El modo oscuro solo se aplica a Profesor/Administrador (se reevalúa si cambia el rol)
+    effect(() => {
+      this.themeService.setRoleContext(this.facadeService.userRole());
+    });
+  }
+
+  ngOnDestroy(): void {
+    // Al salir del dashboard (logout, landing, auth) se vuelve a modo claro
+    this.themeService.clearRoleContext();
+  }
 
   onModalStateChange(state: ModalState): void {
     this.modalState.set(state);

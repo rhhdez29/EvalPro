@@ -1,7 +1,7 @@
 <div class="p-4 sm:p-6 md:p-8">
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 w-full mb-6 sm:mb-8">
     <div>
-      <p class="text-gray-600 mt-1 text-sm sm:text-base">Gestionar todas las materias de la institución</p>
+      <p class="text-gray-600 mt-1 text-sm sm:text-base dark:text-gray-400">Gestionar todas las materias de la institución</p>
     </div>
     <button
       (click)="openCreateSubjectModal(null, null, null)"
@@ -13,50 +13,50 @@
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200">
+    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-xs sm:text-sm text-gray-600 mb-1">Total de Materias</p>
-          <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ totalSubjects() }}</p>
+          <p class="text-xs sm:text-sm text-gray-600 mb-1 dark:text-gray-400">Total de Materias</p>
+          <p class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">{{ totalSubjects() }}</p>
         </div>
-        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center shrink-0">
-          <lucide-icon [img]="icons.BookOpen" class="w-6 h-6 text-yellow-600"></lucide-icon>
+        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center shrink-0 dark:bg-yellow-500/20">
+          <lucide-icon [img]="icons.BookOpen" class="w-6 h-6 text-yellow-600 dark:text-yellow-400"></lucide-icon>
         </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200">
+    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-xs sm:text-sm text-gray-600 mb-1">Total de Estudiantes</p>
-          <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ 0 }}</p>
+          <p class="text-xs sm:text-sm text-gray-600 mb-1 dark:text-gray-400">Total de Estudiantes</p>
+          <p class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">{{ 0 }}</p>
         </div>
-        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
-          <lucide-icon [img]="icons.Users" class="w-6 h-6 text-blue-600"></lucide-icon>
+        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center shrink-0 dark:bg-blue-500/20">
+          <lucide-icon [img]="icons.Users" class="w-6 h-6 text-blue-600 dark:text-blue-400"></lucide-icon>
         </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200">
+    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-xs sm:text-sm text-gray-600 mb-1">Profesores Activos</p>
-          <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ activeTeachers() }}</p>
+          <p class="text-xs sm:text-sm text-gray-600 mb-1 dark:text-gray-400">Profesores Activos</p>
+          <p class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">{{ activeTeachers() }}</p>
         </div>
-        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
-          <lucide-icon [img]="icons.Users" class="w-6 h-6 text-green-600"></lucide-icon>
+        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center shrink-0 dark:bg-green-500/20">
+          <lucide-icon [img]="icons.Users" class="w-6 h-6 text-green-600 dark:text-green-400"></lucide-icon>
         </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200">
+    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-xs sm:text-sm text-gray-600 mb-1">Departamentos</p>
-          <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ departmentsCount() }}</p>
+          <p class="text-xs sm:text-sm text-gray-600 mb-1 dark:text-gray-400">Departamentos</p>
+          <p class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">{{ departmentsCount() }}</p>
         </div>
-        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center shrink-0">
-          <lucide-icon [img]="icons.BookOpen" class="w-6 h-6 text-purple-600"></lucide-icon>
+        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center shrink-0 dark:bg-purple-500/20">
+          <lucide-icon [img]="icons.BookOpen" class="w-6 h-6 text-purple-600 dark:text-purple-400"></lucide-icon>
         </div>
       </div>
     </div>
@@ -69,31 +69,31 @@
         type="text"
         placeholder="Buscar materias, códigos o profesores..."
         [(ngModel)]="searchQuery"
-        class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none text-sm sm:text-base"
+        class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all outline-none text-sm sm:text-base dark:border-gray-600 dark:text-gray-100 dark:bg-gray-700"
       />
     </div>
   </div>
 
-  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow">
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow dark:bg-gray-800 dark:border-gray-700">
     <div class="overflow-x-auto w-full">
       <table class="w-full min-w-[750px]">
-        <thead class="bg-gray-50 border-b border-gray-200">
+        <thead class="bg-gray-50 border-b border-gray-200 dark:bg-gray-700 dark:border-gray-700">
           <tr>
-            <th class="px-6 py-4 text-left text-xs sm:text-sm font-semibold text-gray-900">Materia</th>
-            <th class="px-6 py-4 text-left text-xs sm:text-sm font-semibold text-gray-900">Código</th>
-            <th class="px-6 py-4 text-left text-xs sm:text-sm font-semibold text-gray-900">Profesor</th>
-            <th class="px-6 py-4 text-left text-xs sm:text-sm font-semibold text-gray-900">Departamento</th>
-            <th class="px-6 py-4 text-center text-xs sm:text-sm font-semibold text-gray-900">Estudiantes</th>
-            <th class="px-6 py-4 text-center text-xs sm:text-sm font-semibold text-gray-900">Exámenes</th>
-            <th class="px-6 py-4 text-right text-xs sm:text-sm font-semibold text-gray-900">Acciones</th>
+            <th class="px-6 py-4 text-left text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">Materia</th>
+            <th class="px-6 py-4 text-left text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">Código</th>
+            <th class="px-6 py-4 text-left text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">Profesor</th>
+            <th class="px-6 py-4 text-left text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">Departamento</th>
+            <th class="px-6 py-4 text-center text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">Estudiantes</th>
+            <th class="px-6 py-4 text-center text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">Exámenes</th>
+            <th class="px-6 py-4 text-right text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">Acciones</th>
           </tr>
         </thead>
 
-        <tbody class="divide-y divide-gray-200">
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
 
           @if (filteredSubjects().length === 0) {
-            <tr>
-              <td colspan="7" class="px-6 py-8 text-center text-gray-500 text-sm">
+            <tr class="dark:bg-gray-800 dark:even:bg-gray-750">
+              <td colspan="7" class="px-6 py-8 text-center text-gray-500 text-sm dark:text-gray-400">
                 No se encontraron materias que coincidan con "{{ searchQuery() }}".
               </td>
             </tr>
@@ -101,7 +101,7 @@
 
           @for (subject of filteredSubjects(); track subject.id) {
             <tr
-              class="hover:bg-gray-50 transition-colors group"
+              class="hover:bg-gray-50 transition-colors group dark:hover:bg-gray-700 dark:bg-gray-800 dark:even:bg-gray-750"
               [class.cursor-pointer]="isOwner(subject)"
               (click)="isOwner(subject) ? handleSubjectClick(subject.id.toString()) : null"
             >
@@ -110,32 +110,32 @@
                   <div class="w-10 h-10 {{ subject.color }} rounded-lg flex items-center justify-center shrink-0">
                     <lucide-icon [img]="icons.BookOpen" class="w-5 h-5 text-white"></lucide-icon>
                   </div>
-                  <div class="font-medium text-gray-900 group-hover:text-yellow-600 transition-colors text-sm sm:text-base">
+                  <div class="font-medium text-gray-900 group-hover:text-yellow-600 transition-colors text-sm sm:text-base dark:text-gray-100">
                     {{ subject.name }}
                   </div>
                 </div>
               </td>
 
               <td class="px-6 py-4">
-                <span class="font-mono text-xs sm:text-sm text-gray-600">{{ subject.code }}</span>
+                <span class="font-mono text-xs sm:text-sm text-gray-600 dark:text-gray-400">{{ subject.code }}</span>
               </td>
 
               <td class="px-6 py-4">
-                <span class="text-xs sm:text-sm text-gray-900">{{ subject.teacher_name }}</span>
+                <span class="text-xs sm:text-sm text-gray-900 dark:text-gray-100">{{ subject.teacher_name }}</span>
               </td>
 
               <td class="px-6 py-4">
-                <span class="text-xs sm:text-sm text-gray-600">{{ subject.department }}</span>
+                <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{{ subject.department }}</span>
               </td>
 
               <td class="px-6 py-4 text-center">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-blue-100 text-blue-700">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">
                   {{ subject.students_count }}
                 </span>
               </td>
 
               <td class="px-6 py-4 text-center">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-green-100 text-green-700">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300">
                   {{ subject.exams_count }}
                 </span>
               </td>
@@ -149,7 +149,7 @@
                       class="p-2 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
                       title="Ver Detalles / Gestionar"
                     >
-                      <lucide-icon [img]="icons.Eye" class="w-4 h-4 text-blue-600"></lucide-icon>
+                      <lucide-icon [img]="icons.Eye" class="w-4 h-4 text-blue-600 dark:text-blue-400"></lucide-icon>
                     </button>
                   }
 
@@ -157,10 +157,10 @@
                   @if (subject.teacher_id === currentUser()?.id || isOwner(subject)) {
                     <button
                       (click)="openCreateSubjectModal($event, subject.id, subject)"
-                      class="p-2 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"
+                      class="p-2 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer dark:hover:bg-gray-600"
                       title="Editar Materia"
                     >
-                      <lucide-icon [img]="icons.Edit" class="w-4 h-4 text-gray-600"></lucide-icon>
+                      <lucide-icon [img]="icons.Edit" class="w-4 h-4 text-gray-600 dark:text-gray-400"></lucide-icon>
                     </button>
                   }
 
@@ -171,7 +171,7 @@
                       class="p-2 hover:bg-red-100 rounded-lg transition-colors cursor-pointer"
                       title="Eliminar Materia"
                     >
-                      <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600"></lucide-icon>
+                      <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600 dark:text-red-400"></lucide-icon>
                     </button>
                   }
                 </div>
@@ -183,7 +183,7 @@
     </div>
 
     <!-- Paginación -->
-    <div class="p-4 border-t border-gray-200 flex justify-center">
+    <div class="p-4 border-t border-gray-200 flex justify-center dark:border-gray-700">
       <app-pagination
         [currentPage]="currentPage()"
         [totalPages]="totalPages()"

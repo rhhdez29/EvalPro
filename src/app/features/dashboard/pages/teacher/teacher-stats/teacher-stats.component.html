@@ -3,8 +3,8 @@
   <!-- ENCABEZADO -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Estadísticas de Desempeño</h1>
-      <p class="text-sm sm:text-base text-gray-500 mt-1">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight dark:text-gray-100">Estadísticas de Desempeño</h1>
+      <p class="text-sm sm:text-base text-gray-500 mt-1 dark:text-gray-400">
         Métricas globales y rendimiento de estudiantes en tus materias y exámenes.
       </p>
     </div>
@@ -15,16 +15,16 @@
     <div class="space-y-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         @for (i of [1, 2, 3, 4]; track i) {
-          <div class="bg-white rounded-xl border border-gray-200 p-6 animate-pulse space-y-3">
-            <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div class="h-8 bg-gray-200 rounded w-3/4"></div>
-            <div class="h-3 bg-gray-100 rounded w-2/3"></div>
+          <div class="bg-white rounded-xl border border-gray-200 p-6 animate-pulse space-y-3 dark:bg-gray-800 dark:border-gray-700">
+            <div class="h-4 bg-gray-200 rounded w-1/2 dark:bg-gray-700"></div>
+            <div class="h-8 bg-gray-200 rounded w-3/4 dark:bg-gray-700"></div>
+            <div class="h-3 bg-gray-100 rounded w-2/3 dark:bg-gray-700"></div>
           </div>
         }
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @for (i of [1, 2, 3]; track i) {
-          <div class="bg-white rounded-xl border border-gray-200 p-6 animate-pulse h-48"></div>
+          <div class="bg-white rounded-xl border border-gray-200 p-6 animate-pulse h-48 dark:bg-gray-800 dark:border-gray-700"></div>
         }
       </div>
     </div>
@@ -32,12 +32,12 @@
 
   <!-- ESTADO DE ERROR -->
   @else if (hasError()) {
-    <div class="bg-white rounded-xl border border-red-200 p-8 text-center max-w-xl mx-auto space-y-4">
-      <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto">
+    <div class="bg-white rounded-xl border border-red-200 p-8 text-center max-w-xl mx-auto space-y-4 dark:bg-gray-800 dark:border-red-500/30">
+      <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto dark:bg-red-500/20 dark:text-red-400">
         <lucide-icon [img]="icons.AlertCircle" class="w-6 h-6"></lucide-icon>
       </div>
-      <h3 class="text-lg font-bold text-gray-900">No se pudieron cargar las estadísticas</h3>
-      <p class="text-sm text-gray-500">
+      <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">No se pudieron cargar las estadísticas</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400">
         Ocurrió un error al obtener la información de desempeño de tus materias.
       </p>
       <button
@@ -55,10 +55,10 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 
       <!-- KPI 1: Promedio General Global -->
-      <div class="bg-white rounded-xl border border-gray-200 p-5 sm:p-6 shadow-sm flex items-center justify-between">
+      <div class="bg-white rounded-xl border border-gray-200 p-5 sm:p-6 shadow-sm flex items-center justify-between dark:bg-gray-800 dark:border-gray-700">
         <div class="space-y-1">
-          <span class="text-xs sm:text-sm font-medium text-gray-500">Promedio Global</span>
-          <div class="text-2xl sm:text-3xl font-bold text-gray-900">
+          <span class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Promedio Global</span>
+          <div class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">
             {{ data.global_average }}<span class="text-base text-gray-400 font-normal">/100</span>
           </div>
           @if (data.total_attempts > 0) {
@@ -75,43 +75,43 @@
             <span class="text-xs text-gray-400">Sin intentos evaluados</span>
           }
         </div>
-        <div class="w-12 h-12 rounded-xl bg-yellow-50 text-yellow-600 flex items-center justify-center shrink-0">
+        <div class="w-12 h-12 rounded-xl bg-yellow-50 text-yellow-600 flex items-center justify-center shrink-0 dark:bg-yellow-500/10 dark:text-yellow-400">
           <lucide-icon [img]="icons.Award" class="w-6 h-6"></lucide-icon>
         </div>
       </div>
 
       <!-- KPI 2: Total Intentos Aprobados -->
-      <div class="bg-white rounded-xl border border-gray-200 p-5 sm:p-6 shadow-sm flex items-center justify-between">
+      <div class="bg-white rounded-xl border border-gray-200 p-5 sm:p-6 shadow-sm flex items-center justify-between dark:bg-gray-800 dark:border-gray-700">
         <div class="space-y-1">
-          <span class="text-xs sm:text-sm font-medium text-gray-500">Intentos Aprobados</span>
-          <div class="text-2xl sm:text-3xl font-bold text-gray-900">{{ data.total_passed }}</div>
-          <span class="text-xs text-green-600 font-medium">Calificación ≥ 60</span>
+          <span class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Intentos Aprobados</span>
+          <div class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">{{ data.total_passed }}</div>
+          <span class="text-xs text-green-600 font-medium dark:text-green-400">Calificación ≥ 60</span>
         </div>
-        <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center shrink-0">
+        <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center shrink-0 dark:bg-green-500/10 dark:text-green-400">
           <lucide-icon [img]="icons.CheckCircle2" class="w-6 h-6"></lucide-icon>
         </div>
       </div>
 
       <!-- KPI 3: Total Intentos Reprobados -->
-      <div class="bg-white rounded-xl border border-gray-200 p-5 sm:p-6 shadow-sm flex items-center justify-between">
+      <div class="bg-white rounded-xl border border-gray-200 p-5 sm:p-6 shadow-sm flex items-center justify-between dark:bg-gray-800 dark:border-gray-700">
         <div class="space-y-1">
-          <span class="text-xs sm:text-sm font-medium text-gray-500">Intentos Reprobados</span>
-          <div class="text-2xl sm:text-3xl font-bold text-gray-900">{{ data.total_failed }}</div>
-          <span class="text-xs text-red-600 font-medium">Calificación &lt; 60</span>
+          <span class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Intentos Reprobados</span>
+          <div class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">{{ data.total_failed }}</div>
+          <span class="text-xs text-red-600 font-medium dark:text-red-400">Calificación &lt; 60</span>
         </div>
-        <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+        <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0 dark:bg-red-500/10 dark:text-red-400">
           <lucide-icon [img]="icons.XCircle" class="w-6 h-6"></lucide-icon>
         </div>
       </div>
 
       <!-- KPI 4: Tasa de Aprobación -->
-      <div class="bg-white rounded-xl border border-gray-200 p-5 sm:p-6 shadow-sm flex items-center justify-between">
+      <div class="bg-white rounded-xl border border-gray-200 p-5 sm:p-6 shadow-sm flex items-center justify-between dark:bg-gray-800 dark:border-gray-700">
         <div class="space-y-1">
-          <span class="text-xs sm:text-sm font-medium text-gray-500">Tasa de Aprobación</span>
-          <div class="text-2xl sm:text-3xl font-bold text-gray-900">{{ data.pass_rate }}%</div>
+          <span class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Tasa de Aprobación</span>
+          <div class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">{{ data.pass_rate }}%</div>
           <span class="text-xs text-gray-400">{{ data.total_attempts }} intentos totales</span>
         </div>
-        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 dark:bg-purple-500/10 dark:text-purple-400">
           <lucide-icon [img]="icons.TrendingUp" class="w-6 h-6"></lucide-icon>
         </div>
       </div>
@@ -120,13 +120,13 @@
 
     <!-- ESTADO VACÍO (SIN INTENTOS DE EVALUACIÓN) -->
     @if (data.total_attempts === 0) {
-      <div class="bg-white rounded-xl border border-gray-200 p-8 sm:p-12 text-center shadow-sm space-y-4">
-        <div class="w-16 h-16 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center mx-auto">
+      <div class="bg-white rounded-xl border border-gray-200 p-8 sm:p-12 text-center shadow-sm space-y-4 dark:bg-gray-800 dark:border-gray-700">
+        <div class="w-16 h-16 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center mx-auto dark:bg-yellow-500/10 dark:text-yellow-400">
           <lucide-icon [img]="icons.GraduationCap" class="w-8 h-8"></lucide-icon>
         </div>
         <div class="max-w-md mx-auto space-y-2">
-          <h2 class="text-xl font-bold text-gray-900">Aún no hay evaluaciones completadas</h2>
-          <p class="text-sm text-gray-500">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Aún no hay evaluaciones completadas</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
             Aquí podrás visualizar el promedio global, aprobados, reprobados y el rendimiento desglosado por materia una vez que los estudiantes completen sus exámenes.
           </p>
         </div>
@@ -144,40 +144,40 @@
 
     <!-- RENDIMIENTO POR MATERIA -->
     @if (data.subject_averages.length > 0) {
-      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm space-y-6">
-        <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm space-y-6 dark:bg-gray-800 dark:border-gray-700">
+        <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700">
           <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center">
+            <div class="w-8 h-8 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center dark:bg-yellow-500/10 dark:text-yellow-400">
               <lucide-icon [img]="icons.BarChart2" class="w-4 h-4"></lucide-icon>
             </div>
             <div>
-              <h2 class="text-lg font-bold text-gray-900">Rendimiento por Materia</h2>
-              <p class="text-xs text-gray-500">Promedio y actividad en las materias que impartes</p>
+              <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100">Rendimiento por Materia</h2>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Promedio y actividad en las materias que impartes</p>
             </div>
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           @for (subject of data.subject_averages; track subject.subject_id) {
-            <div class="border border-gray-200 rounded-xl p-5 hover:border-yellow-400 transition shadow-xs flex flex-col justify-between space-y-4">
+            <div class="border border-gray-200 rounded-xl p-5 hover:border-yellow-400 transition shadow-xs flex flex-col justify-between space-y-4 dark:border-gray-700">
               <div>
                 <div class="flex items-start justify-between gap-3">
                   <div class="min-w-0">
                     <div class="flex items-center gap-2 mb-1">
                       <span class="w-3 h-3 rounded-full shrink-0" [ngClass]="subject.color || 'bg-yellow-500'"></span>
-                      <h3 class="font-semibold text-gray-900 truncate">{{ subject.subject_name }}</h3>
+                      <h3 class="font-semibold text-gray-900 truncate dark:text-gray-100">{{ subject.subject_name }}</h3>
                     </div>
                     <span class="text-xs text-gray-400 font-mono">{{ subject.subject_code }}</span>
                   </div>
                   <div class="text-right shrink-0">
-                    <div class="text-xl font-bold text-gray-900">{{ subject.average }}</div>
+                    <div class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ subject.average }}</div>
                     <span class="text-xs text-gray-400">promedio</span>
                   </div>
                 </div>
 
                 <!-- Barra de progreso -->
                 <div class="mt-4 space-y-1.5">
-                  <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                  <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden dark:bg-gray-700">
                     <div
                       class="h-2 rounded-full transition-all duration-500"
                       [class.bg-green-500]="subject.average >= 80"
@@ -191,7 +191,7 @@
               </div>
 
               <!-- Footer con conteos -->
-              <div class="flex items-center justify-between text-xs text-gray-500 pt-3 border-t border-gray-100">
+              <div class="flex items-center justify-between text-xs text-gray-500 pt-3 border-t border-gray-100 dark:text-gray-400 dark:border-gray-700">
                 <div class="flex items-center gap-1">
                   <lucide-icon [img]="icons.BookOpen" class="w-3.5 h-3.5 text-gray-400"></lucide-icon>
                   <span>{{ subject.total_exams }} {{ subject.total_exams === 1 ? 'examen' : 'exámenes' }}</span>

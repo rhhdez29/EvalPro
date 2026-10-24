@@ -1,16 +1,16 @@
-<aside class="w-64 bg-white border-r border-gray-200 flex flex-col h-full">
+<aside class="w-64 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 transition-colors duration-300 flex flex-col h-full">
 
-  <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+  <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
     <a (click)="linkClicked.emit()" routerLink="/home/teacher/subjects" class="flex items-center gap-2 no-underline">
       <lucide-icon [img]="icons.GraduationCap" class="w-8 h-8 text-yellow-600"></lucide-icon>
-      <span class="text-xl font-bold text-gray-900">EvalPro</span>
+      <span class="text-xl font-bold text-gray-900 dark:text-gray-100">EvalPro</span>
     </a>
 
     <!-- Botón de cerrar solo en móvil -->
     <button
       type="button"
       (click)="linkClicked.emit()"
-      class="p-2 -mr-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg md:hidden cursor-pointer"
+      class="p-2 -mr-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 rounded-lg md:hidden cursor-pointer"
       aria-label="Cerrar menú">
       <lucide-icon [img]="icons.X" class="w-6 h-6"></lucide-icon>
     </button>
@@ -23,12 +23,12 @@
           <a
             [routerLink]="item.path"
             (click)="linkClicked.emit()"
-            routerLinkActive="bg-yellow-50 text-yellow-600 font-medium"
+            routerLinkActive="bg-yellow-50 text-yellow-600 font-medium dark:bg-yellow-500/10 dark:text-yellow-400"
             [routerLinkActiveOptions]="{ exact: false }"
             #rla="routerLinkActive"
-            [class.text-gray-700]="!rla.isActive"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors relative hover:bg-gray-50 cursor-pointer no-underline group">
-            <lucide-icon [img]="item.icon" class="w-5 h-5 group-hover:text-gray-900"></lucide-icon>
+            [ngClass]="rla.isActive ? '' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors relative cursor-pointer no-underline group">
+            <lucide-icon [img]="item.icon" class="w-5 h-5 group-hover:text-gray-900 dark:group-hover:text-gray-100"></lucide-icon>
             <span class="flex-1">{{ item.label }}</span>
 
             @if (item.badge) {
@@ -42,20 +42,20 @@
     </ul>
   </nav>
 
-  <div class="p-4 border-t border-gray-200">
-    <div class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors">
-      <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-        <lucide-icon [img]="icons.User" class="w-5 h-5 text-yellow-600"></lucide-icon>
+  <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+    <div class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+      <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-500/20 rounded-full flex items-center justify-center">
+        <lucide-icon [img]="icons.User" class="w-5 h-5 text-yellow-600 dark:text-yellow-400"></lucide-icon>
       </div>
       <div class="flex-1 min-w-0">
-        <div class="font-medium text-gray-900 text-sm">{{ userName() }}</div>
-        <div class="text-xs text-gray-500 capitalize">{{ userRole() ?? 'Desconocido' }}</div>
+        <div class="font-medium text-gray-900 dark:text-gray-100 text-sm">{{ userName() }}</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400 capitalize">{{ userRole() ?? 'Desconocido' }}</div>
       </div>
       <button
         (click)="Logout()"
-        class="p-1 hover:bg-gray-100 rounded transition-colors cursor-pointer"
+        class="p-1 hover:bg-gray-100 dark:hover:bg-gray-600 rounded transition-colors cursor-pointer"
         title="Logout">
-        <lucide-icon [img]="icons.LogOut" class="w-4 h-4 text-gray-400"></lucide-icon>
+        <lucide-icon [img]="icons.LogOut" class="w-4 h-4 text-gray-400 dark:text-gray-300"></lucide-icon>
       </button>
     </div>
   </div>

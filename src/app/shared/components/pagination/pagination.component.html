@@ -1,4 +1,4 @@
-<div class="flex items-center justify-center gap-3 py-4 border-t border-gray-200 bg-white">
+<div class="flex items-center justify-center gap-3 py-4 border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
 
   <!-- Botón Anterior -->
   <button
@@ -10,10 +10,10 @@
   </button>
 
   <!-- Indicador de página -->
-  <span class="text-sm text-gray-600 font-medium px-2">
-    Página <span class="font-bold text-gray-900">{{ currentPage() }}</span>
+  <span class="text-sm text-gray-600 font-medium px-2 dark:text-gray-400">
+    Página <span class="font-bold text-gray-900 dark:text-gray-100">{{ currentPage() }}</span>
     de
-    <span class="font-bold text-gray-900">{{ totalPages() }}</span>
+    <span class="font-bold text-gray-900 dark:text-gray-100">{{ totalPages() }}</span>
   </span>
 
   <!-- Botón Siguiente -->

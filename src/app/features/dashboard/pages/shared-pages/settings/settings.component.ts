@@ -22,6 +22,7 @@ import {
 import { FacadeService } from '../../../../../core/services/facade.service';
 import { FormUtilsService } from '../../../../../shared/utils/form-utils.service';
 import { LoadingModalComponent } from '../../../../../shared/components/loading-modal/loading-modal.component';
+import { ThemeService } from '../../../../../core/services/theme.service';
 
 @Component({
   selector: 'app-settings',
@@ -36,6 +37,7 @@ import { LoadingModalComponent } from '../../../../../shared/components/loading-
 })
 export class SettingsComponent {
   private facadeService = inject(FacadeService);
+  private themeService = inject(ThemeService);
   private fb = inject(FormBuilder);
   public formUtils = inject(FormUtilsService);
 
@@ -178,13 +180,18 @@ export class SettingsComponent {
     }, 800);
   }
 
-  // Tarjeta 3: Pantalla / Apariencia
-  darkMode = signal(false);
+  // Tarjeta 3: Pantalla / Apariencia (conectada a ThemeService)
+  darkMode = this.themeService.isDarkMode;
+  canUseDarkMode = computed(() => {
+    const role = this.userRole();
+    return role === 'maestro' || role === 'administrador';
+  });
   selectedLanguage = signal('Español');
   languages = ['Español', 'Inglés', 'Francés', 'Alemán'];
 
   toggleDarkMode() {
-    this.darkMode.update((val) => !val);
+    if (!this.canUseDarkMode()) return;
+    this.themeService.toggleDarkMode();
   }
 
   onLanguageChange(event: Event) {

@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   LucideAngularModule,
-  FileText, BarChart3, Users, Calendar,
-  BookOpen, Award, Settings, Cloud
+  ShieldAlert, Clock, Lock, BarChart3, Mail
 } from 'lucide-angular';
 
 // Definimos una interfaz para tipado estricto (Buenas prácticas)
@@ -34,55 +33,37 @@ export class FeaturesListComponent {
     cyan:   { bg: 'bg-cyan-100',   icon: 'text-cyan-600' }
   };
 
-  // Datos de las características
+  // Datos de las características reales de EvalPro
   readonly features: Feature[] = [
     {
-      icon: FileText,
-      title: 'Banco de Preguntas',
-      description: 'Crea y gestiona una biblioteca completa de preguntas en todas las materias y niveles de dificultad.',
-      color: 'yellow'
-    },
-    {
-      icon: BarChart3,
-      title: 'Analíticas e Insights',
-      description: 'Análisis de rendimiento detallado para identificar fortalezas, debilidades y áreas de mejora.',
-      color: 'purple'
-    },
-    {
-      icon: Users,
-      title: 'Gestión de Estudiantes',
-      description: 'Organiza a los estudiantes por clase, grupo o grupos personalizados con una fácil gestión de inscripciones.',
-      color: 'green'
-    },
-    {
-      icon: Calendar,
-      title: 'Sistema de Programación',
-      description: 'Programa exámenes con anticipación con notificaciones automáticas e integración con el calendario.',
-      color: 'orange'
-    },
-    {
-      icon: BookOpen,
-      title: 'Calificación Automática',
-      description: 'Calificación automatizada instantánea para preguntas objetivas, ahorrando horas de trabajo manual.',
+      icon: ShieldAlert,
+      title: 'Sistema Anti-Fraude',
+      description: 'Monitoreo en tiempo real de la visibilidad del navegador. Detecta cambios de pestaña, pérdida de enfoque y previene recargas accidentales para asegurar evaluaciones justas.',
       color: 'red'
     },
     {
-      icon: Award,
-      title: 'Certificados',
-      description: 'Genera y emite certificados digitales automáticamente al completar el examen.',
+      icon: Clock,
+      title: 'Sincronización Precisa',
+      description: 'Temporizadores de examen sincronizados con el servidor, envíos automáticos seguros y un margen de tolerancia estricto (20s) para problemas de red.',
       color: 'yellow'
     },
     {
-      icon: Settings,
-      title: 'Personalización',
-      description: 'Personaliza la configuración del examen, incluyendo límites de tiempo, aleatorización de preguntas y reglas de puntuación.',
+      icon: Lock,
+      title: 'Control de Accesos y Roles (RBAC)',
+      description: 'Arquitectura segura con separación de roles (Administrador, Profesor, Alumno). Los profesores mantienen control absoluto (Ownership) sobre sus propias materias y exámenes.',
       color: 'indigo'
     },
     {
-      icon: Cloud,
-      title: 'Almacenamiento en la Nube',
-      description: 'Almacenamiento seguro en la nube para todos los datos de exámenes con copias de seguridad automáticas y 99.9% de tiempo de actividad.',
-      color: 'cyan'
+      icon: BarChart3,
+      title: 'Estadísticas Dinámicas',
+      description: 'Paneles de rendimiento dedicados. Los alumnos pueden ver su progreso histórico, mientras que los profesores analizan promedios globales y tasas de aprobación por materia.',
+      color: 'purple'
+    },
+    {
+      icon: Mail,
+      title: 'Seguridad desde el Registro',
+      description: 'Verificación de cuentas mediante códigos OTP de 6 dígitos enviados por correo, asegurando que solo usuarios institucionales o reales accedan a la plataforma.',
+      color: 'green'
     }
   ];
 
