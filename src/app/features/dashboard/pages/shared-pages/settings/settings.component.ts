@@ -184,7 +184,7 @@ export class SettingsComponent {
   darkMode = this.themeService.isDarkMode;
   canUseDarkMode = computed(() => {
     const role = this.userRole();
-    return role === 'maestro' || role === 'administrador';
+    return role === 'maestro' || role === 'administrador' || role === 'alumno';
   });
   selectedLanguage = signal('Español');
   languages = ['Español', 'Inglés', 'Francés', 'Alemán'];

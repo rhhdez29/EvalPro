@@ -1,22 +1,27 @@
 <div class="space-y-3">
-  <p class="text-xs sm:text-sm text-gray-600 mb-4">Selecciona la respuesta correcta:</p>
+  <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-4">Selecciona la respuesta correcta:</p>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
 
     <button
       type="button"
       (click)="selectAnswer(true)"
-      class="relative p-4 sm:p-6 border-2 rounded-lg transition-all text-left"
+      class="relative p-4 sm:p-6 border-2 rounded-lg transition-all text-left dark:bg-gray-800"
       [class.pointer-events-none]="isGradingMode()"
       [class.border-green-500]="selectedAnswer() === true"
+      [class.dark:border-green-500]="selectedAnswer() === true"
       [class.bg-green-50]="selectedAnswer() === true"
+      [class.dark:bg-green-950/30]="selectedAnswer() === true"
       [class.border-gray-200]="selectedAnswer() !== true"
+      [class.dark:border-gray-700]="selectedAnswer() !== true"
       [class.hover:border-gray-300]="selectedAnswer() !== true && !isGradingMode()"
-      [class.hover:bg-gray-50]="selectedAnswer() !== true && !isGradingMode()">
+      [class.dark:hover:border-gray-600]="selectedAnswer() !== true && !isGradingMode()"
+      [class.hover:bg-gray-50]="selectedAnswer() !== true && !isGradingMode()"
+      [class.dark:hover:bg-gray-700]="selectedAnswer() !== true && !isGradingMode()">
 
       @if (isPreviewMode() && !isGradingMode() && correctAnswer() === true) {
         <div class="sm:absolute sm:top-3 sm:right-3 flex justify-end mb-2 sm:mb-0">
-          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700">
             Respuesta Correcta
           </span>
         </div>
@@ -26,10 +31,12 @@
         <div
           class="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors"
           [class.bg-green-500]="selectedAnswer() === true"
-          [class.bg-gray-200]="selectedAnswer() !== true">
+          [class.bg-gray-200]="selectedAnswer() !== true"
+          [class.dark:bg-gray-700]="selectedAnswer() !== true">
           <svg class="w-4 h-4 sm:w-5 sm:h-5 transition-colors"
                [class.text-white]="selectedAnswer() === true"
                [class.text-gray-500]="selectedAnswer() !== true"
+               [class.dark:text-gray-400]="selectedAnswer() !== true"
                fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
           </svg>
@@ -39,26 +46,33 @@
       <div
         class="text-xl sm:text-2xl font-bold mb-1 text-center transition-colors"
         [class.text-green-700]="selectedAnswer() === true"
-        [class.text-gray-700]="selectedAnswer() !== true">
+        [class.dark:text-green-400]="selectedAnswer() === true"
+        [class.text-gray-700]="selectedAnswer() !== true"
+        [class.dark:text-gray-200]="selectedAnswer() !== true">
         VERDADERO
       </div>
-      <p class="text-xs sm:text-sm text-gray-600 text-center">Esta afirmación es correcta</p>
+      <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center">Esta afirmación es correcta</p>
     </button>
 
     <button
       type="button"
       (click)="selectAnswer(false)"
-      class="relative p-4 sm:p-6 border-2 rounded-lg transition-all text-left"
+      class="relative p-4 sm:p-6 border-2 rounded-lg transition-all text-left dark:bg-gray-800"
       [class.pointer-events-none]="isGradingMode()"
       [class.border-red-500]="selectedAnswer() === false"
+      [class.dark:border-red-500]="selectedAnswer() === false"
       [class.bg-red-50]="selectedAnswer() === false"
+      [class.dark:bg-red-950/30]="selectedAnswer() === false"
       [class.border-gray-200]="selectedAnswer() !== false"
+      [class.dark:border-gray-700]="selectedAnswer() !== false"
       [class.hover:border-gray-300]="selectedAnswer() !== false && !isGradingMode()"
-      [class.hover:bg-gray-50]="selectedAnswer() !== false && !isGradingMode()">
+      [class.dark:hover:border-gray-600]="selectedAnswer() !== false && !isGradingMode()"
+      [class.hover:bg-gray-50]="selectedAnswer() !== false && !isGradingMode()"
+      [class.dark:hover:bg-gray-700]="selectedAnswer() !== false && !isGradingMode()">
 
       @if (isPreviewMode() && !isGradingMode() && correctAnswer() === false) {
         <div class="sm:absolute sm:top-3 sm:right-3 flex justify-end mb-2 sm:mb-0">
-          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700">
             Respuesta Correcta
           </span>
         </div>
@@ -68,10 +82,12 @@
         <div
           class="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors"
           [class.bg-red-500]="selectedAnswer() === false"
-          [class.bg-gray-200]="selectedAnswer() !== false">
+          [class.bg-gray-200]="selectedAnswer() !== false"
+          [class.dark:bg-gray-700]="selectedAnswer() !== false">
           <svg class="w-4 h-4 sm:w-5 sm:h-5 transition-colors"
                [class.text-white]="selectedAnswer() === false"
                [class.text-gray-500]="selectedAnswer() !== false"
+               [class.dark:text-gray-400]="selectedAnswer() !== false"
                fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
@@ -81,10 +97,12 @@
       <div
         class="text-xl sm:text-2xl font-bold mb-1 text-center transition-colors"
         [class.text-red-700]="selectedAnswer() === false"
-        [class.text-gray-700]="selectedAnswer() !== false">
+        [class.dark:text-red-400]="selectedAnswer() === false"
+        [class.text-gray-700]="selectedAnswer() !== false"
+        [class.dark:text-gray-200]="selectedAnswer() !== false">
         FALSO
       </div>
-      <p class="text-xs sm:text-sm text-gray-600 text-center">Esta afirmación es incorrecta</p>
+      <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center">Esta afirmación es incorrecta</p>
     </button>
 
   </div>

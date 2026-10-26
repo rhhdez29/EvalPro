@@ -1,22 +1,48 @@
-<nav class="border-b border-gray-200 bg-white sticky top-0 z-50">
+<nav class="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 sticky top-0 z-50 transition-colors duration-300">
   <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 md:px-8 md:py-4">
     <div class="flex items-center justify-between gap-2">
 
       <a routerLink="/" class="flex items-center gap-2 cursor-pointer no-underline shrink-0">
         <lucide-icon
           [img]="GraduationCap"
-          class="w-7 h-7 sm:w-8 sm:h-8 text-yellow-600">
+          class="w-7 h-7 sm:w-8 sm:h-8 text-yellow-600 dark:text-yellow-500">
         </lucide-icon>
 
-        <span class="text-lg sm:text-xl font-semibold text-gray-900">
+        <span class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
           EvalPro
         </span>
       </a>
 
       <div class="flex items-center gap-2 sm:gap-4 flex-wrap justify-end">
+        <!-- Interruptor de Modo Oscuro -->
+        <button
+          type="button"
+          (click)="toggleDarkMode()"
+          class="flex items-center gap-1 p-1 sm:p-1.5 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 transition-colors cursor-pointer"
+          [attr.aria-label]="isDarkMode() ? 'Activar modo claro' : 'Activar modo oscuro'"
+          [title]="isDarkMode() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+        >
+          <div
+            class="p-1 rounded-full transition-all duration-200 flex items-center justify-center"
+            [class.bg-white]="!isDarkMode()"
+            [class.text-yellow-600]="!isDarkMode()"
+            [class.shadow-sm]="!isDarkMode()"
+            [class.text-gray-400]="isDarkMode()">
+            <lucide-icon [img]="Sun" class="w-4 h-4"></lucide-icon>
+          </div>
+          <div
+            class="p-1 rounded-full transition-all duration-200 flex items-center justify-center"
+            [class.bg-gray-700]="isDarkMode()"
+            [class.text-yellow-400]="isDarkMode()"
+            [class.shadow-sm]="isDarkMode()"
+            [class.text-gray-400]="!isDarkMode()">
+            <lucide-icon [img]="Moon" class="w-4 h-4"></lucide-icon>
+          </div>
+        </button>
+
         <button
           routerLink="/auth/login"
-          class="px-3 py-1.5 sm:px-5 sm:py-2 text-xs sm:text-sm md:text-base text-yellow-600 hover:text-yellow-700 transition-colors font-medium cursor-pointer">
+          class="px-3 py-1.5 sm:px-5 sm:py-2 text-xs sm:text-sm md:text-base text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400 transition-colors font-medium cursor-pointer">
           Iniciar Sesión
         </button>
 

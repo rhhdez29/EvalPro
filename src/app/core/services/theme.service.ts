@@ -6,9 +6,7 @@ import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
  *
  * - Lee la preferencia guardada en localStorage al iniciar.
  * - toggleDarkMode() alterna la clase `dark` en <html> y persiste la preferencia.
- * - El modo oscuro solo se aplica visualmente en el contexto Profesor/Administrador:
- *   el DashboardLayout llama a setRoleContext() al entrar y clearRoleContext() al salir,
- *   de modo que login, landing y vistas de alumno siempre se muestran en modo claro.
+ * - Mantiene el tema consistente en toda la plataforma (Landing, Demo Exam, Autenticación y Dashboard).
  * - Todo acceso a localStorage / document está protegido para SSR.
  */
 @Injectable({
@@ -19,21 +17,19 @@ export class ThemeService {
   private readonly document = inject(DOCUMENT);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
   private readonly THEME_KEY = 'evalpro-theme';
-  private readonly ALLOWED_ROLES = ['maestro', 'administrador'];
 
   /** Preferencia del usuario (true = oscuro). */
   readonly isDarkMode = signal<boolean>(false);
 
-  /** Indica si la vista actual pertenece a Profesor/Administrador. */
-  private readonly isAllowedContext = signal<boolean>(false);
-
   constructor() {
     if (this.isBrowser) {
       try {
-        this.isDarkMode.set(localStorage.getItem(this.THEME_KEY) === 'dark');
+        const saved = localStorage.getItem(this.THEME_KEY);
+        this.isDarkMode.set(saved === 'dark');
       } catch {
         this.isDarkMode.set(false);
       }
+      this.syncHtmlClass();
     }
   }
 
@@ -54,21 +50,21 @@ export class ThemeService {
     this.syncHtmlClass();
   }
 
-  /** Habilita el tema oscuro solo para los roles Profesor/Administrador. */
-  setRoleContext(role: string | null | undefined): void {
-    this.isAllowedContext.set(!!role && this.ALLOWED_ROLES.includes(role));
+  /** Métodos de compatibilidad con layouts: mantienen sincronizada la preferencia del usuario */
+  setRoleContext(_role?: string | null): void {
     this.syncHtmlClass();
   }
 
-  /** Quita el tema oscuro al salir del layout de Profesor/Administrador. */
   clearRoleContext(): void {
-    this.isAllowedContext.set(false);
+    this.syncHtmlClass();
+  }
+
+  setLandingContext(_active?: boolean): void {
     this.syncHtmlClass();
   }
 
   private syncHtmlClass(): void {
     if (!this.isBrowser) return;
-    const shouldBeDark = this.isDarkMode() && this.isAllowedContext();
-    this.document.documentElement.classList.toggle('dark', shouldBeDark);
+    this.document.documentElement.classList.toggle('dark', this.isDarkMode());
   }
 }

@@ -1,14 +1,14 @@
 <form [formGroup]="codeForm" class="space-y-4 sm:space-y-6">
 
   <div>
-    <label class="block text-sm font-semibold text-gray-900 mb-2">
+    <label class="block text-sm font-semibold text-gray-900 dark:text-gray-300 mb-2">
       Challenge Description <span class="text-red-500">*</span>
     </label>
     <textarea
       formControlName="prompt"
       placeholder="Describe the programming challenge, requirements, and constraints..."
       rows="4"
-      class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none text-sm sm:text-base"
+      class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none text-sm sm:text-base"
       [class.border-red-500]="formUtils.isValidField(codeForm, 'prompt')"
     ></textarea>
     @if (formUtils.isValidField(codeForm, 'prompt')) {
@@ -17,7 +17,7 @@
   </div>
 
   <div>
-    <label class="block text-sm font-semibold text-gray-900 mb-2">
+    <label class="block text-sm font-semibold text-gray-900 dark:text-gray-300 mb-2">
       Points <span class="text-red-500">*</span>
     </label>
     <input
@@ -26,7 +26,7 @@
       step="5"
       appOnlyNumbers
       formControlName="points"
-      class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm sm:text-base"
+      class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm sm:text-base"
     />
     @if (formUtils.isValidField(codeForm, 'points')) {
       <p class="mt-1 text-xs sm:text-sm text-red-500">{{ formUtils.getFieldError(codeForm, 'points') }}</p>
@@ -37,12 +37,12 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm font-semibold text-gray-900 mb-2">
+        <label class="block text-sm font-semibold text-gray-900 dark:text-gray-300 mb-2">
           Programming Language <span class="text-red-500">*</span>
         </label>
         <select
           formControlName="language"
-          class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent bg-white text-sm sm:text-base"
+          class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent bg-white text-sm sm:text-base"
         >
           @for (lang of LANGUAGES; track lang.value) {
             <option [value]="lang.value">{{ lang.label }}</option>
@@ -51,12 +51,12 @@
       </div>
 
       <div>
-        <label class="block text-sm font-semibold text-gray-900 mb-2">
+        <label class="block text-sm font-semibold text-gray-900 dark:text-gray-300 mb-2">
           Framework (Optional)
         </label>
         <select
           formControlName="framework"
-          class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent bg-white text-sm sm:text-base"
+          class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent bg-white text-sm sm:text-base"
         >
           @for (fw of FRAMEWORKS; track fw.value) {
             <option [value]="fw.value">{{ fw.label }}</option>
@@ -66,10 +66,10 @@
     </div>
 
     <div>
-      <label class="block text-sm font-semibold text-gray-900 mb-2">
+      <label class="block text-sm font-semibold text-gray-900 dark:text-gray-300 mb-2">
         Starter Code (Optional)
       </label>
-      <div class="border-2 border-gray-300 rounded-lg overflow-hidden h-[180px] sm:h-[200px] text-left">
+      <div class="border-2 border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden h-[180px] sm:h-[200px] text-left">
         <ngx-monaco-editor
           class="h-full w-full"
           [options]="editorOptions()"
@@ -77,18 +77,18 @@
         >
         </ngx-monaco-editor>
       </div>
-      <p class="mt-2 text-xs text-gray-500">
+      <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
         This code will be pre-populated in the student's editor
       </p>
     </div>
 
   </div>
 
-  <div class="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t border-gray-200">
+  <div class="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
     <button
       type="button"
       (click)="cancel()"
-      class="w-full sm:flex-1 px-5 sm:px-6 py-2.5 sm:py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium cursor-pointer text-sm sm:text-base text-center"
+      class="w-full sm:flex-1 px-5 sm:px-6 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium cursor-pointer text-sm sm:text-base text-center"
     >
       Cancel
     </button>

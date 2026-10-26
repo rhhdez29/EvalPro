@@ -1,15 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { LucideAngularModule, GraduationCap } from 'lucide-angular';
+import { LucideAngularModule, GraduationCap, Sun, Moon } from 'lucide-angular';
+import { ThemeService } from '../../../../core/services/theme.service';
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, RouterLink, LucideAngularModule,],
+  standalone: true,
+  imports: [CommonModule, RouterLink, LucideAngularModule],
   templateUrl: './navbar.component.html',
   styles: []
 })
 export class NavbarComponent {
-  // Exponemos el icono a la vista (HTML)
+  private themeService = inject(ThemeService);
+
   readonly GraduationCap = GraduationCap;
+  readonly Sun = Sun;
+  readonly Moon = Moon;
+
+  readonly isDarkMode = this.themeService.isDarkMode;
+
+  toggleDarkMode(): void {
+    this.themeService.toggleDarkMode();
+  }
 }

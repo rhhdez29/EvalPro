@@ -22,15 +22,15 @@ interface Feature {
 })
 export class FeaturesListComponent {
 
-  // Mapa de colores (Igual que en tu React)
+  // Mapa de colores con soporte para modo oscuro
   readonly colorClasses: Record<string, { bg: string; icon: string }> = {
-    yellow: { bg: 'bg-yellow-100', icon: 'text-yellow-600' },
-    purple: { bg: 'bg-purple-100', icon: 'text-purple-600' },
-    green:  { bg: 'bg-green-100',  icon: 'text-green-600' },
-    orange: { bg: 'bg-orange-100', icon: 'text-orange-600' },
-    red:    { bg: 'bg-red-100',    icon: 'text-red-600' },
-    indigo: { bg: 'bg-indigo-100', icon: 'text-indigo-600' },
-    cyan:   { bg: 'bg-cyan-100',   icon: 'text-cyan-600' }
+    yellow: { bg: 'bg-yellow-100 dark:bg-yellow-900/30', icon: 'text-yellow-600 dark:text-yellow-400' },
+    purple: { bg: 'bg-purple-100 dark:bg-purple-900/30', icon: 'text-purple-600 dark:text-purple-400' },
+    green:  { bg: 'bg-green-100 dark:bg-green-900/30',  icon: 'text-green-600 dark:text-green-400' },
+    orange: { bg: 'bg-orange-100 dark:bg-orange-900/30', icon: 'text-orange-600 dark:text-orange-400' },
+    red:    { bg: 'bg-red-100 dark:bg-red-900/30',    icon: 'text-red-600 dark:text-red-400' },
+    indigo: { bg: 'bg-indigo-100 dark:bg-indigo-900/30', icon: 'text-indigo-600 dark:text-indigo-400' },
+    cyan:   { bg: 'bg-cyan-100 dark:bg-cyan-900/30',   icon: 'text-cyan-600 dark:text-cyan-400' }
   };
 
   // Datos de las características reales de EvalPro
@@ -50,7 +50,7 @@ export class FeaturesListComponent {
     {
       icon: Lock,
       title: 'Control de Accesos y Roles (RBAC)',
-      description: 'Arquitectura segura con separación de roles (Administrador, Profesor, Alumno). Los profesores mantienen control absoluto (Ownership) sobre sus propias materias y exámenes.',
+      description: 'Arquitectura segura con separación de roles (Administrador, Profesor, Alumno). Los profesores mantienen control absoluto (Ownership) sobre sus materias y exámenes.',
       color: 'indigo'
     },
     {

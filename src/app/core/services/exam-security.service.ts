@@ -27,6 +27,8 @@ export class ExamSecurityService {
       this.isExamActive = true;
       this.examId = examId;
       this.isVoided = false;
+      this.isExamFinished = false;
+      this.isUnloading = false;
 
       // Bloquear botón de retroceso forzando un estado en el history
       history.pushState(null, '', location.href);
@@ -67,7 +69,8 @@ export class ExamSecurityService {
     }
   }
 
-  private voidExam(trigger: string) {
+  public voidExam(trigger: string = 'fraud_detected') {
+    if (this.isVoided) return;
     this.isVoided = true;
     this.isExamFinished = true;
     this.stopExamSecurity();

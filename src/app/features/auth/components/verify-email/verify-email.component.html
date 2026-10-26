@@ -2,18 +2,18 @@
 
   <!-- Icono y encabezado informativo -->
   <div class="text-center space-y-2">
-    <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-yellow-100 text-yellow-600 mb-1">
+    <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 mb-1">
       <lucide-icon [img]="icons.KeyRound" class="w-7 h-7"></lucide-icon>
     </div>
-    <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Verifica tu Correo</h2>
-    <p class="text-sm text-gray-600 max-w-sm mx-auto">
+    <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Verifica tu Correo</h2>
+    <p class="text-sm text-gray-600 dark:text-gray-300 max-w-sm mx-auto">
       Ingresa el código de 6 dígitos enviado a tu correo institucional para activar tu cuenta en EvalPro.
     </p>
   </div>
 
   <!-- Campo de Correo Electrónico -->
   <div class="space-y-1.5">
-    <label class="block text-sm font-medium text-gray-700">
+    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
       Correo Electrónico
     </label>
     <div class="relative">
@@ -22,12 +22,12 @@
         type="email"
         placeholder="ejemplo@alumno.buap.mx"
         formControlName="email"
-        class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none transition text-sm sm:text-base text-gray-800"
+        class="w-full pl-11 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none transition text-sm sm:text-base"
         [class.border-red-500]="formVerify.get('email')?.invalid && formVerify.get('email')?.touched"
       />
     </div>
     @if (formVerify.get('email')?.invalid && formVerify.get('email')?.touched) {
-      <p class="text-xs text-red-500 animate-in fade-in">
+      <p class="text-xs text-red-500 mt-1 animate-in fade-in">
         Por favor ingresa un correo electrónico válido.
       </p>
     }
@@ -35,7 +35,7 @@
 
   <!-- Campo Código de 6 dígitos -->
   <div class="space-y-1.5">
-    <label class="block text-sm font-medium text-gray-700">
+    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
       Código de 6 dígitos
     </label>
     <div class="relative">
@@ -45,13 +45,13 @@
         maxlength="6"
         placeholder="000000"
         formControlName="otp_code"
-        class="w-full py-3.5 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none transition text-center font-mono text-2xl sm:text-3xl tracking-[0.5em] sm:tracking-[0.6em] font-bold text-gray-900 placeholder:tracking-normal placeholder:font-normal placeholder:text-gray-300"
+        class="w-full py-3.5 px-4 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none transition text-center font-mono text-2xl sm:text-3xl tracking-[0.5em] sm:tracking-[0.6em] font-bold text-gray-900 dark:text-white placeholder:tracking-normal placeholder:font-normal placeholder:text-gray-300 dark:placeholder:text-gray-500"
         [class.border-red-500]="formVerify.get('otp_code')?.invalid && formVerify.get('otp_code')?.touched"
         autocomplete="one-time-code"
       />
     </div>
     @if (formVerify.get('otp_code')?.invalid && formVerify.get('otp_code')?.touched) {
-      <p class="text-xs text-red-500 text-center animate-in fade-in">
+      <p class="text-xs text-red-500 text-center mt-1 animate-in fade-in">
         El código debe contener exactamente 6 dígitos numéricos.
       </p>
     }
@@ -59,16 +59,16 @@
 
   <!-- Alerta de error inline si existe -->
   @if (errorMessage()) {
-    <div class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs sm:text-sm flex items-start gap-2 animate-in fade-in">
-      <lucide-icon [img]="icons.CircleX" class="w-4 h-4 shrink-0 mt-0.5 text-red-500"></lucide-icon>
+    <div class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-xs sm:text-sm flex items-start gap-2 animate-in fade-in">
+      <lucide-icon [img]="icons.CircleX" class="w-4 h-4 shrink-0 mt-0.5 text-red-500 dark:text-red-400"></lucide-icon>
       <span>{{ errorMessage() }}</span>
     </div>
   }
 
   <!-- Alerta de éxito al reenviar -->
   @if (resendSuccessMessage()) {
-    <div class="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-xs sm:text-sm flex items-start gap-2 animate-in fade-in">
-      <lucide-icon [img]="icons.CheckCircle" class="w-4 h-4 shrink-0 mt-0.5 text-green-600"></lucide-icon>
+    <div class="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-700 dark:text-green-300 text-xs sm:text-sm flex items-start gap-2 animate-in fade-in">
+      <lucide-icon [img]="icons.CheckCircle" class="w-4 h-4 shrink-0 mt-0.5 text-green-600 dark:text-green-400"></lucide-icon>
       <span>{{ resendSuccessMessage() }}</span>
     </div>
   }
@@ -86,9 +86,9 @@
   <!-- Reenvío de código con anti-spam cooldown -->
   <div class="text-center pt-1">
     @if (resendCooldown() > 0) {
-      <p class="text-xs sm:text-sm text-gray-500 font-medium">
+      <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium">
         ¿No recibiste el código?
-        <span class="text-yellow-700 font-semibold ml-1">
+        <span class="text-yellow-700 dark:text-yellow-400 font-semibold ml-1">
           Reenviar en {{ resendCooldown() }}s
         </span>
       </p>
@@ -97,7 +97,7 @@
         type="button"
         (click)="resendCode()"
         [disabled]="isResending()"
-        class="text-xs sm:text-sm text-yellow-600 hover:text-yellow-700 font-semibold cursor-pointer transition inline-flex items-center gap-1.5 hover:underline disabled:opacity-50"
+        class="text-xs sm:text-sm text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 font-semibold cursor-pointer transition inline-flex items-center gap-1.5 hover:underline disabled:opacity-50"
       >
         <lucide-icon [img]="icons.RefreshCw" class="w-3.5 h-3.5" [class.animate-spin]="isResending()"></lucide-icon>
         <span>¿No recibiste el código? Reenviar código</span>
@@ -106,16 +106,16 @@
   </div>
 
   <!-- Enlaces de navegación -->
-  <div class="text-center text-xs sm:text-sm text-gray-600 space-y-2 pt-2 border-t border-gray-100">
+  <div class="text-center text-xs sm:text-sm text-gray-600 dark:text-gray-400 space-y-2 pt-2 border-t border-gray-100 dark:border-gray-700">
     <div>
       ¿Ya activaste tu cuenta?
-      <a routerLink="/auth/login" class="text-yellow-600 hover:text-yellow-700 font-semibold ml-1">
+      <a routerLink="/auth/login" class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 font-semibold ml-1">
         Inicia Sesión
       </a>
     </div>
     <div>
       ¿Te equivocaste de correo al registrarte?
-      <a routerLink="/auth/register" class="text-gray-500 hover:text-gray-700 font-medium ml-1 underline">
+      <a routerLink="/auth/register" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 font-medium ml-1 underline">
         Volver a registrarse
       </a>
     </div>

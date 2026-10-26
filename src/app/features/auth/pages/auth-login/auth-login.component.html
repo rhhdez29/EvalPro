@@ -1,6 +1,6 @@
 <form (ngSubmit)="login()" [formGroup]="formUser">
   <div class="space-y-2">
-    <label class="text-sm font-medium text-gray-700">
+    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
       Correo Electrónico
     </label>
     <div class="relative">
@@ -8,7 +8,7 @@
       <input
         type="email"
         placeholder="Ingresa tu correo electrónico"
-        class="w-full pl-11 pr-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+        class="w-full pl-11 pr-11 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
         required
         formControlName="username"
         [class.border-red-500]="formUtils.isValidField(formUser,'username')"
@@ -29,12 +29,12 @@
   </div>
 
   <div class="space-y-2 mt-4">
-    <label class="text-sm font-medium text-gray-700">Contraseña</label>
+    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Contraseña</label>
     <div class="relative">
       <lucide-icon [img]="icons.Lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
       <input type="password"
         placeholder="••••••••"
-        class="w-full pl-11 pr-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+        class="w-full pl-11 pr-11 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
         required
         formControlName="password"
         [class.border-red-500]="formUtils.isValidField(formUser,'password')"
@@ -42,7 +42,7 @@
       />
       <button
         type="button"
-        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer"
         (click)="togglePassword()"
       >
         <lucide-icon
@@ -60,10 +60,10 @@
 
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm animate-in fade-in duration-300 mt-5">
     <label class="flex items-center gap-2 cursor-pointer">
-      <input type="checkbox" class="w-4 h-4 text-yellow-600 rounded border-gray-300 focus:ring-yellow-500" />
-      <span class="text-gray-600">Recordarme</span>
+      <input type="checkbox" class="w-4 h-4 text-yellow-600 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:ring-yellow-500 cursor-pointer" />
+      <span class="text-gray-600 dark:text-gray-300">Recordarme</span>
     </label>
-    <a href="#" class="text-yellow-600 hover:text-yellow-700 font-medium">¿Olvidaste tu contraseña?</a>
+    <a href="#" class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 font-medium">¿Olvidaste tu contraseña?</a>
   </div>
 
   <button
@@ -74,9 +74,9 @@
     <lucide-icon [img]="icons.ArrowRight" class="w-5 h-5"></lucide-icon>
   </button>
 
-  <div class="text-center text-sm text-gray-600 pt-2 mt-5">
+  <div class="text-center text-sm text-gray-600 dark:text-gray-400 pt-2 mt-5">
     ¿No tienes una cuenta?
-    <a routerLink="/auth/register" class="text-yellow-600 hover:text-yellow-700 font-medium">Regístrate</a>
+    <a routerLink="/auth/register" class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 font-medium">Regístrate</a>
   </div>
 
   <loading-modal

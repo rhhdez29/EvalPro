@@ -3,8 +3,8 @@
   <!-- ENCABEZADO -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Mi Rendimiento</h1>
-      <p class="text-sm sm:text-base text-gray-500 mt-1">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Mi Rendimiento</h1>
+      <p class="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-1">
         Consulta tus métricas globales, promedio por materia y evaluaciones completadas.
       </p>
     </div>
@@ -15,28 +15,28 @@
     <div class="space-y-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         @for (i of [1, 2, 3, 4]; track i) {
-          <div class="bg-white rounded-xl border border-gray-200 p-6 animate-pulse space-y-3">
-            <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div class="h-8 bg-gray-200 rounded w-3/4"></div>
-            <div class="h-3 bg-gray-100 rounded w-2/3"></div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 animate-pulse space-y-3">
+            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+            <div class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+            <div class="h-3 bg-gray-100 dark:bg-gray-700/60 rounded w-2/3"></div>
           </div>
         }
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white rounded-xl border border-gray-200 p-6 animate-pulse h-64"></div>
-        <div class="bg-white rounded-xl border border-gray-200 p-6 animate-pulse h-64"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 animate-pulse h-64"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 animate-pulse h-64"></div>
       </div>
     </div>
   }
 
   <!-- ESTADO DE ERROR -->
   @else if (hasError()) {
-    <div class="bg-white rounded-xl border border-red-200 p-8 text-center max-w-xl mx-auto space-y-4">
-      <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-red-200 dark:border-red-900/50 p-8 text-center max-w-xl mx-auto space-y-4">
+      <div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto">
         <lucide-icon [img]="icons.AlertCircle" class="w-6 h-6"></lucide-icon>
       </div>
-      <h3 class="text-lg font-bold text-gray-900">No se pudieron cargar tus estadísticas</h3>
-      <p class="text-sm text-gray-500">
+      <h3 class="text-lg font-bold text-gray-900 dark:text-white">No se pudieron cargar tus estadísticas</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400">
         Ocurrió un error al obtener tu información académica. Por favor intenta nuevamente.
       </p>
       <button
@@ -54,65 +54,69 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 
       <!-- KPI 1: Exámenes Completados -->
-      <div class="bg-white rounded-xl border border-gray-200 p-5 sm:p-6 shadow-sm flex items-center justify-between">
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 sm:p-6 shadow-sm flex items-center justify-between">
         <div class="space-y-1">
-          <span class="text-xs sm:text-sm font-medium text-gray-500">Exámenes Completados</span>
-          <div class="text-2xl sm:text-3xl font-bold text-gray-900">{{ data.total_exams }}</div>
-          <span class="text-xs text-gray-400">Total de intentos calificados</span>
+          <span class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Exámenes Completados</span>
+          <div class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{{ data.total_exams }}</div>
+          <span class="text-xs text-gray-400 dark:text-gray-500">Total de intentos calificados</span>
         </div>
-        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+        <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
           <lucide-icon [img]="icons.BookOpen" class="w-6 h-6"></lucide-icon>
         </div>
       </div>
 
       <!-- KPI 2: Promedio General -->
-      <div class="bg-white rounded-xl border border-gray-200 p-5 sm:p-6 shadow-sm flex items-center justify-between">
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 sm:p-6 shadow-sm flex items-center justify-between">
         <div class="space-y-1">
-          <span class="text-xs sm:text-sm font-medium text-gray-500">Promedio General</span>
-          <div class="text-2xl sm:text-3xl font-bold text-gray-900">
-            {{ data.average_score }}<span class="text-base text-gray-400 font-normal">/100</span>
+          <span class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Promedio General</span>
+          <div class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+            {{ data.average_score }}<span class="text-base text-gray-400 dark:text-gray-500 font-normal">/100</span>
           </div>
           @if (data.total_exams > 0) {
             <span
               class="inline-block px-2 py-0.5 rounded text-xs font-semibold"
               [class.bg-green-100]="data.average_score >= 60"
+              [class.dark:bg-green-900/30]="data.average_score >= 60"
               [class.text-green-800]="data.average_score >= 60"
+              [class.dark:text-green-300]="data.average_score >= 60"
               [class.bg-red-100]="data.average_score < 60"
+              [class.dark:bg-red-900/30]="data.average_score < 60"
               [class.text-red-800]="data.average_score < 60"
+              [class.dark:text-red-300]="data.average_score < 60"
             >
               {{ data.average_score >= 60 ? 'Aprobatorio' : 'Requiere Refuerzo' }}
             </span>
           } @else {
-            <span class="text-xs text-gray-400">Sin evaluaciones</span>
+            <span class="text-xs text-gray-400 dark:text-gray-500">Sin evaluaciones</span>
           }
         </div>
-        <div class="w-12 h-12 rounded-xl bg-yellow-50 text-yellow-600 flex items-center justify-center shrink-0">
+        <div class="w-12 h-12 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 flex items-center justify-center shrink-0">
           <lucide-icon [img]="icons.Award" class="w-6 h-6"></lucide-icon>
         </div>
       </div>
 
       <!-- KPI 3: Exámenes Aprobados -->
-      <div class="bg-white rounded-xl border border-gray-200 p-5 sm:p-6 shadow-sm flex items-center justify-between">
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 sm:p-6 shadow-sm flex items-center justify-between">
         <div class="space-y-1">
-          <span class="text-xs sm:text-sm font-medium text-gray-500">Exámenes Aprobados</span>
-          <div class="text-2xl sm:text-3xl font-bold text-gray-900">{{ data.passed_exams }}</div>
-          <span class="text-xs text-gray-400">
+          <span class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Exámenes Aprobados</span>
+          <div class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{{ data.passed_exams }}</div>
+          <span class="text-xs text-gray-400 dark:text-gray-500">
             {{ data.failed_exams }} {{ data.failed_exams === 1 ? 'no aprobado' : 'no aprobados' }}
           </span>
         </div>
-        <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center shrink-0">
+        <div class="w-12 h-12 rounded-xl bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 flex items-center justify-center shrink-0">
           <lucide-icon [img]="icons.CheckCircle2" class="w-6 h-6"></lucide-icon>
         </div>
       </div>
 
       <!-- KPI 4: Tasa de Aprobación -->
-      <div class="bg-white rounded-xl border border-gray-200 p-5 sm:p-6 shadow-sm flex items-center justify-between">
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 sm:p-6 shadow-sm flex items-center justify-between">
         <div class="space-y-1">
-          <span class="text-xs sm:text-sm font-medium text-gray-500">Tasa de Aprobación</span>
-          <div class="text-2xl sm:text-3xl font-bold text-gray-900">{{ data.pass_rate }}%</div>
-          <span class="text-xs text-gray-400">Porcentaje de éxito</span>
+          <span class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Tasa de Aprobación</span>
+          <div class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{{ data.pass_rate }}%</div>
+          <span class="text-xs text-gray-400 dark:text-gray-500">Porcentaje de éxito</span>
         </div>
-        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+        <div class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
           <lucide-icon [img]="icons.TrendingUp" class="w-6 h-6"></lucide-icon>
         </div>
       </div>
@@ -121,13 +125,13 @@
 
     <!-- ESTADO VACÍO (SIN EXÁMENES) -->
     @if (data.total_exams === 0) {
-      <div class="bg-white rounded-xl border border-gray-200 p-8 sm:p-12 text-center shadow-sm space-y-4">
-        <div class="w-16 h-16 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center mx-auto">
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 sm:p-12 text-center shadow-sm space-y-4">
+        <div class="w-16 h-16 rounded-full bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 flex items-center justify-center mx-auto">
           <lucide-icon [img]="icons.GraduationCap" class="w-8 h-8"></lucide-icon>
         </div>
         <div class="max-w-md mx-auto space-y-2">
-          <h2 class="text-xl font-bold text-gray-900">Aún no has completado ningún examen</h2>
-          <p class="text-sm text-gray-500">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Aún no has completado ningún examen</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
             Tus calificaciones, desempeño por asignatura e historial de intentos se mostrarán aquí una vez que envíes tu primera evaluación.
           </p>
         </div>
@@ -148,16 +152,16 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         <!-- DESGLOSE POR MATERIA -->
-        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm space-y-5 flex flex-col justify-between">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm space-y-5 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700">
               <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center">
+                <div class="w-8 h-8 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 flex items-center justify-center">
                   <lucide-icon [img]="icons.BarChart2" class="w-4 h-4"></lucide-icon>
                 </div>
                 <div>
-                  <h3 class="text-base sm:text-lg font-bold text-gray-900">Rendimiento por Materia</h3>
-                  <p class="text-xs text-gray-500">Promedio obtenido por cada asignatura inscrita</p>
+                  <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white">Rendimiento por Materia</h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Promedio obtenido por cada asignatura inscrita</p>
                 </div>
               </div>
             </div>
@@ -166,19 +170,19 @@
               @for (subject of data.by_subject; track subject.subject_id) {
                 <div class="space-y-2">
                   <div class="flex items-center justify-between text-sm">
-                    <div class="flex items-center gap-2 font-medium text-gray-800 truncate max-w-[70%]">
+                    <div class="flex items-center gap-2 font-medium text-gray-800 dark:text-gray-200 truncate max-w-[70%]">
                       <span class="w-2.5 h-2.5 rounded-full shrink-0" [ngClass]="subject.color || 'bg-yellow-500'"></span>
                       <span class="truncate">{{ subject.subject_name }}</span>
-                      <span class="text-xs text-gray-400 font-mono">({{ subject.subject_code }})</span>
+                      <span class="text-xs text-gray-400 dark:text-gray-500 font-mono">({{ subject.subject_code }})</span>
                     </div>
                     <div class="flex items-center gap-2">
-                      <span class="text-xs text-gray-500">{{ subject.exams_count }} {{ subject.exams_count === 1 ? 'examen' : 'exámenes' }}</span>
-                      <span class="font-bold text-gray-900">{{ subject.average_score }}</span>
+                      <span class="text-xs text-gray-500 dark:text-gray-400">{{ subject.exams_count }} {{ subject.exams_count === 1 ? 'examen' : 'exámenes' }}</span>
+                      <span class="font-bold text-gray-900 dark:text-white">{{ subject.average_score }}</span>
                     </div>
                   </div>
 
                   <!-- Barra de progreso -->
-                  <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                  <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
                     <div
                       class="h-2.5 rounded-full transition-all duration-500"
                       [class.bg-green-500]="subject.average_score >= 80"
@@ -194,28 +198,28 @@
         </div>
 
         <!-- HISTORIAL DE INTENTOS RECIENTES -->
-        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm space-y-5 flex flex-col justify-between">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm space-y-5 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700">
               <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center">
+                <div class="w-8 h-8 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 flex items-center justify-center">
                   <lucide-icon [img]="icons.Clock" class="w-4 h-4"></lucide-icon>
                 </div>
                 <div>
-                  <h3 class="text-base sm:text-lg font-bold text-gray-900">Evaluaciones Recientes</h3>
-                  <p class="text-xs text-gray-500">Últimos exámenes completados y calificados</p>
+                  <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white">Evaluaciones Recientes</h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Últimos exámenes completados y calificados</p>
                 </div>
               </div>
             </div>
 
-            <div class="pt-4 divide-y divide-gray-100">
+            <div class="pt-4 divide-y divide-gray-100 dark:divide-gray-700">
               @for (attempt of data.recent_attempts; track attempt.id) {
                 <div class="py-3.5 flex items-center justify-between gap-4">
                   <div class="min-w-0 space-y-1">
-                    <div class="font-medium text-sm sm:text-base text-gray-900 truncate">
+                    <div class="font-medium text-sm sm:text-base text-gray-900 dark:text-white truncate">
                       {{ attempt.exam_title }}
                     </div>
-                    <div class="flex items-center gap-3 text-xs text-gray-500">
+                    <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
                       <span class="truncate">{{ attempt.subject_name }}</span>
                       @if (attempt.date) {
                         <span>•</span>
@@ -228,9 +232,13 @@
                     <span
                       class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold"
                       [class.bg-green-100]="attempt.is_passed"
+                      [class.dark:bg-green-900/30]="attempt.is_passed"
                       [class.text-green-800]="attempt.is_passed"
+                      [class.dark:text-green-300]="attempt.is_passed"
                       [class.bg-red-100]="!attempt.is_passed"
+                      [class.dark:bg-red-900/30]="!attempt.is_passed"
                       [class.text-red-800]="!attempt.is_passed"
+                      [class.dark:text-red-300]="!attempt.is_passed"
                     >
                       {{ attempt.score }}
                     </span>

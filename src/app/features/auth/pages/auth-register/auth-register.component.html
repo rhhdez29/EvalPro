@@ -1,6 +1,6 @@
 <div class="space-y-5">
   <div class="pb-2 animate-in fade-in slide-in-from-top-2 duration-300">
-    <label class="text-sm font-semibold text-gray-900 block mb-3">Soy:</label>
+    <label class="text-sm font-semibold text-gray-900 dark:text-gray-100 block mb-3">Soy:</label>
     <div class="flex gap-2 sm:gap-4">
 
       <label class="flex-1 cursor-pointer group">
@@ -12,9 +12,9 @@
           (change)="setRole('alumno')"
           [checked]="rolActivo() === 'alumno'"
         />
-        <div class="border-2 border-gray-300 peer-checked:border-yellow-600 peer-checked:bg-yellow-50 rounded-lg p-3 sm:p-4 text-center transition-all group-hover:border-gray-400">
-          <lucide-icon [img]="icons.BookOpen" class="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-1.5 sm:mb-2 text-gray-600 peer-checked:text-yellow-600"></lucide-icon>
-          <div class="font-semibold text-sm sm:text-base text-gray-900">Estudiante</div>
+        <div class="border-2 border-gray-300 dark:border-gray-700 peer-checked:border-yellow-600 dark:peer-checked:border-yellow-500 peer-checked:bg-yellow-50 dark:peer-checked:bg-yellow-950/30 bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 text-center transition-all group-hover:border-gray-400 dark:group-hover:border-gray-600">
+          <lucide-icon [img]="icons.BookOpen" class="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-1.5 sm:mb-2 text-gray-600 dark:text-gray-400 peer-checked:text-yellow-600 dark:peer-checked:text-yellow-400"></lucide-icon>
+          <div class="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100">Estudiante</div>
         </div>
       </label>
 
@@ -27,9 +27,9 @@
           (change)="setRole('maestro')"
           [checked]="rolActivo() === 'maestro'"
         />
-        <div class="border-2 border-gray-300 peer-checked:border-yellow-600 peer-checked:bg-yellow-50 rounded-lg p-3 sm:p-4 text-center transition-all group-hover:border-gray-400">
-          <lucide-icon [img]="icons.Briefcase" class="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-1.5 sm:mb-2 text-gray-600 peer-checked:text-yellow-600"></lucide-icon>
-          <div class="font-semibold text-sm sm:text-base text-gray-900">Maestro</div>
+        <div class="border-2 border-gray-300 dark:border-gray-700 peer-checked:border-yellow-600 dark:peer-checked:border-yellow-500 peer-checked:bg-yellow-50 dark:peer-checked:bg-yellow-950/30 bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 text-center transition-all group-hover:border-gray-400 dark:group-hover:border-gray-600">
+          <lucide-icon [img]="icons.Briefcase" class="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-1.5 sm:mb-2 text-gray-600 dark:text-gray-400 peer-checked:text-yellow-600 dark:peer-checked:text-yellow-400"></lucide-icon>
+          <div class="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100">Maestro</div>
         </div>
       </label>
     </div>

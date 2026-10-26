@@ -1,27 +1,52 @@
-<div class="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-orange-50 flex items-center justify-center p-3 sm:p-6 md:p-8 relative overflow-hidden">
+<div class="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 flex items-center justify-center p-3 sm:p-6 md:p-8 relative overflow-hidden transition-colors duration-300">
 
-  <div class="absolute inset-0 opacity-5 pointer-events-none">
+  <div class="absolute inset-0 opacity-5 dark:opacity-10 pointer-events-none">
     <div class="absolute top-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-yellow-500 rounded-full blur-3xl"></div>
     <div class="absolute bottom-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-orange-500 rounded-full blur-3xl"></div>
   </div>
 
-  <div class="relative bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-2xl border border-gray-100 overflow-hidden">
+  <div class="relative bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-2xl border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors duration-300">
 
-    <button class="">
-      <a routerLink="/" class="flex items-center gap-2 cursor-pointer no-underline absolute top-3 left-3 sm:top-4 sm:left-4 z-20">
-        <lucide-icon
-          [img]="ChevronLeft"
-          class="w-8 h-8 sm:w-10 sm:h-10 text-yellow-600 hover:bg-gray-100 transition rounded-lg">
-        </lucide-icon>
-      </a>
+    <!-- Botón Regresar al Inicio -->
+    <a routerLink="/" class="flex items-center gap-2 cursor-pointer no-underline absolute top-3 left-3 sm:top-4 sm:left-4 z-20" title="Regresar al inicio">
+      <lucide-icon
+        [img]="ChevronLeft"
+        class="w-8 h-8 sm:w-10 sm:h-10 text-yellow-600 dark:text-yellow-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition rounded-lg">
+      </lucide-icon>
+    </a>
+
+    <!-- Interruptor de Modo Oscuro -->
+    <button
+      type="button"
+      (click)="toggleDarkMode()"
+      class="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 flex items-center gap-1 p-1 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 transition-colors cursor-pointer"
+      [attr.aria-label]="isDarkMode() ? 'Activar modo claro' : 'Activar modo oscuro'"
+      [title]="isDarkMode() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+    >
+      <div
+        class="p-1 rounded-full transition-all duration-200 flex items-center justify-center"
+        [class.bg-white]="!isDarkMode()"
+        [class.text-yellow-600]="!isDarkMode()"
+        [class.shadow-sm]="!isDarkMode()"
+        [class.text-gray-400]="isDarkMode()">
+        <lucide-icon [img]="Sun" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></lucide-icon>
+      </div>
+      <div
+        class="p-1 rounded-full transition-all duration-200 flex items-center justify-center"
+        [class.bg-gray-700]="isDarkMode()"
+        [class.text-yellow-400]="isDarkMode()"
+        [class.shadow-sm]="isDarkMode()"
+        [class.text-gray-400]="!isDarkMode()">
+        <lucide-icon [img]="Moon" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></lucide-icon>
+      </div>
     </button>
 
     <div class="text-center pt-10 sm:pt-12 pb-4 sm:pb-6 px-4">
       <div class="flex items-center justify-center gap-2 mb-2">
-        <lucide-icon [img]="GraduationCap" class="w-8 h-8 sm:w-10 sm:h-10 text-yellow-600"></lucide-icon>
-        <span class="text-xl sm:text-2xl font-bold text-gray-900">EvalPro</span>
+        <lucide-icon [img]="GraduationCap" class="w-8 h-8 sm:w-10 sm:h-10 text-yellow-600 dark:text-yellow-500"></lucide-icon>
+        <span class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">EvalPro</span>
       </div>
-      <p class="text-gray-600 text-xs sm:text-sm">
+      <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
         @if (isVerifyTab()) {
           Verificación de cuenta y seguridad
         } @else {
@@ -33,10 +58,10 @@
     @if (!isVerifyTab()) {
 
     <div class="px-4 sm:px-8 md:px-10 mb-6 sm:mb-8">
-      <div class="bg-gray-100 rounded-xl p-1 flex relative">
+      <div class="bg-gray-100 dark:bg-gray-700/60 rounded-xl p-1 flex relative">
 
         <div
-          class="absolute top-1 bottom-1 bg-white rounded-lg shadow-sm transition-all duration-300 ease-in-out"
+          class="absolute top-1 bottom-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm transition-all duration-300 ease-in-out"
           [style.left]="isLoginTab() ? '4px' : 'calc(50% - 4px)'"
           style="width: calc(50% - 4px);">
         </div>
@@ -45,7 +70,9 @@
           routerLink="/auth/login"
           class="flex-1 py-2 sm:py-2.5 text-center text-xs sm:text-sm font-semibold rounded-lg transition-colors relative z-10 cursor-pointer no-underline focus:outline-none"
           [class.text-yellow-600]="isLoginTab()"
-          [class.text-gray-600]="!isLoginTab()">
+          [class.dark:text-yellow-400]="isLoginTab()"
+          [class.text-gray-600]="!isLoginTab()"
+          [class.dark:text-gray-300]="!isLoginTab()">
           Iniciar Sesión
         </a>
 
@@ -53,7 +80,9 @@
           routerLink="/auth/register"
           class="flex-1 py-2 sm:py-2.5 text-center text-xs sm:text-sm font-semibold rounded-lg transition-colors relative z-10 cursor-pointer no-underline focus:outline-none"
           [class.text-yellow-600]="!isLoginTab()"
-          [class.text-gray-600]="isLoginTab()">
+          [class.dark:text-yellow-400]="!isLoginTab()"
+          [class.text-gray-600]="isLoginTab()"
+          [class.dark:text-gray-300]="isLoginTab()">
           Registrarse
         </a>
       </div>

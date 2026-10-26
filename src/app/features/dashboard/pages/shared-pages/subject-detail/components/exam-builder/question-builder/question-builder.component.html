@@ -1,18 +1,18 @@
 @if (isBuilding()) {
-  <div class="border-2 border-yellow-500 rounded-lg bg-yellow-50/30 p-4 sm:p-6">
+  <div class="border-2 border-yellow-500 rounded-lg bg-yellow-50/30 dark:bg-gray-800/80 dark:border-yellow-600 p-4 sm:p-6">
     <div class="flex items-center justify-between mb-4 sm:mb-6">
-      <h3 class="text-base sm:text-lg font-bold text-gray-900">Crear Nueva Pregunta</h3>
+      <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">Crear Nueva Pregunta</h3>
       <button
         type="button"
         (click)="handleCancel()"
-        class="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+        class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer"
       >
-        <lucide-icon [img]="icons.X" class="w-5 h-5 text-gray-600"></lucide-icon>
+        <lucide-icon [img]="icons.X" class="w-5 h-5 text-gray-600 dark:text-gray-400"></lucide-icon>
       </button>
     </div>
 
     <div class="mb-6">
-      <label class="block text-sm font-semibold text-gray-900 mb-3">
+      <label class="block text-sm font-semibold text-gray-900 dark:text-gray-300 mb-3">
         Tipo de Pregunta <span class="text-red-500">*</span>
       </label>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -20,67 +20,79 @@
         <button
           type="button"
           (click)="selectType('MCQ')"
-          class="p-3 sm:p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
+          class="p-3 sm:p-4 border-2 rounded-lg transition-all text-left bg-white dark:bg-gray-800 cursor-pointer"
           [class.border-yellow-600]="selectedType() === 'MCQ'"
+          [class.dark:border-yellow-500]="selectedType() === 'MCQ'"
           [class.border-gray-300]="selectedType() !== 'MCQ'"
+          [class.dark:border-gray-700]="selectedType() !== 'MCQ'"
           [class.hover:border-gray-400]="selectedType() !== 'MCQ'"
+          [class.dark:hover:border-gray-600]="selectedType() !== 'MCQ'"
         >
           <div class="flex items-center gap-2 mb-1">
-            <lucide-icon [img]="icons.Check" class="w-4 h-4"></lucide-icon>
-            <span class="font-semibold text-gray-900 text-sm sm:text-base">Opción Múltiple</span>
+            <lucide-icon [img]="icons.Check" class="w-4 h-4 text-yellow-600 dark:text-yellow-400"></lucide-icon>
+            <span class="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">Opción Múltiple</span>
           </div>
-          <p class="text-xs text-gray-600">Selecciona una o más respuestas correctas</p>
+          <p class="text-xs text-gray-600 dark:text-gray-400">Selecciona una o más respuestas correctas</p>
         </button>
 
         <button
           type="button"
           (click)="selectType('TF')"
-          class="p-3 sm:p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
+          class="p-3 sm:p-4 border-2 rounded-lg transition-all text-left bg-white dark:bg-gray-800 cursor-pointer"
           [class.border-yellow-600]="selectedType() === 'TF'"
+          [class.dark:border-yellow-500]="selectedType() === 'TF'"
           [class.border-gray-300]="selectedType() !== 'TF'"
+          [class.dark:border-gray-700]="selectedType() !== 'TF'"
           [class.hover:border-gray-400]="selectedType() !== 'TF'"
+          [class.dark:hover:border-gray-600]="selectedType() !== 'TF'"
         >
           <div class="flex items-center gap-2 mb-1">
-            <lucide-icon [img]="icons.Check" class="w-4 h-4"></lucide-icon>
-            <span class="font-semibold text-gray-900 text-sm sm:text-base">Verdadero/Falso</span>
+            <lucide-icon [img]="icons.Check" class="w-4 h-4 text-yellow-600 dark:text-yellow-400"></lucide-icon>
+            <span class="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">Verdadero/Falso</span>
           </div>
-          <p class="text-xs text-gray-600">Pregunta simple de elección binaria</p>
+          <p class="text-xs text-gray-600 dark:text-gray-400">Pregunta simple de elección binaria</p>
         </button>
 
         <button
           type="button"
           (click)="selectType('MATCH')"
-          class="p-3 sm:p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
+          class="p-3 sm:p-4 border-2 rounded-lg transition-all text-left bg-white dark:bg-gray-800 cursor-pointer"
           [class.border-yellow-600]="selectedType() === 'MATCH'"
+          [class.dark:border-yellow-500]="selectedType() === 'MATCH'"
           [class.border-gray-300]="selectedType() !== 'MATCH'"
+          [class.dark:border-gray-700]="selectedType() !== 'MATCH'"
           [class.hover:border-gray-400]="selectedType() !== 'MATCH'"
+          [class.dark:hover:border-gray-600]="selectedType() !== 'MATCH'"
         >
           <div class="flex items-center gap-2 mb-1">
-            <lucide-icon [img]="icons.Check" class="w-4 h-4"></lucide-icon>
-            <span class="font-semibold text-gray-900 text-sm sm:text-base">Emparejamiento de Declaraciones</span>
+            <lucide-icon [img]="icons.Check" class="w-4 h-4 text-yellow-600 dark:text-yellow-400"></lucide-icon>
+            <span class="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">Emparejamiento de Declaraciones</span>
           </div>
-          <p class="text-xs text-gray-600">Empareja pares de elementos relacionados</p>
+          <p class="text-xs text-gray-600 dark:text-gray-400">Empareja pares de elementos relacionados</p>
         </button>
 
         <button
           type="button"
           (click)="selectType('CODE')"
-          class="p-3 sm:p-4 border-2 rounded-lg transition-all text-left bg-white cursor-pointer"
+          class="p-3 sm:p-4 border-2 rounded-lg transition-all text-left bg-white dark:bg-gray-800 cursor-pointer"
           [class.border-yellow-600]="selectedType() === 'CODE'"
+          [class.dark:border-yellow-500]="selectedType() === 'CODE'"
           [class.border-gray-300]="selectedType() !== 'CODE'"
+          [class.dark:border-gray-700]="selectedType() !== 'CODE'"
           [class.hover:border-gray-400]="selectedType() !== 'CODE'"
+          [class.dark:hover:border-gray-600]="selectedType() !== 'CODE'"
         >
           <div class="flex items-center gap-2 mb-1">
-            <lucide-icon [img]="icons.Code" class="w-4 h-4"></lucide-icon>
-            <span class="font-semibold text-gray-900 text-sm sm:text-base">Editor de Código</span>
+            <lucide-icon [img]="icons.Code" class="w-4 h-4 text-yellow-600 dark:text-yellow-400"></lucide-icon>
+            <span class="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">Editor de Código</span>
           </div>
-          <p class="text-xs text-gray-600">Desafío de programación con validación</p>
+          <p class="text-xs text-gray-600 dark:text-gray-400">Desafío de programación con validación</p>
         </button>
 
       </div>
     </div>
 
-    <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
+    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 sm:p-6 shadow-sm">
       @switch (selectedType()) {
 
         @case ('MCQ') {

@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed, effect, inject, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, input, output, signal, computed, effect, inject, OnInit, OnDestroy, HostListener, ChangeDetectorRef } from '@angular/core';
 
 import { DatePipe, Location, NgClass } from '@angular/common';
 import { Router } from '@angular/router';
@@ -45,12 +45,14 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
   private location = inject(Location);
   private securityService = inject(ExamSecurityService);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
   // Detección reactiva del Modo Demo
   isDemoMode = computed(() => !this.id() || this.id() === 'demo' || this.router.url.includes('demo-exam'));
 
   isVoided = signal<boolean>(false);
   isExamFinished = false;
+  isUnloading = false;
   shouldAllowExit = false;
   private voidSub!: Subscription;
 
@@ -118,10 +120,25 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
   });
 
   examData = computed(() => (this.exam.value() || (this.isDemoMode() ? DEMO_EXAM_DATA : null)) as ExamDetail);
+  @HostListener('document:visibilitychange')
+  onVisibilityChange() {
+    if (document.hidden && !this.isUnloading && !this.isExamFinished && !this.isPreviewMode() && !this.isGradingMode()) {
+      this.triggerFraudAlert('visibilitychange');
+    }
+  }
+
+  @HostListener('window:blur')
+  onWindowBlur() {
+    if (!this.isUnloading && !this.isExamFinished && !this.isPreviewMode() && !this.isGradingMode()) {
+      this.triggerFraudAlert('window_blur');
+    }
+  }
+
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any): void {
     // Si no estamos en demo/preview y el examen no ha terminado ni se permite la salida limpia
     if (!this.shouldAllowExit && !this.isPreviewMode() && !this.isGradingMode() && !this.isExamFinished) {
+      this.isUnloading = true;
       this.securityService.isUnloading = true;
       $event.returnValue = true;
     }
@@ -130,8 +147,9 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
   @HostListener('window:focus')
   @HostListener('document:click')
   onUserReturn(): void {
-    if (this.securityService.isUnloading) {
+    if (this.isUnloading || this.securityService.isUnloading) {
       // El usuario canceló la recarga o hizo clic para volver al examen
+      this.isUnloading = false;
       this.securityService.isUnloading = false;
     }
   }
@@ -144,25 +162,45 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
         this.securityService.isExamFinished = true;
         const errorMsg = err?.error?.detail || err?.error?.error || err?.message || 'Este examen ya fue completado o anulado. No puedes volver a ingresar.';
         alert(errorMsg);
-        this.router.navigate(['/home/student/classes']); 
+        this.router.navigate(['/home/student/classes']);
       }
     });
   }
 
   ngOnInit() {
+    this.isExamFinished = false;
+    this.isUnloading = false;
+    this.securityService.isExamFinished = false;
+    this.securityService.isUnloading = false;
+
     if (this.isDemoMode()) {
       // Activar seguridad anti-fraude en modo demo
+      window.focus();
       this.securityService.startExamSecurity('demo');
     } else {
       const role = this.facadeService.userRole();
       if (role === 'alumno' && this.id()) {
+        window.focus();
         this.securityService.startExamSecurity(this.id()!);
       }
     }
 
     this.voidSub = this.securityService.examVoided$.subscribe(() => {
-      this.isVoided.set(true);
+      this.triggerFraudAlert();
     });
+  }
+
+  triggerFraudAlert(trigger: string = 'fraud_detected'): void {
+    if (this.isPreviewMode() || this.isGradingMode()) {
+      return;
+    }
+    this.isVoided.set(true);
+    this.isExamFinished = true;
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+    this.securityService.voidExam(trigger);
+    this.cdr.detectChanges();
   }
 
   // 1. Ordenar preguntas strictly por la propiedad 'order'
@@ -256,8 +294,6 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
   }
 
   submitExam(isAutoSubmit: boolean = false) {
-    this.isExamFinished = true;
-    this.securityService.isExamFinished = true;
     // Validar que todas las preguntas estén contestadas (solo cuando el envío es manual por el usuario)
     if (!isAutoSubmit && !this.isPreviewMode() && !this.isGradingMode()) {
       const unanswered = this.sortedQuestions().filter(q => !this.isQuestionAnswered(q));
@@ -273,6 +309,8 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
       }
     }
 
+    this.isExamFinished = true;
+    this.securityService.isExamFinished = true;
     this.submitError.set(null);
 
     // Si estamos en modo demo:
@@ -336,9 +374,9 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
       answersPayload.push(answerObj);
     });
 
-    const payload = { 
+    const payload = {
       answers: answersPayload,
-      is_auto_submitted: isAutoSubmit 
+      is_auto_submitted: isAutoSubmit
     };
 
     this.examService.submitStudentExam(Number(this.id()), payload).subscribe({
@@ -430,6 +468,7 @@ export class ExamViewerComponent implements OnInit, OnDestroy {
   }
 
   iniciarTemporizador(serverStartTimeIso: string, durationMinutes: number, endDateIso?: string): void {
+    window.focus();
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }

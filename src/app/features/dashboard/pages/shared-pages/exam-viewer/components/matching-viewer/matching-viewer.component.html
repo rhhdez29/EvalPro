@@ -1,35 +1,42 @@
 <div class="space-y-4">
-  <p class="text-xs sm:text-sm text-gray-600 mb-4">
+  <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-4">
     Haz clic en un elemento de la columna izquierda, luego haz clic en su elemento correspondiente de la columna derecha:
   </p>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6" [class.pointer-events-none]="isGradingMode()">
     <div class="space-y-3">
-      <div class="text-xs sm:text-sm font-semibold text-gray-700 mb-2">Declaraciones</div>
+      <div class="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Declaraciones</div>
 
       @for (pair of pairs(); track $index) {
         <div class="relative">
           <button
             type="button"
             (click)="handleLeftClick($index)"
-            class="w-full text-left p-3 sm:p-4 border-2 rounded-lg transition-all"
+            class="w-full text-left p-3 sm:p-4 border-2 rounded-lg transition-all dark:bg-gray-800"
             [class.border-yellow-500]="selectedLeft() === $index"
+            [class.dark:border-yellow-500]="selectedLeft() === $index"
             [class.bg-yellow-50]="selectedLeft() === $index"
+            [class.dark:bg-yellow-950/30]="selectedLeft() === $index"
             [class.shadow-md]="selectedLeft() === $index"
             [class.border-green-500]="isLeftMatched($index) && selectedLeft() !== $index"
+            [class.dark:border-green-500]="isLeftMatched($index) && selectedLeft() !== $index"
             [class.bg-green-50]="isLeftMatched($index) && selectedLeft() !== $index"
+            [class.dark:bg-green-950/30]="isLeftMatched($index) && selectedLeft() !== $index"
             [class.border-gray-200]="!isLeftMatched($index) && selectedLeft() !== $index"
+            [class.dark:border-gray-700]="!isLeftMatched($index) && selectedLeft() !== $index"
             [class.hover:border-gray-300]="!isLeftMatched($index) && selectedLeft() !== $index"
-            [class.hover:bg-gray-50]="!isLeftMatched($index) && selectedLeft() !== $index">
+            [class.dark:hover:border-gray-600]="!isLeftMatched($index) && selectedLeft() !== $index"
+            [class.hover:bg-gray-50]="!isLeftMatched($index) && selectedLeft() !== $index"
+            [class.dark:hover:bg-gray-700]="!isLeftMatched($index) && selectedLeft() !== $index">
 
             <div class="flex items-center gap-2.5 sm:gap-3">
-              <span class="flex-shrink-0 w-6 h-6 bg-gray-700 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">
+              <span class="flex-shrink-0 w-6 h-6 bg-gray-700 dark:bg-gray-600 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">
                 {{ $index + 1 }}
               </span>
-              <span class="text-xs sm:text-sm text-gray-900 break-words flex-1">{{ pair.left }}</span>
+              <span class="text-xs sm:text-sm text-gray-900 dark:text-gray-200 break-words flex-1">{{ pair.left }}</span>
 
               @if (isLeftMatched($index)) {
-                <svg class="w-5 h-5 text-green-600 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <svg class="w-5 h-5 text-green-600 dark:text-green-400 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
               }
             </div>
           </button>
@@ -44,31 +51,36 @@
     </div>
 
     <div class="space-y-3">
-      <div class="text-xs sm:text-sm font-semibold text-gray-700 mb-2">Opciones</div>
+      <div class="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Opciones</div>
 
       @for (item of rightItems(); track $index) {
         <button
           type="button"
           (click)="handleRightClick($index)"
           [disabled]="selectedLeft() === null"
-          class="w-full text-left p-3 sm:p-4 border-2 rounded-lg transition-all"
+          class="w-full text-left p-3 sm:p-4 border-2 rounded-lg transition-all dark:bg-gray-800"
           [class.cursor-pointer]="selectedLeft() !== null"
           [class.hover:border-yellow-400]="selectedLeft() !== null && !isRightMatched($index)"
+          [class.dark:hover:border-yellow-500]="selectedLeft() !== null && !isRightMatched($index)"
           [class.hover:bg-yellow-50]="selectedLeft() !== null && !isRightMatched($index)"
+          [class.dark:hover:bg-yellow-950/30]="selectedLeft() !== null && !isRightMatched($index)"
           [class.cursor-not-allowed]="selectedLeft() === null"
           [class.opacity-60]="selectedLeft() === null"
           [class.border-green-500]="isRightMatched($index)"
+          [class.dark:border-green-500]="isRightMatched($index)"
           [class.bg-green-50]="isRightMatched($index)"
-          [class.border-gray-200]="!isRightMatched($index)">
+          [class.dark:bg-green-950/30]="isRightMatched($index)"
+          [class.border-gray-200]="!isRightMatched($index)"
+          [class.dark:border-gray-700]="!isRightMatched($index)">
 
           <div class="flex items-center gap-2.5 sm:gap-3">
-            <span class="flex-shrink-0 w-6 h-6 bg-gray-300 text-gray-700 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">
+            <span class="flex-shrink-0 w-6 h-6 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">
               {{ getChar($index) }}
             </span>
-            <span class="text-xs sm:text-sm text-gray-900 break-words flex-1">{{ item.text }}</span>
+            <span class="text-xs sm:text-sm text-gray-900 dark:text-gray-200 break-words flex-1">{{ item.text }}</span>
 
             @if (isRightMatched($index)) {
-              <svg class="w-5 h-5 text-green-600 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+              <svg class="w-5 h-5 text-green-600 dark:text-green-400 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             }
           </div>
         </button>
@@ -77,15 +89,15 @@
   </div>
 
   @if (matches().size > 0) {
-    <div class="mt-4 p-3 sm:p-4 bg-gray-50 border border-gray-200 rounded-lg">
-      <p class="text-xs sm:text-sm font-semibold text-gray-700 mb-2">Tus Selecciones:</p>
+    <div class="mt-4 p-3 sm:p-4 bg-gray-50 dark:bg-gray-750 border border-gray-200 dark:border-gray-700 rounded-lg">
+      <p class="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Tus Selecciones:</p>
       <div class="space-y-1.5 sm:space-y-1">
         @for (entry of getMapEntries(); track entry[0]) {
-          <div class="text-xs sm:text-sm text-gray-600 flex flex-wrap items-center gap-1.5 sm:gap-2">
-            <span class="font-medium bg-gray-200 text-gray-800 px-1.5 py-0.5 rounded text-xs">{{ entry[0] + 1 }}</span>
-            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-            <span class="font-medium bg-gray-200 text-gray-800 px-1.5 py-0.5 rounded text-xs">{{ getChar(entry[1]) }}</span>
-            <span class="text-gray-400">•</span>
+          <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <span class="font-medium bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-1.5 py-0.5 rounded text-xs">{{ entry[0] + 1 }}</span>
+            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            <span class="font-medium bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-1.5 py-0.5 rounded text-xs">{{ getChar(entry[1]) }}</span>
+            <span class="text-gray-400 dark:text-gray-500">•</span>
             <span class="break-words">{{ pairs()[entry[0]].left }} → {{ rightItems()[entry[1]].text }}</span>
           </div>
         }
@@ -94,20 +106,20 @@
         type="button"
         (click)="clearAllMatches()"
         [class.pointer-events-none]="isGradingMode()"
-        class="mt-3 text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium">
+        class="mt-3 text-xs sm:text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium cursor-pointer">
         Borrar todas las selecciones
       </button>
     </div>
   }
 
   @if (isPreviewMode() && !isGradingMode()) {
-    <div class="mt-4 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg">
-      <p class="text-xs sm:text-sm font-semibold text-green-700 mb-2">Respuestas correctas:</p>
+    <div class="mt-4 p-3 sm:p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+      <p class="text-xs sm:text-sm font-semibold text-green-700 dark:text-green-400 mb-2">Respuestas correctas:</p>
       <div class="space-y-1.5 sm:space-y-1">
         @for (pair of pairs(); track $index) {
-          <div class="text-xs sm:text-sm text-green-800 flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <div class="text-xs sm:text-sm text-green-800 dark:text-green-300 flex flex-wrap items-center gap-1.5 sm:gap-2">
             <span class="font-medium">{{ pair.left }}</span>
-            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 dark:text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             <span class="font-medium">{{ pair.right }}</span>
           </div>
         }

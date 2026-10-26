@@ -1,8 +1,9 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
+import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { LucideAngularModule, GraduationCap, ChevronLeft } from 'lucide-angular';
+import { LucideAngularModule, GraduationCap, ChevronLeft, Sun, Moon } from 'lucide-angular';
+import { ThemeService } from '../../../../core/services/theme.service';
 
 @Component({
   selector: 'app-auth-layout',
@@ -12,6 +13,7 @@ import { LucideAngularModule, GraduationCap, ChevronLeft } from 'lucide-angular'
   styles: ``
 })
 export class AuthLayoutComponent implements OnInit {
+  private themeService = inject(ThemeService);
 
   // Signals para saber qué vista está activa
   isLoginTab = signal(true);
@@ -19,6 +21,10 @@ export class AuthLayoutComponent implements OnInit {
 
   readonly GraduationCap = GraduationCap;
   readonly ChevronLeft = ChevronLeft;
+  readonly Sun = Sun;
+  readonly Moon = Moon;
+
+  readonly isDarkMode = this.themeService.isDarkMode;
 
   constructor(private router: Router) {}
 
@@ -30,6 +36,10 @@ export class AuthLayoutComponent implements OnInit {
     });
 
     this.updateTabState();
+  }
+
+  toggleDarkMode(): void {
+    this.themeService.toggleDarkMode();
   }
 
   private updateTabState() {

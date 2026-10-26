@@ -1,4 +1,4 @@
-<div class="p-4 sm:p-6 md:p-8 space-y-6 max-w-4xl">
+<div class="p-4 sm:p-6 md:p-8 space-y-6 max-w-4xl dark:bg-gray-900 min-h-full">
 
   <!-- TARJETA 1: INFORMACIÓN PERSONAL -->
   <div class="bg-white dark:bg-gray-800 dark:text-gray-200 rounded-xl border border-gray-200 dark:border-gray-700 p-6 sm:p-8 shadow-sm transition-colors duration-300">
@@ -7,8 +7,8 @@
         <lucide-icon [img]="icons.User" class="w-5 h-5"></lucide-icon>
       </div>
       <div>
-        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Información Personal</h2>
-        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Datos institucionales asociados a tu cuenta en EvalPro</p>
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Información Personal</h2>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-300">Datos institucionales asociados a tu cuenta en EvalPro</p>
       </div>
     </div>
 
@@ -74,8 +74,8 @@
         <lucide-icon [img]="icons.Lock" class="w-5 h-5"></lucide-icon>
       </div>
       <div>
-        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Seguridad</h2>
-        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Actualiza tu contraseña para mantener protegida tu cuenta</p>
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Seguridad</h2>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-300">Actualiza tu contraseña para mantener protegida tu cuenta</p>
       </div>
     </div>
 
@@ -89,7 +89,7 @@
             [type]="showCurrentPassword() ? 'text' : 'password'"
             formControlName="currentPassword"
             placeholder="••••••••"
-            class="w-full pl-10 pr-11 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 dark:placeholder-gray-400 rounded-lg text-sm sm:text-base outline-none transition focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            class="w-full pl-10 pr-11 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:placeholder-gray-400 rounded-lg text-sm sm:text-base outline-none transition focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
             [class.border-red-500]="formUtils.isValidField(passwordForm, 'currentPassword')"
           />
           <button
@@ -118,7 +118,7 @@
               [type]="showNewPassword() ? 'text' : 'password'"
               formControlName="newPassword"
               placeholder="••••••••"
-              class="w-full pl-10 pr-11 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 dark:placeholder-gray-400 rounded-lg text-sm sm:text-base outline-none transition focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              class="w-full pl-10 pr-11 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:placeholder-gray-400 rounded-lg text-sm sm:text-base outline-none transition focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
               [class.border-red-500]="formUtils.isValidField(passwordForm, 'newPassword')"
             />
             <button
@@ -145,7 +145,7 @@
               [type]="showConfirmPassword() ? 'text' : 'password'"
               formControlName="confirmPassword"
               placeholder="••••••••"
-              class="w-full pl-10 pr-11 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 dark:placeholder-gray-400 rounded-lg text-sm sm:text-base outline-none transition focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              class="w-full pl-10 pr-11 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:placeholder-gray-400 rounded-lg text-sm sm:text-base outline-none transition focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
               [class.border-red-500]="formUtils.isValidField(passwordForm, 'confirmPassword') || isConfirmPasswordMismatch"
             />
             <button
@@ -188,18 +188,18 @@
         <lucide-icon [img]="icons.Moon" class="w-5 h-5"></lucide-icon>
       </div>
       <div>
-        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Pantalla y Apariencia</h2>
-        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Personaliza la visualización del sistema y las preferencias de idioma</p>
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Pantalla y Apariencia</h2>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-300">Personaliza la visualización del sistema y las preferencias de idioma</p>
       </div>
     </div>
 
     <div class="pt-6 space-y-6">
-      <!-- Opción Modo Oscuro (solo Profesor / Administrador) -->
+      <!-- Opción Modo Oscuro -->
       @if (canUseDarkMode()) {
         <div class="flex items-center justify-between gap-4">
           <div>
-            <div class="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">Modo Oscuro</div>
-            <div class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Activa una paleta con fondo oscuro para descansar la vista</div>
+            <div class="font-medium text-gray-900 dark:text-white text-sm sm:text-base">Modo Oscuro</div>
+            <div class="text-xs sm:text-sm text-gray-500 dark:text-gray-300">Activa una paleta con fondo oscuro para descansar la vista</div>
           </div>
           <label for="dark-mode-toggle" class="relative inline-flex items-center cursor-pointer shrink-0">
             <input
@@ -225,7 +225,7 @@
           <select
             [value]="selectedLanguage()"
             (change)="onLanguageChange($event)"
-            class="w-full pl-10 pr-8 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm sm:text-base outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition focus:ring-2 focus:ring-yellow-500 focus:border-transparent cursor-pointer"
+            class="w-full pl-10 pr-8 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm sm:text-base outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition focus:ring-2 focus:ring-yellow-500 focus:border-transparent cursor-pointer"
           >
             @for (lang of languages; track lang) {
               <option [value]="lang">{{ lang }}</option>

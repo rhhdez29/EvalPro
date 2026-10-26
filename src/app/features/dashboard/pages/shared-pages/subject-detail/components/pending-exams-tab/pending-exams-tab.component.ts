@@ -88,6 +88,7 @@ export class PendingExamsTabComponent {
     const examId = this.selectedExamId();
     if (examId !== null) {
       this.showAntiFraudModal.set(false);
+      window.focus();
       this.router.navigate([`/home/student/exam/${examId}`]);
     }
   }

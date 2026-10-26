@@ -2,13 +2,13 @@
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2 duration-300 delay-75">
     <div class="space-y-2">
-      <label class="text-sm font-medium text-gray-700">Nombre</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
       <div class="relative">
         <lucide-icon [img]="icons.User" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
         <input
           type="text"
           placeholder="John"
-          class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+          class="w-full pl-11 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
           required
           formControlName="first_name"
           [class.border-red-500]="formUtils.isValidField(formTeacher,'first_name')"
@@ -22,13 +22,13 @@
       }
     </div>
     <div class="space-y-2">
-      <label class="text-sm font-medium text-gray-700">Apellidos</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Apellidos</label>
       <div class="relative">
         <lucide-icon [img]="icons.User" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
         <input
           type="text"
           placeholder="Doe"
-          class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+          class="w-full pl-11 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
           required
           formControlName="last_name"
           [class.border-red-500]="formUtils.isValidField(formTeacher,'last_name')"
@@ -44,7 +44,7 @@
   </div>
 
   <div class="space-y-2 mt-4">
-    <label class="text-sm font-medium text-gray-700">
+    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
       Correo Institucional
     </label>
     <div class="relative">
@@ -52,7 +52,7 @@
       <input
         type="email"
         placeholder="nombre@correo.buap.mx"
-        class="w-full pl-11 pr-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+        class="w-full pl-11 pr-11 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
         required
         formControlName="email"
         [class.border-red-500]="formUtils.isValidField(formTeacher,'email')"
@@ -73,12 +73,12 @@
   </div>
 
   <div class="space-y-2 mt-4">
-    <label class="text-sm font-medium text-gray-700">Contraseña</label>
+    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Contraseña</label>
     <div class="relative">
       <lucide-icon [img]="icons.Lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
       <input type="password"
         placeholder="••••••••"
-        class="w-full pl-11 pr-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+        class="w-full pl-11 pr-11 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
         required
         formControlName="password"
         [class.border-red-500]="formUtils.isValidField(formTeacher,'password')"
@@ -86,7 +86,7 @@
       />
       <button
         type="button"
-        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer"
         (click)="togglePassword()"
       >
         <lucide-icon
@@ -104,13 +104,13 @@
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
     <div class="space-y-2">
-      <label class="text-sm font-medium text-gray-700">ID de Trabajador</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300">ID de Trabajador</label>
       <div class="relative">
         <lucide-icon [img]="icons.Hash" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
         <input
           type="text"
           placeholder="123456"
-          class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+          class="w-full pl-11 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
           required
           formControlName="id_teacher"
           [class.border-red-500]="formUtils.isValidField(formTeacher,'id_teacher')"
@@ -125,10 +125,10 @@
       }
     </div>
     <div class="space-y-2">
-      <label class="text-sm font-medium text-gray-700">Facultad</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Facultad</label>
       <div class="relative">
         <select
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none bg-white"
+          class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           required
           formControlName="faculty"
           [class.border-red-500]="formUtils.isValidField(formTeacher,'faculty')"
@@ -155,9 +155,9 @@
     <lucide-icon [img]="icons.ArrowRight" class="w-5 h-5"></lucide-icon>
   </button>
 
-  <div class="text-center text-sm text-gray-600 pt-2 mt-5">
+  <div class="text-center text-sm text-gray-600 dark:text-gray-400 pt-2 mt-5">
     ¿Ya tienes una cuenta?
-    <a routerLink="/auth/login" class="text-yellow-600 hover:text-yellow-700 font-medium">Inicia Sesión</a>
+    <a routerLink="/auth/login" class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 font-medium">Inicia Sesión</a>
   </div>
 
   <loading-modal

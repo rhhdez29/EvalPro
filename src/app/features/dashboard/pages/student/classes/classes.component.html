@@ -1,45 +1,45 @@
 <div class="p-4 sm:p-6 md:p-8">
 
   <div class="mb-6 sm:mb-8">
-    <p class="text-gray-600 mt-1 text-sm sm:text-base">Tus clases inscritas y horarios</p>
+    <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">Tus clases inscritas y horarios</p>
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 sm:mb-8">
 
-    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-xs sm:text-sm text-gray-600 mb-1">Clases Inscritas</p>
-          <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ enrolledClassesCount() }}</p>
+          <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Clases Inscritas</p>
+          <p class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{{ enrolledClassesCount() }}</p>
         </div>
-        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center shrink-0">
-          <lucide-icon [img]="icons.BookOpen" class="w-6 h-6 text-yellow-600"></lucide-icon>
+        <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center shrink-0">
+          <lucide-icon [img]="icons.BookOpen" class="w-6 h-6 text-yellow-600 dark:text-yellow-400"></lucide-icon>
         </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-xs sm:text-sm text-gray-600 mb-1">Próximos Exámenes</p>
-          <p class="text-2xl sm:text-3xl font-bold" [ngClass]="(studentData()?.upcoming_exams_count || 0) > 0 ? 'text-red-600' : 'text-gray-900'">
+          <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Próximos Exámenes</p>
+          <p class="text-2xl sm:text-3xl font-bold" [ngClass]="(studentData()?.upcoming_exams_count || 0) > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white'">
             {{ studentData()?.upcoming_exams_count || 0 }}
           </p>
         </div>
-        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
-          <lucide-icon [img]="icons.Calendar" class="w-6 h-6 text-red-600"></lucide-icon>
+        <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center shrink-0">
+          <lucide-icon [img]="icons.Calendar" class="w-6 h-6 text-red-600 dark:text-red-400"></lucide-icon>
         </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-200">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-xs sm:text-sm text-gray-600 mb-1">Semestre Activo</p>
-          <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ studentData()?.semester }}</p>
+          <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Semestre Activo</p>
+          <p class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{{ studentData()?.semester }}</p>
         </div>
-        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
-          <lucide-icon [img]="icons.Clock" class="w-6 h-6 text-blue-600"></lucide-icon>
+        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center shrink-0">
+          <lucide-icon [img]="icons.Clock" class="w-6 h-6 text-blue-600 dark:text-blue-400"></lucide-icon>
         </div>
       </div>
     </div>
@@ -50,7 +50,7 @@
     @for (classItem of classes.value()?.results; track classItem.id) {
       <div
         (click)="handleClassClick(classItem.id.toString())"
-        class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between"
+        class="bg-white dark:bg-gray-800 dark:hover:bg-gray-750 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between"
       >
         <div class="flex h-full">
 
@@ -66,28 +66,28 @@
                       <lucide-icon [img]="icons.BookOpen" class="w-5 h-5 sm:w-6 sm:h-6 text-white"></lucide-icon>
                     </div>
                     <div class="min-w-0">
-                      <h3 class="font-bold text-gray-900 text-base sm:text-lg group-hover:text-yellow-600 transition-colors truncate">
+                      <h3 class="font-bold text-gray-900 dark:text-gray-100 text-base sm:text-lg group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors truncate">
                         {{ classItem.name }}
                       </h3>
-                      <p class="text-xs sm:text-sm text-gray-500 font-mono">{{ classItem.code }}</p>
+                      <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-mono">{{ classItem.code }}</p>
                     </div>
                   </div>
                 </div>
 
                 <!-- Banner de examen activo -->
                 @if (classItem.has_active_exam) {
-                  <div class="bg-red-50 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg border border-red-200 text-center flex flex-col justify-center shrink-0 w-fit sm:w-auto shadow-sm">
+                  <div class="bg-red-50 dark:bg-red-900/20 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg border border-red-200 dark:border-red-800 text-center flex flex-col justify-center shrink-0 w-fit sm:w-auto shadow-sm">
                     <div class="flex items-center gap-1 justify-center">
                       <span class="inline-block w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
-                      <p class="text-[10px] sm:text-xs uppercase tracking-wide text-red-600 font-bold">¡Examen Activo!</p>
+                      <p class="text-[10px] sm:text-xs uppercase tracking-wide text-red-600 dark:text-red-400 font-bold">¡Examen Activo!</p>
                     </div>
-                    <p class="text-xs sm:text-sm text-red-700 font-black">Nuevo examen disponible</p>
+                    <p class="text-xs sm:text-sm text-red-700 dark:text-red-300 font-black">Nuevo examen disponible</p>
                   </div>
                 }
               </div>
             </div>
 
-            <div class="flex items-center gap-6 mt-4 pt-3 border-t border-gray-100 text-xs sm:text-sm text-gray-600">
+            <div class="flex items-center gap-6 mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
               <div class="flex items-center gap-2 truncate">
                 <lucide-icon [img]="icons.Users" class="w-4 h-4 shrink-0"></lucide-icon>
                 <span class="truncate">{{ classItem.teacher_name }}</span>
@@ -96,6 +96,12 @@
 
           </div>
         </div>
+      </div>
+    } @empty {
+      <div class="col-span-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 sm:p-12 text-center bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300">
+        <lucide-icon [img]="icons.BookOpen" class="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-3"></lucide-icon>
+        <p class="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">No tienes clases inscritas</p>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Actualmente no estás asignado a ninguna materia activa.</p>
       </div>
     }
 

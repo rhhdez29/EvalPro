@@ -1,14 +1,14 @@
 <form [formGroup]="mcqForm" (ngSubmit)="handleAdd()" class="space-y-4 sm:space-y-6">
 
   <div>
-    <label class="block text-sm font-semibold text-gray-900 mb-2">
+    <label class="block text-sm font-semibold text-gray-900 dark:text-gray-300 mb-2">
       Question <span class="text-red-500">*</span>
     </label>
     <textarea
       formControlName="prompt"
       placeholder="Enter your multiple choice question..."
       rows="3"
-      class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none text-sm sm:text-base"
+      class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none text-sm sm:text-base"
       [class.border-red-500]="formUtils.isValidField(mcqForm, 'prompt')"
     ></textarea>
     @if(formUtils.isValidField(mcqForm, 'prompt')){
@@ -17,7 +17,7 @@
   </div>
 
   <div>
-    <label class="block text-sm font-semibold text-gray-900 mb-2">
+    <label class="block text-sm font-semibold text-gray-900 dark:text-gray-300 mb-2">
       Points <span class="text-red-500">*</span>
     </label>
     <input
@@ -26,21 +26,21 @@
       min="1"
       step="5"
       appOnlyNumbers
-      class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm sm:text-base"
+      class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm sm:text-base"
     />
     @if(formUtils.isValidField(mcqForm, 'points')){
       <p class="text-red-500 text-xs sm:text-sm mt-1">{{ formUtils.getFieldError(mcqForm, 'points') }}</p>
     }
   </div>
 
-  <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4 flex items-start gap-3">
-    <lucide-icon [img]="icons.AlertCircle" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5"></lucide-icon>
+  <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4 flex items-start gap-3">
+    <lucide-icon [img]="icons.AlertCircle" class="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5"></lucide-icon>
     <div class="flex-1">
-      <p class="text-xs sm:text-sm font-medium text-blue-900">Partial Credit Distribution</p>
-      <p class="text-xs sm:text-sm text-blue-700 mt-1">
+      <p class="text-xs sm:text-sm font-medium text-blue-900 dark:text-blue-200">Partial Credit Distribution</p>
+      <p class="text-xs sm:text-sm text-blue-700 dark:text-blue-300 mt-1">
         Total allocated: <span class="font-bold">{{ totalPartialScore | number:'1.2-2' }}</span> / {{ mcqForm.get('points')?.value }} points
         @if (totalPartialScore !== mcqForm.get('points')?.value) {
-          <span class="text-red-600 font-semibold ml-2">
+          <span class="text-red-600 dark:text-red-400 font-semibold ml-2">
             (Must match total score!)
           </span>
         }
@@ -49,14 +49,14 @@
   </div>
 
   <div formArrayName="options">
-    <label class="block text-sm font-semibold text-gray-900 mb-3">
+    <label class="block text-sm font-semibold text-gray-900 dark:text-gray-300 mb-3">
       Answer Options <span class="text-red-500">*</span>
     </label>
 
     <div class="space-y-3">
       @for (optCtrl of optionsArray.controls; track $index) {
 
-        <div [formGroupName]="$index" class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 bg-gray-50 sm:bg-transparent rounded-lg sm:rounded-none border sm:border-0 border-gray-200">
+        <div [formGroupName]="$index" class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 bg-gray-50 dark:bg-gray-750 sm:bg-transparent sm:dark:bg-transparent rounded-lg sm:rounded-none border sm:border-0 border-gray-200 dark:border-gray-700">
 
           <div class="flex items-center justify-between sm:justify-start gap-3 w-full sm:w-auto">
             <div class="flex items-center gap-2">
@@ -64,18 +64,18 @@
                 type="checkbox"
                 formControlName="is_correct"
                 (change)="onCorrectChange($index)"
-                class="w-5 h-5 text-yellow-600 border-gray-300 rounded focus:ring-yellow-500 cursor-pointer"
+                class="w-5 h-5 text-yellow-600 border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded focus:ring-yellow-500 cursor-pointer"
               />
-              <span class="text-xs text-gray-600 sm:hidden font-medium">Correcta</span>
+              <span class="text-xs text-gray-600 dark:text-gray-400 sm:hidden font-medium">Correcta</span>
             </div>
 
             <button
               type="button"
               (click)="removeOption($index)"
               [disabled]="optionsArray.length <= 2"
-              class="sm:hidden p-1.5 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer group"
+              class="sm:hidden p-1.5 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer group"
             >
-              <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600 group-disabled:text-gray-400"></lucide-icon>
+              <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600 dark:text-red-400 group-disabled:text-gray-400"></lucide-icon>
             </button>
           </div>
 
@@ -84,14 +84,14 @@
               type="text"
               formControlName="text"
               placeholder="Option {{ $index + 1 }}"
-              class="w-full px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm sm:text-base bg-white"
+              class="w-full px-4 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm sm:text-base bg-white"
               [class.border-red-500]="formUtils.isValidFieldInArrayGroup(optionsArray, $index, 'text')"
             />
           </div>
 
           @if (optCtrl.get('is_correct')?.value) {
             <div class="w-full sm:w-32 flex items-center gap-2 sm:block">
-              <span class="text-xs text-gray-600 sm:hidden shrink-0 font-medium">Puntos:</span>
+              <span class="text-xs text-gray-600 dark:text-gray-400 sm:hidden shrink-0 font-medium">Puntos:</span>
               <input
                 type="number"
                 formControlName="partial_points"
@@ -99,7 +99,7 @@
                 step="1"
                 appOnlyNumbers
                 placeholder="Points"
-                class="w-full px-3 py-2 sm:py-3 border border-yellow-300 bg-yellow-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm sm:text-base"
+                class="w-full px-3 py-2 sm:py-3 border border-yellow-300 dark:border-yellow-600/50 bg-yellow-50 dark:bg-yellow-900/20 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm sm:text-base"
               />
             </div>
           }
@@ -108,9 +108,9 @@
             type="button"
             (click)="removeOption($index)"
             [disabled]="optionsArray.length <= 2"
-            class="hidden sm:block p-3 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer group shrink-0"
+            class="hidden sm:block p-3 hover:bg-red-50 dark:hover:bg-red-900/50 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer group shrink-0"
           >
-            <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600 group-disabled:text-gray-400"></lucide-icon>
+            <lucide-icon [img]="icons.Trash2" class="w-4 h-4 text-red-600 dark:text-red-400 group-disabled:text-gray-400"></lucide-icon>
           </button>
         </div>
 
@@ -123,7 +123,7 @@
     <button
       type="button"
       (click)="addOption()"
-      class="mt-3 flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700 cursor-pointer w-full sm:w-auto justify-center"
+      class="mt-3 flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer w-full sm:w-auto justify-center"
     >
       <lucide-icon [img]="icons.Plus" class="w-4 h-4"></lucide-icon>
       Add Option
@@ -131,11 +131,11 @@
 
   </div>
 
-  <div class="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t border-gray-200">
+  <div class="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
     <button
       type="button"
       (click)="cancel()"
-      class="w-full sm:flex-1 px-5 sm:px-6 py-2.5 sm:py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium cursor-pointer text-sm sm:text-base text-center"
+      class="w-full sm:flex-1 px-5 sm:px-6 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium cursor-pointer text-sm sm:text-base text-center"
     >
       Cancel
     </button>
