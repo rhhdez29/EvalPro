@@ -1,12 +1,15 @@
 import { Component, input, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
+import * as pdfjsLib from 'pdfjs-dist';
 import { SubjectService } from '../../../../../services/subject.service';
 import { AddStudentModalComponent } from "./components/add-student-modal/add-student-modal.component";
 import { StudentListBySubject } from '../../../../../models/student-list-by-subject';
 import { LoadingInformationComponent } from "../../../../../../../shared/components/loading-information/loading-information.component";
 import { LoadingModalComponent } from "../../../../../../../shared/components/loading-modal/loading-modal.component";
 import { PaginationComponent } from '../../../../../../../shared/components/pagination/pagination.component';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 export interface Student {
   id: string;
@@ -35,9 +38,11 @@ export class StudentsTabComponent {
   currentPage = signal(1);
 
   // Estado Local (Signals)
-  uploadedFile  = signal<File | null>(null);
-  isDragging    = signal<boolean>(false);
-  searchQuery   = signal<string>('');
+  uploadedFile    = signal<File | null>(null);
+  isDragging      = signal<boolean>(false);
+  extractedEmails = signal<string[]>([]);
+  isExtracting    = signal<boolean>(false);
+  searchQuery     = signal<string>('');
   isAddStudentModalOpen = signal<boolean>(false);
   loadingStatus = signal<'oculto' | 'cargando' | 'exito' | 'error'>('oculto');
   loadingMessage1 = signal<string>('');
@@ -91,14 +96,61 @@ export class StudentsTabComponent {
     event.stopPropagation();
     this.isDragging.set(false);
     if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
-      this.uploadedFile.set(event.dataTransfer.files[0]);
+      const file = event.dataTransfer.files[0];
+      this.uploadedFile.set(file);
+      if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+        this.extractEmailsFromPdf(file);
+      }
     }
   }
 
   handleFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.uploadedFile.set(input.files[0]);
+      const file = input.files[0];
+      this.uploadedFile.set(file);
+      if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+        this.extractEmailsFromPdf(file);
+      }
+    }
+  }
+
+  async extractEmailsFromPdf(file: File): Promise<void> {
+    this.isExtracting.set(true);
+    this.extractedEmails.set([]);
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+      const emailSet = new Set<string>();
+
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const annotations = await page.getAnnotations();
+
+        for (const annotation of annotations) {
+          const target: string = annotation?.url || annotation?.action || annotation?.unsafeUrl || '';
+          if (typeof target === 'string' && target.toLowerCase().includes('mailto:')) {
+            const rawEmails = target
+              .replace(/^mailto:/i, '')
+              .split('?')[0]
+              .split(/[,;]+/);
+
+            for (const item of rawEmails) {
+              const cleanEmail = item.trim().toLowerCase();
+              if (cleanEmail) {
+                emailSet.add(cleanEmail);
+              }
+            }
+          }
+        }
+      }
+
+      this.extractedEmails.set(Array.from(emailSet));
+    } catch (error) {
+      console.error('Error al extraer correos del PDF:', error);
+    } finally {
+      this.isExtracting.set(false);
     }
   }
 
@@ -141,12 +193,22 @@ export class StudentsTabComponent {
   handleUpload() {
     const file = this.uploadedFile();
     if (file) {
-      console.log('Procesando archivo:', file.name);
-      this.uploadedFile.set(null);
+      this.extractEmailsFromPdf(file);
     }
   }
 
-  removeUploadedFile() { this.uploadedFile.set(null); }
+  removeUploadedFile() {
+    this.uploadedFile.set(null);
+    this.extractedEmails.set([]);
+  }
+
+  removeExtractedEmail(emailToRemove: string) {
+    this.extractedEmails.update(emails => emails.filter(email => email !== emailToRemove));
+  }
+
+  confirmBulkEnrollment() {
+    console.log(this.extractedEmails());
+  }
 
   updateSearchQuery(event: Event) {
     const input = event.target as HTMLInputElement;
